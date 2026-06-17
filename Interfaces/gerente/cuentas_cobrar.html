@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUILDPRO - Registro de Cuentas por Cobrar</title>
+    <style>
+        :root {
+            --bg-primary: #070d14;
+            --bg-surface: rgba(17, 30, 43, 0.45);
+            --accent: #ffb703;
+            --accent-hover: #fb8500;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.06);
+            --success: #10b981;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body {
+            background: linear-gradient(180deg, rgba(7, 13, 20, 0.95) 0%, rgba(10, 17, 24, 0.98) 100%), url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=1920&auto=format&fit=crop');
+            color: var(--text-main); min-height: 100vh; padding: 40px 20px; display: flex; justify-content: center; align-items: center;
+        }
+
+        .glass-panel {
+            width: 100%; max-width: 600px; background: var(--bg-surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color); border-radius: 24px; padding: 40px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .header-area { margin-bottom: 30px; text-align: center; }
+        .header-area h1 { font-size: 26px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+        .header-area p { color: var(--success); font-size: 14px; font-weight: 600; }
+
+        .form-group { margin-bottom: 22px; display: flex; flex-direction: column; gap: 8px; }
+        label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); }
+        
+        input, select {
+            width: 100%; background: rgba(7, 13, 20, 0.6); border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px; padding: 14px; color: #fff; font-size: 14px; outline: none; transition: all 0.3s;
+        }
+        input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(255, 183, 3, 0.15); }
+
+        .btn-submit {
+            width: 100%; background: var(--accent); color: #070d14; padding: 16px; font-size: 14px;
+            font-weight: 700; border: none; border-radius: 12px; text-transform: uppercase; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 183, 3, 0.2); transition: all 0.3s; margin-top: 10px;
+        }
+        .btn-submit:hover { background: var(--accent-hover); transform: translateY(-2px); }
+
+        .btn-back-link {
+            display: block; text-align: center; margin-top: 15px; color: var(--text-muted);
+            text-decoration: none; font-size: 13px; font-weight: 600;
+        }
+        .btn-back-link:hover { color: #fff; }
+    </style>
+</head>
+<body>
+
+    <div class="glass-panel">
+        <div class="header-area">
+            <h1>Registrar Cobro a Cliente</h1>
+            <p>Amortización de Deudas y Cobro de Certificados</p>
+        </div>
+
+        <form onsubmit="event.preventDefault(); alert('Cobro registrado y conciliado en la caja general.'); window.location.href='gerente-caja.html';">
+            <div class="form-group">
+                <label>Seleccionar Cliente / Obra</label>
+                <select required>
+                    <option value="" disabled selected hidden>Seleccione cuenta corriente...</option>
+                    <option value="1">Fideicomiso Skyline (Torre Skyline)</option>
+                    <option value="2">Logística Norte S.A. (Complejo Las Heras)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Monto Cobrado (USD)</label>
+                <input type="number" placeholder="Ej: 350000" min="1" required>
+            </div>
+
+            <div class="form-group">
+                <label>Medio de Liquidación / Cobro</label>
+                <select required>
+                    <option value="1">Transferencia Bancaria Corporativa</option>
+                    <option value="2">Depósito de Cheque de Pago Diferido</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-submit">Confirmar Registro de Cobro</button>
+            <a href="gerente-caja.html" class="btn-back-link">✕ Cancelar y Volver</a>
+        </form>
+    </div>
+
+</body>
+</html>

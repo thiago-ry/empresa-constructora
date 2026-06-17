@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUILDPRO - Panel de Reportes Corporativos</title>
+    <style>
+        :root {
+            --bg-primary: #070d14;
+            --bg-surface: rgba(17, 30, 43, 0.45);
+            --bg-card-hover: rgba(23, 38, 55, 0.85);
+            --accent: #ffb703;
+            --accent-hover: #fb8500;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 183, 3, 0.4);
+            --success: #10b981;
+            --info: #3b82f6;
+            --purple: #a855f7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, rgba(7, 13, 20, 0.95) 0%, rgba(10, 17, 24, 0.98) 100%), 
+                        url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Barra de Navegación Premium */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(7, 13, 20, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 18px 40px;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+
+        .logo span {
+            color: var(--accent);
+            text-shadow: 0 0 15px rgba(255, 183, 3, 0.5);
+        }
+
+        .nav-back {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-back:hover {
+            color: var(--accent);
+        }
+
+        /* Contenedor Principal */
+        .main-container {
+            flex: 1;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            z-index: 2;
+        }
+
+        /* Encabezado */
+        .title-block {
+            margin-bottom: 35px;
+        }
+
+        .title-block h1 {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 6px;
+        }
+
+        .title-block p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Subtítulos de sección */
+        .section-label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Grilla de Opciones de Registro */
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        /* Tarjetas de Reportes */
+        .report-card {
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 26px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 20px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .report-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-hover);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-meta h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .card-meta p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .btn-card-action {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .report-card:hover .btn-card-action {
+            background: var(--accent);
+            color: #070d14;
+            border-color: var(--accent);
+        }
+
+        /* Panel Unificado de Exportación */
+        .export-panel {
+            background: var(--bg-surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .export-options-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 30px;
+            }
+        }
+
+        .export-selectors {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .select-custom {
+            background: rgba(7, 13, 20, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 600;
+            outline: none;
+            min-width: 180px;
+            cursor: pointer;
+        }
+
+        .select-custom:focus {
+            border-color: var(--accent);
+        }
+
+        .btn-export {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+            color: #070d14;
+            padding: 14px 28px;
+            font-size: 13px;
+            font-weight: 700;
+            border-radius: 10px;
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 183, 3, 0.2);
+        }
+
+        .btn-export:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 183, 3, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="#" class="logo">BUILD<span>PRO</span></a>
+        <a href="gerente-home.html" class="nav-back">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Volver al Menú Gerencial
+        </a>
+    </header>
+
+    <main class="main-container">
+        
+        <div class="title-block">
+            <h1>Módulo de Reportes e Inteligencia</h1>
+            <p>Registre información clave del estado del negocio y exporte auditorías oficiales para la junta directiva.</p>
+        </div>
+
+        <div class="section-label">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+            Registrar Nuevos Informes Operativos
+        </div>
+
+        <section class="reports-grid">
+            
+            <div class="report-card" onclick="alert('Caso de Uso: Registrar Reporte de Cobro\nAbriendo interfaz para asentar certificaciones de obra cobradas, facturas emitidas a clientes y estados de cuenta corrientes.')">
+                <div class="card-meta">
+                    <h3>Reporte de Cobros</h3>
+                    <p>Registro de flujos de caja entrantes, transacciones de clientes y valorizaciones de obra liquidadas.</p>
+                </div>
+                <div class="btn-card-action">
+                    Registrar Cobro
+                </div>
+            </div>
+
+            <div class="report-card" onclick="alert('Caso de Uso: Registrar Reporte de Obra\nDesplegando minuta de avance físico. Permite registrar porcentaje de ejecución de estructuras, novedades del frente y clima.')">
+                <div class="card-meta">
+                    <h3>Reporte de Obra</h3>
+                    <p>Bitácora de avance de infraestructura, hitos de ingeniería alcanzados e incidencias en el terreno de construcción.</p>
+                </div>
+                <div class="btn-card-action">
+                    Registrar Avance
+                </div>
+            </div>
+
+            <div class="report-card" onclick="alert('Caso de Uso: Registrar Reporte de Materiales\nAbriendo el formulario de auditoría de pañol para notificar mermas, desperdicios técnicos o variaciones de stock.')">
+                <div class="card-meta">
+                    <h3>Reporte de Materiales</h3>
+                    <p>Rendimiento e índice de consumo de insumos críticos (cemento, acero) y control de mermas técnicas.</p>
+                </div>
+                <div class="btn-card-action">
+                    Registrar Consumo
+                </div>
+            </div>
+
+            <div class="report-card" onclick="alert('Caso de Uso: Registrar Reporte Financiero\nAbriendo el libro de costos consolidados: egresos operativos, pago a subcontratistas y cálculo de desviación del presupuesto original.')">
+                <div class="card-meta">
+                    <h3>Reporte Financiero</h3>
+                    <p>Balance consolidado de costos directos e indirectos, egresos generales y margen de utilidad neta de los proyectos.</p>
+                </div>
+                <div class="btn-card-action">
+                    Registrar Balance
+                </div>
+            </div>
+
+        </section>
+
+        <div class="section-label">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Consolidación y Salida Documental
+        </div>
+
+        <section class="export-panel">
+            <div style="font-size: 15px; font-weight: 600; color: #cbd5e1;">
+                Configurador de Descargas de Auditoría
+            </div>
+            
+            <div class="export-options-row">
+                <div class="export-selectors">
+                    <select class="select-custom" id="export-type">
+                        <option value="1">Balance Financiero Total</option>
+                        <option value="2">Historial de Consumo de Materiales</option>
+                        <option value="3">Auditoría de Certificados de Cobro</option>
+                        <option value="4">Libro de Novedades de Obras</option>
+                    </select>
+
+                    <select class="select-custom" id="export-format">
+                        <option value="pdf">Documento PDF (.pdf)</option>
+                        <option value="xlsx">Hoja de Cálculo Excel (.xlsx)</option>
+                        <option value="csv">Valores Separados por Comas (.csv)</option>
+                    </select>
+                </div>
+
+                <button class="btn-export" onclick="const type = document.getElementById('export-type').options[document.getElementById('export-type').selectedIndex].text; const format = document.getElementById('export-format').value.toUpperCase(); alert('Caso de Uso: Exportar Reporte\nProcesando y compilando base de datos...\n\nArchivo generado: ' + type + '.' + format.toLowerCase() + '\nDescarga iniciada con éxito.');">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    Exportar Reporte
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+</body>
+</html>

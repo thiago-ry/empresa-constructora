@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUILDPRO - Gestión de Proveedores</title>
+    <style>
+        :root {
+            --bg-primary: #070d14;
+            --bg-surface: rgba(17, 30, 43, 0.45);
+            --bg-card-hover: rgba(23, 38, 55, 0.85);
+            --accent: #ffb703;
+            --accent-hover: #fb8500;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.06);
+            --success: #10b981;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, rgba(7, 13, 20, 0.95) 0%, rgba(10, 17, 24, 0.98) 100%), 
+                        url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Barra de Navegación */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(7, 13, 20, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 18px 40px;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        .logo { font-size: 22px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; color: var(--text-main); }
+        .logo span { color: var(--accent); text-shadow: 0 0 15px rgba(255, 183, 3, 0.5); }
+        .nav-back { color: var(--text-muted); text-decoration: none; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: color 0.3s; }
+        .nav-back:hover { color: var(--accent); }
+
+        /* Contenedor Principal */
+        .main-container { flex: 1; padding: 40px 20px; max-width: 1400px; margin: 0 auto; width: 100%; z-index: 2; }
+        
+        .title-block { margin-bottom: 35px; }
+        .title-block h1 { font-size: 32px; font-weight: 800; background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 6px; }
+        .title-block p { color: var(--text-muted); font-size: 14px; }
+
+        /* Distribución de Paneles */
+        .prov-grid { display: grid; grid-template-columns: 1fr 1.8fr; gap: 30px; }
+        
+        .glass-panel { background: var(--bg-surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-color); border-radius: 20px; padding: 25px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); margin-bottom: 25px; }
+        .panel-title { font-size: 13px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+
+        /* Formularios */
+        .form-group { margin-bottom: 14px; display: flex; flex-direction: column; gap: 6px; }
+        label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; }
+        input, select { width: 100%; background: rgba(7, 13, 20, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 11px; color: #fff; font-size: 14px; outline: none; transition: all 0.3s; }
+        input:focus, select:focus { border-color: var(--accent); }
+
+        .btn-submit { width: 100%; background: var(--accent); color: #070d14; padding: 12px; font-size: 12px; font-weight: 700; border: none; border-radius: 8px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+        .btn-submit:hover { background: var(--accent-hover); transform: translateY(-1px); }
+
+        .btn-link-maint { width: 100%; background: transparent; border: 1px solid var(--info); color: var(--info); padding: 12px; font-size: 12px; font-weight: 700; border-radius: 8px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+        .btn-link-maint:hover { background: var(--info); color: #fff; }
+
+        /* Tabla de Proveedores */
+        .table-container { overflow-x: auto; }
+        .prov-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .prov-table th { color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; padding: 14px; border-bottom: 2px solid rgba(255, 255, 255, 0.08); }
+        .prov-table td { padding: 16px 14px; font-size: 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); vertical-align: middle; }
+        .prov-table tr:hover { background: rgba(255, 255, 255, 0.01); }
+
+        .prov-info h4 { font-weight: 700; color: #fff; }
+        .prov-info p { font-size: 12px; color: var(--text-muted); }
+
+        /* Botones de Control */
+        .action-container { display: flex; gap: 6px; flex-wrap: wrap; }
+        .btn-ctrl { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: #fff; padding: 6px 10px; font-size: 11px; font-weight: 600; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+        .btn-ctrl:hover { background: #fff; color: #070d14; border-color: #fff; }
+        .btn-ctrl.prices:hover { background: var(--accent); color: #070d14; border-color: var(--accent); }
+        .btn-ctrl.delete:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+
+        @media (max-width: 1100px) { .prov-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <!-- Barra de Navegación -->
+    <header class="navbar">
+        <a href="#" class="logo">BUILD<span>PRO</span></a>
+        <a href="index.html" class="nav-back">✕ Volver a Consola General</a>
+    </header>
+
+    <main class="main-container">
+        
+        <div class="title-block">
+            <h1>Homologación y Gestión de Proveedores</h1>
+            <p>Registre prestadores de servicios, consulte listas de precios de materiales y asocie talleres especializados con los planes de mantenimiento de maquinaria.</p>
+        </div>
+
+        <div class="prov-grid">
+            
+            <!-- COLUMNA IZQUIERDA: REGISTRAR Y ASOCIAR MANTENIMIENTO -->
+            <div class="forms-column">
+                
+                <!-- Formulario 1: Registrar Proveedor -->
+                <div class="glass-panel">
+                    <h2 class="panel-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        Registrar Proveedor Corporativo
+                    </h2>
+                    <form onsubmit="event.preventDefault(); alert('Operación Exitosa:\nProveedor registrado y habilitado para emitir cotizaciones y órdenes de compra.'); this.reset();">
+                        <div class="form-group">
+                            <label>Razón Social / Nombre</label>
+                            <input type="text" id="prov-name" placeholder="Ej: Aceros San Nicolás S.A." required>
+                        </div>
+                        <div class="form-group">
+                            <label>CUIT / Registro Fiscal</label>
+                            <input type="text" placeholder="Ej: 30-71448922-9" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 18px;">
+                            <label>Rubro Principal</label>
+                            <select id="prov-rubro" required>
+                                <option value="Suministro de Materiales">Suministro de Materiales (Áridos/Hierro)</option>
+                                <option value="Maquinaria y Logística">Maquinaria y Logística pesada</option>
+                                <option value="Talleres y Mantenimiento Técnico">Talleres y Mantenimiento Técnico</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-submit">Dar de Alta Proveedor</button>
+                    </form>
+                </div>
+
+                <!-- Formulario 2: Asociar Proveedor con Mantenimiento -->
+                <div class="glass-panel">
+                    <h2 class="panel-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+                        Asociar Proveedor a Mantenimiento
+                    </h2>
+                    <form onsubmit="event.preventDefault(); alert('Vínculo Logístico Grabado:\nEste proveedor ha sido asignado formalmente como taller autorizado para los servicios técnicos preventivos del equipo seleccionado.');">
+                        <div class="form-group">
+                            <label>Seleccionar Proveedor Técnico</label>
+                            <select required>
+                                <option value="p3">Taller Hidráulica Warnes</option>
+                                <option value="p1">Aceros San Nicolás S.A.</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 18px;">
+                            <label>Equipo / Maquinaria a Vincular</label>
+                            <select required>
+                                <option value="m1">Excavadora CAT 320 Legajo #M-04</option>
+                                <option value="m2">Mixer Hormigonero Mercedes-Benz #M-09</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-link-maint">Vincular a Ficha de Mantenimiento</button>
+                    </form>
+                </div>
+
+            </div>
+
+            <!-- COLUMNA DERECHA: VER PROVEEDORES, EDITAR, PRECIOS, BAJA -->
+            <div class="glass-panel">
+                <h2 class="panel-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2 22 17 12 22 2 17"></polygon><line x1="2" y1="12" x2="12" y2="17"></line><line x1="22" y1="12" x2="12" y2="17"></line></svg>
+                    Padrón de Proveedores Homologados
+                </h2>
+
+                <div class="table-container">
+                    <table class="prov-table">
+                        <thead>
+                            <tr>
+                                <th>Razón Social</th>
+                                <th>Rubro Activo</th>
+                                <th>Acciones Comerciales</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Proveedor 1 -->
+                            <tr>
+                                <td>
+                                    <div class="prov-info">
+                                        <h4>Aceros San Nicolás S.A.</h4>
+                                        <p>CUIT: 30-71448922-9</p>
+                                    </div>
+                                </td>
+                                <td style="color: var(--accent);">Suministro de Materiales</td>
+                                <td>
+                                    <div class="action-container">
+                                        <!-- Editar -->
+                                        <button class="btn-ctrl" onclick="document.getElementById('prov-name').value='Aceros San Nicolás S.A.'; document.getElementById('prov-rubro').value='Suministro de Materiales'; alert('Campos volcados al formulario de edición a la izquierda.');">Editar</button>
+                                        <!-- Consultar precios proveedor -->
+                                        <button class="btn-ctrl prices" onclick="alert('Lista de Precios Vigente - Aceros San Nicolás:\n\n• Barra Hierro del 12: $14,500 /u\n• Barra Hierro del 8: $9,200 /u\n• Malla Electrosoldada: $35,000 /u\n\nÚltima actualización: Hace 3 días.');">Ver Precios</button>
+                                        <!-- Dar de baja -->
+                                        <button class="btn-ctrl delete" onclick="if(confirm('¿Está seguro de suspender y dar de baja el contrato comercial con este proveedor?')){ alert('Proveedor inhabilitado en la base de datos.'); }">Dar de Baja</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Proveedor 2 -->
+                            <tr>
+                                <td>
+                                    <div class="prov-info">
+                                        <h4>Taller Hidráulica Warnes</h4>
+                                        <p>CUIT: 27-22394011-4</p>
+                                    </div>
+                                </td>
+                                <td>Talleres y Mantenimiento Técnico</td>
+                                <td>
+                                    <div class="action-container">
+                                        <button class="btn-ctrl" onclick="document.getElementById('prov-name').value='Taller Hidráulica Warnes'; document.getElementById('prov-rubro').value='Talleres y Mantenimiento Técnico'; alert('Campos volcados al formulario de edición a la izquierda.');">Editar</button>
+                                        <button class="btn-ctrl prices" onclick="alert('Tarifario de Servicios - Hidráulica Warnes:\n\n• Mano de Obra (Hora Técnica): $18,000\n• Cambio de Retenes de Cilindro: $85,000\n• Revisión de Bomba Hidráulica principal: $120,000');">Ver Precios</button>
+                                        <button class="btn-ctrl delete" onclick="if(confirm('¿Está seguro de suspender y dar de baja el contrato comercial con este proveedor?')){ alert('Proveedor inhabilitado en la base de datos.'); }">Dar de Baja</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

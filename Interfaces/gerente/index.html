@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUILDPRO - Panel de Control del Gerente</title>
+    <style>
+        :root {
+            --bg-primary: #070d14;
+            --bg-surface: rgba(17, 30, 43, 0.45);
+            --bg-card-hover: rgba(23, 38, 55, 0.85);
+            --accent: #ffb703;
+            --accent-hover: #fb8500;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 183, 3, 0.4);
+            --success: #10b981;
+            --info: #3b82f6;
+            --purple: #a855f7;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, rgba(7, 13, 20, 0.95) 0%, rgba(10, 17, 24, 0.98) 100%), 
+                        url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Barra de Navegación Premium */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(7, 13, 20, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 18px 40px;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+
+        .logo span {
+            color: var(--accent);
+            text-shadow: 0 0 15px rgba(255, 183, 3, 0.5);
+        }
+
+        .btn-logout {
+            color: #f87171;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(239, 68, 68, 0.08);
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--danger);
+            transform: translateY(-1px);
+        }
+
+        /* Contenedor Principal Adaptativo */
+        .main-container {
+            flex: 1;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            z-index: 2;
+        }
+
+        /* Encabezado Ejecutivo */
+        .welcome-header {
+            margin-bottom: 35px;
+        }
+
+        .welcome-header h1 {
+            font-size: 34px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+
+        .welcome-header p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Tarjeta de Perfil del Gerente */
+        .profile-badge {
+            background: var(--bg-surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 22px;
+            padding: 24px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .profile-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 800;
+            color: #070d14;
+            box-shadow: 0 8px 20px rgba(255, 183, 3, 0.25);
+        }
+
+        .profile-details h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .profile-details p {
+            font-size: 13px;
+            color: var(--accent);
+            font-weight: 600;
+            margin-top: 1px;
+        }
+
+        .btn-profile-view {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-profile-view:hover {
+            border-color: var(--accent);
+            background: rgba(255, 183, 3, 0.1);
+        }
+
+        /* Bloques de Categorías */
+        .category-block {
+            margin-bottom: 35px;
+        }
+
+        .category-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            font-weight: 800;
+            padding-left: 4px;
+            border-left: 3px solid var(--accent);
+            padding-left: 10px;
+        }
+
+        /* Grid de Tarjetas/Botones */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        /* Tarjetas de Botón de Navegación */
+        .menu-item-card {
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 22px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            text-align: left;
+        }
+
+        .menu-item-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(255, 183, 3, 0.08);
+        }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 20px;
+        }
+
+        .card-text h3 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 2px;
+        }
+
+        .card-text p {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.3;
+        }
+
+        /* Colores temáticos icónicos */
+        .c-accent { background: rgba(255, 183, 3, 0.1); color: var(--accent); }
+        .c-info { background: rgba(59, 130, 246, 0.1); color: #60a5fa; }
+        .c-success { background: rgba(16, 185, 129, 0.1); color: #34d399; }
+        .c-purple { background: rgba(168, 85, 247, 0.1); color: #c084fc; }
+        .c-danger { background: rgba(239, 68, 68, 0.1); color: #f87171; }
+
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="#" class="logo">BUILD<span>PRO</span></a>
+        <a href="#" class="btn-logout" onclick="alert('Caso de Uso: Cerrar Sesión\nFinalizando sesión gerencial de forma segura.')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            Cerrar Sesión
+        </a>
+    </header>
+
+    <main class="main-container">
+        
+        <div class="welcome-header">
+            <h1>Consola de Gerencia</h1>
+            <p>Monitoreo global de rentabilidad, auditoría de sistemas e hitos constructivos.</p>
+        </div>
+
+        <section class="profile-badge">
+            <div class="profile-left">
+                <div class="avatar">AI</div>
+                <div class="profile-details">
+                    <h2>Ing. Alejandro Illescas</h2>
+                    <p>Rol: Gerente General corporativo • Oficina Central</p>
+                </div>
+            </div>
+            <button class="btn-profile-view" onclick="alert('Redirección: Abriendo la página detallada de Perfil del Gerente.')">Mi Perfil</button>
+        </section>
+
+        <div class="category-block">
+            <h3 class="category-label">Control de Operaciones</h3>
+            <div class="menu-grid">
+                
+                <button class="menu-item-card" onclick="alert('Redirección: Navegando al módulo general de Obras.')">
+                    <div class="icon-box c-info">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 21h18M3 7l9-4 9 4M5 21V10h14v11M9 21v-4a2 2 0 0 1 4 0v4"></path></svg>
+                    </div>
+                    <a href="obras.html">
+                    <div class="card-text">
+                        <h3>Obras</h3>
+                        <p>Monitorear proyectos activos.</p>
+                    </div>
+                    </a>
+                </button>
+
+                <button class="menu-item-card" onclick="alert('Redirección: Navegando al visor de Avances Físicos de Obra.')">
+                    <div class="icon-box c-accent">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                    </div>
+                    <a href="avances.html">
+                    <div class="card-text">
+                        <h3>Avances</h3>
+                        <p>Porcentajes e hitos logrados.</p>
+                    </div>
+                    </a>
+                </button>
+
+                <button class="menu-item-card" onclick="alert('Redirección: Abriendo consulta global de Disponibilidad de Herramientas y Equipamiento.')">
+                    <div class="icon-box c-success">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+                    </div>
+                    <a href="#">
+                    <div class="card-text">
+                        <h3>Disponibilidad Herramientas</h3>
+                        <p>Auditar stock y estados en pañol.</p>
+                    </div>
+                    </a>
+                </button>
+
+                <button class="menu-item-card" onclick="alert('Redirección: Abriendo control maestro de Materiales y Suministros.')">
+                    <div class="icon-box c-purple">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                    </div>
+                    <a href="materiales.html">
+                    <div class="card-text">
+                        <h3>Materiales</h3>
+                        <p>Inventarios y materias primas.</p>
+                    </div>
+                    </a>
+                </button>
+
+            </div>
+        </div>
+
+        <div class="category-block">
+            <h3 class="category-label">Finanzas y Planificación</h3>
+            <div class="menu-grid">
+
+                <button class="menu-item-card" onclick="alert('Redirección: Abriendo análisis de Presupuesto contractual.')">
+                    <div class="icon-box c-success">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <a href="presupuesto.html">
+                    <div class="card-text">
+                        <h3>El Presupuesto</h3>
+                        <p>Techo presupuestario y costos.</p>
+                    </div>
+                    </a>
+                </button>
+
+                <button class="menu-item-card" onclick="alert('Redirección: Navegando a flujos de Caja Chica y cuentas de obra.')">
+                    <div class="icon-box c-accent">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+                    </div>
+                    <a href="caja.html">
+                    <div class="card-text">
+                        <h3>Caja</h3>
+                        <p>Flujo de efectivo y egresos rápidos.</p>
+                    </div>
+                    </a>
+                </button>
+
+                <button class="menu-item-card" onclick="alert('Redirección: Abriendo Historial de Compras y Órdenes de Pago.')">
+                    <div class="icon-box c-info">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                    </div>
+                    <a href="historial_ingresos.html">
+                    <div class="card-text">
+                        <h3>Historial de Compras</h3>
+                        <p>Auditoría de compras a proveedores.</p>
+                    </div>
+                    </a>
+                </button>
+
+            </div>
+        </div>
+
+        <div class="category-block">
+            <h3 class="category-label">Auditoría, Reportes e Historiales</h3>
+            <div class="menu-grid">
+
+                <button class="menu-item-card" onclick="alert('Redirección: Yendo al centro de Reportes Analíticos Gerenciales.')">
+                    <div class="icon-box c-purple">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+                    </div>
+                    <a href="reportes.html">
+                    <div class="card-text">
+                        <h3>Los Reportes</h3>
+                        <p>Gráficos y balances de rendimiento.</p>
+                    </div>
+                    </a>
+                </button>
+
+                <button class="menu-item-card" onclick="alert('Redirección: Abriendo el Historial Técnico de Incidencias en obra.')">
+                    <div class="icon-box c-danger">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    </div>
+                    <div class="card-text">
+                        <h3>Historial de Incidencias</h3>
+                        <p>Registro de retrasos, roturas o multas.</p>
+                    </div>
+                </button>
+
+                <button class="menu-item-card" onclick="alert('Redirección: Abriendo registros de Log e Historial de Ingresos al Sistema (Seguridad Informática).')">
+                    <div class="icon-box c-info">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="M12 6v6l4 2"></path></svg>
+                    </div>
+                    <a href="historial_ingresos.html">
+                    <div class="card-text">
+                        <h3>Historial de Ingresos</h3>
+                        <p>Auditar accesos de usuarios al sistema.</p>
+                    </div>
+                    </a>
+                </button>
+
+            </div>
+        </div>
+
+        <div class="category-block">
+            <h3 class="category-label">Gestión de Personal y Archivos</h3>
+            <div class="menu-grid">
+
+                <button class="menu-item-card" onclick="alert('Redirección: Abriendo administración de Usuarios y Permisos de BUILDPRO.')">
+                    <div class="icon-box c-accent">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    </div>
+                    <a href="usuario.html">
+                    <div class="card-text">
+                        <h3>Usuarios</h3>
+                        <p>Control de accesos y roles del personal.</p>
+                    </div>
+                    </a>
+                </button>
+
+                <button class="menu-item-card" onclick="alert('Redirección: Abriendo el Explorador Centralizado de Documentos y Archivos.')">
+                    <div class="icon-box c-purple">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                    </div>
+                    <a href="archivos.html">
+                    <div class="card-text">
+                        <h3>Documentos y Archivos</h3>
+                        <p>Ver planos, contratos y archivos adjuntos.</p>
+                    </div>
+                    </a>
+                </button>
+
+            </div>
+        </div>
+
+    </main>
+
+</body>
+</html>

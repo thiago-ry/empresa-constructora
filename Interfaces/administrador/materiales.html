@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUILDPRO - Control de Materiales e Inventario</title>
+    <style>
+        :root {
+            --bg-primary: #070d14;
+            --bg-surface: rgba(17, 30, 43, 0.45);
+            --bg-card-hover: rgba(23, 38, 55, 0.85);
+            --accent: #ffb703;
+            --accent-hover: #fb8500;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.06);
+            --success: #10b981;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, rgba(7, 13, 20, 0.95) 0%, rgba(10, 17, 24, 0.98) 100%), 
+                        url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Barra de Navegación */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(7, 13, 20, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 18px 40px;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        .logo { font-size: 22px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; color: var(--text-main); }
+        .logo span { color: var(--accent); text-shadow: 0 0 15px rgba(255, 183, 3, 0.5); }
+        .nav-back { color: var(--text-muted); text-decoration: none; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: color 0.3s; }
+        .nav-back:hover { color: var(--accent); }
+
+        /* Contenedor Principal */
+        .main-container { flex: 1; padding: 40px 20px; max-width: 1400px; margin: 0 auto; width: 100%; z-index: 2; }
+        
+        .title-block { margin-bottom: 35px; }
+        .title-block h1 { font-size: 32px; font-weight: 800; background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 6px; }
+        .title-block p { color: var(--text-muted); font-size: 14px; }
+
+        /* Distribución en Grilla */
+        .mat-grid { display: grid; grid-template-columns: 1fr 1.8fr; gap: 30px; }
+        
+        .glass-panel { background: var(--bg-surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-color); border-radius: 20px; padding: 25px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); margin-bottom: 25px; }
+        .panel-title { font-size: 13px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+
+        /* Formularios e Inputs */
+        .form-group { margin-bottom: 14px; display: flex; flex-direction: column; gap: 6px; }
+        label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; }
+        input, select { width: 100%; background: rgba(7, 13, 20, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 11px; color: #fff; font-size: 14px; outline: none; transition: all 0.3s; }
+        input:focus, select:focus { border-color: var(--accent); }
+
+        .btn-submit { width: 100%; background: var(--accent); color: #070d14; padding: 12px; font-size: 12px; font-weight: 700; border: none; border-radius: 8px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+        .btn-submit:hover { background: var(--accent-hover); transform: translateY(-1px); }
+
+        /* Fila de Flujos Rápidos (Entrada / Salida) */
+        .flow-actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn-flow { padding: 12px; font-size: 11px; font-weight: 700; border-radius: 8px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; background: transparent; }
+        .btn-flow.in { border: 1px solid var(--success); color: var(--success); }
+        .btn-flow.in:hover { background: var(--success); color: #fff; }
+        .btn-flow.out { border: 1px solid var(--info); color: var(--info); }
+        .btn-flow.out:hover { background: var(--info); color: #fff; }
+
+        /* Buscador Interno solicitado */
+        .search-box { background: rgba(7, 13, 20, 0.4); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; margin-bottom: 20px; display: flex; }
+        .search-box input { border: none; background: transparent; padding: 4px; }
+
+        /* Tabla de Control de Stock */
+        .table-container { overflow-x: auto; }
+        .mat-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .mat-table th { color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; padding: 14px; border-bottom: 2px solid rgba(255, 255, 255, 0.08); }
+        .mat-table td { padding: 16px 14px; font-size: 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); vertical-align: middle; }
+        
+        .mat-name { font-weight: 700; color: #fff; }
+        .mat-unit { font-size: 11px; color: var(--text-muted); display: block; }
+        
+        .stock-indicator { font-weight: 800; font-size: 15px; }
+        .stock-indicator.ok { color: var(--success); }
+        .stock-indicator.critical { color: var(--danger); }
+
+        /* Botones de Control */
+        .action-container { display: flex; gap: 6px; flex-wrap: wrap; }
+        .btn-ctrl { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: #fff; padding: 6px 10px; font-size: 11px; font-weight: 600; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+        .btn-ctrl:hover { background: #fff; color: #070d14; border-color: #fff; }
+        .btn-ctrl.delete:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+
+        @media (max-width: 1100px) { .mat-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="#" class="logo">BUILD<span>PRO</span></a>
+        <a href="index.html" class="nav-back">✕ Volver a Consola General</a>
+    </header>
+
+    <main class="main-container">
+        
+        <div class="title-block">
+            <h1>Control e Inventario de Materiales</h1>
+            <p>Monitoree las unidades en depósito, registre los acopios de insumos y gestione las partidas asignadas a cada frente de obra.</p>
+        </div>
+
+        <div class="mat-grid">
+            
+            <div class="forms-column">
+                
+                <div class="glass-panel">
+                    <h2 class="panel-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                        Registrar Insumo Base
+                    </h2>
+                    <form onsubmit="event.preventDefault(); alert('Catálogo Sincronizado:\nEl nuevo material fue catalogado e indexado para asignaciones presupuestarias.'); this.reset();">
+                        <div class="form-group">
+                            <label>Nombre del Material</label>
+                            <input type="text" id="mat-input-name" placeholder="Ej: Cemento Portland Avellaneda" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Unidad de Medida</label>
+                            <select id="mat-input-unit" required>
+                                <option value="Bolsas de 50kg">Bolsas de 50kg</option>
+                                <option value="Metros Cúbicos (m³)">Metros Cúbicos (m³)</option>
+                                <option value="Barras (Unidades)">Barras (Unidades)</option>
+                                <option value="Kilogramos (kg)">Kilogramos (kg)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 18px;">
+                            <label>Stock de Seguridad Mínimo</label>
+                            <input type="number" min="1" placeholder="Ej: 50" required>
+                        </div>
+                        <button type="submit" class="btn-submit">Dar de Alta en Catálogo</button>
+                    </form>
+                </div>
+
+                <div class="glass-panel">
+                    <h2 class="panel-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                        Registrar Movimiento de Inventario
+                    </h2>
+                    <form onsubmit="event.preventDefault();">
+                        <div class="form-group">
+                            <label>Seleccionar Material afectado</label>
+                            <select required>
+                                <option value="1">Cemento Portland Avellaneda (Bolsas)</option>
+                                <option value="2">Hormigón Elaborado H21 (m³)</option>
+                                <option value="3">Hierro Aletado del 12 (Barras)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Cantidad de Unidades</label>
+                            <input type="number" min="1" placeholder="Ej: 200" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 18px;">
+                            <label>Remito / Documento de Respaldo</label>
+                            <input type="text" placeholder="Ej: REM-0021-9983" required>
+                        </div>
+
+                        <div class="flow-actions-row">
+                            <button type="button" class="btn-flow in" onclick="alert('Registro de Entrada:\nStock incrementado en depósito central. Kardex actualizado.');">Registrar Entrada</button>
+                            <button type="button" class="btn-flow out" onclick="alert('Registro de Salida:\nInsumos despachados. Stock descontado para salida a obra.');">Registrar Salida</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="glass-panel">
+                <h2 class="panel-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    Consola de Monitoreo de Stock Real
+                </h2>
+
+                <div class="search-box">
+                    <input type="text" style="width:100%; color:#fff; font-size:13px;" placeholder="🔍 Buscar materiales por término, tipo de unidad o criticidad..." oninput="console.log('Filtrando inventario...');">
+                </div>
+
+                <div class="table-container">
+                    <table class="mat-table">
+                        <thead>
+                            <tr>
+                                <th>Insumo Base</th>
+                                <th>Stock Físico Actual</th>
+                                <th>Estado Alerta</th>
+                                <th>Controles</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <span class="mat-name">Cemento Portland Avellaneda</span>
+                                    <span class="mat-unit">Medida: Bolsas de 50kg</span>
+                                </td>
+                                <td class="stock-indicator ok">450 U</td>
+                                <td><span style="color: var(--success); font-size: 12px; font-weight:700;">✔ Abastecido</span></td>
+                                <td>
+                                    <div class="action-container">
+                                        <button class="btn-ctrl" onclick="document.getElementById('mat-input-name').value='Cemento Portland Avellaneda'; document.getElementById('mat-input-unit').value='Bolsas de 50kg'; alert('Campos de catálogo cargados a la izquierda para su edición.');">Editar</button>
+                                        <button class="btn-ctrl delete" onclick="if(confirm('¿Desea dar de baja y discontinuar este material del catálogo general?')){ alert('Insumo inactivado.'); }">Dar de Baja</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="mat-name">Hierro Aletado del 12</span>
+                                    <span class="mat-unit">Medida: Barras (Unidades)</span>
+                                </td>
+                                <td class="stock-indicator critical">22 U</td>
+                                <td><span style="color: var(--danger); font-size: 12px; font-weight:700;">⚠ Stock Crítico (Mín: 50)</span></td>
+                                <td>
+                                    <div class="action-container">
+                                        <button class="btn-ctrl" onclick="document.getElementById('mat-input-name').value='Hierro Aletado del 12'; document.getElementById('mat-input-unit').value='Barras (Unidades)'; alert('Campos de catálogo cargados a la izquierda para su edición.');">Editar</button>
+                                        <button class="btn-ctrl delete" onclick="if(confirm('¿Desea dar de baja y discontinuar este material del catálogo general?')){ alert('Insumo inactivado.'); }">Dar de Baja</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

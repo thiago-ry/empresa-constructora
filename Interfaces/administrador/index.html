@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUILDPRO - Panel Maestro de Administración</title>
+    <style>
+        :root {
+            --bg-primary: #070d14;
+            --bg-surface: rgba(17, 30, 43, 0.45);
+            --bg-card-hover: rgba(23, 38, 55, 0.85);
+            --accent: #ffb703;
+            --accent-hover: #fb8500;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 183, 3, 0.4);
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, rgba(7, 13, 20, 0.95) 0%, rgba(10, 17, 24, 0.98) 100%), 
+                        url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Barra de Navegación */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(7, 13, 20, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 18px 40px;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        .logo { font-size: 22px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; color: var(--text-main); }
+        .logo span { color: var(--accent); text-shadow: 0 0 15px rgba(255, 183, 3, 0.5); }
+        
+        .nav-right { display: flex; align-items: center; gap: 20px; }
+        
+        .btn-profile { color: var(--text-main); text-decoration: none; font-size: 14px; font-weight: 600; transition: color 0.3s; display: flex; align-items: center; gap: 6px; }
+        .btn-profile:hover { color: var(--accent); }
+
+        .btn-logout { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: var(--danger); padding: 8px 16px; font-size: 13px; font-weight: 700; border-radius: 8px; text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s; }
+        .btn-logout:hover { background: var(--danger); color: #fff; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+
+        /* Contenedor de la Consola */
+        .main-container { flex: 1; padding: 40px 20px; max-width: 1200px; margin: 0 auto; width: 100%; z-index: 2; }
+        
+        .title-block { margin-bottom: 35px; }
+        .title-block h1 { font-size: 32px; font-weight: 800; background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 6px; }
+        .title-block p { color: var(--text-muted); font-size: 14px; }
+
+        /* Grilla de Módulos Corporativos */
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .menu-card {
+            background: var(--bg-surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+            text-decoration: none;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 160px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-hover);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(255, 183, 3, 0.1);
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 183, 3, 0.1);
+            border: 1px solid rgba(255, 183, 3, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .menu-card:hover .card-icon {
+            background: var(--accent);
+            color: #070d14;
+            box-shadow: 0 0 15px var(--accent);
+        }
+
+        .card-info h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.3px; }
+        .card-info p { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="#" class="logo">BUILD<span>PRO</span></a>
+        <div class="nav-right">
+            <a href="admin-perfil.html" class="btn-profile">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                Mi Perfil (Root)
+            </a>
+            <a href="login.html" class="btn-logout" onclick="alert('Cerrando sesión de administrador. Redirigiendo a pantalla de autenticación raíz...');">Cerrar Sesión</a>
+        </div>
+    </header>
+
+    <main class="main-container">
+        
+        <div class="title-block">
+            <h1>Consola Global de Administración</h1>
+            <p>Panel maestro para la gestión de infraestructura, credenciales, control contable y auditoría del ecosistema BUILDPRO.</p>
+        </div>
+
+        <div class="admin-grid">
+            
+            <a href="usuarios.html" class="menu-card">
+                <div class="card-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                </div>
+                <div class="card-info">
+                    <h3>Gestión de Usuarios</h3>
+                    <p>Control de credenciales, roles y accesos al sistema.</p>
+                </div>
+            </a>
+
+            <a href="obras.html" class="menu-card">
+                <div class="card-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+                </div>
+                <div class="card-info">
+                    <h3>Control de Obras</h3>
+                    <p>Monitoreo de proyectos activos y frentes de trabajo.</p>
+                </div>
+            </a>
+
+            <a href="registrar_orden.html" class="menu-card">
+                <div class="card-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+                </div>
+                <div class="card-info">
+                    <h3>Registrar Orden de Compra</h3>
+                    <p>Emitir nuevas solicitudes de adquisición de insumos.</p>
+                </div>
+            </a>
+
+            <a href="historial_compras.html" class="menu-card">
+                <div class="card-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                </div>
+                <div class="card-info">
+                    <h3>Historial de Compras</h3>
+                    <p>Auditoría retrospectiva de transacciones ejecutadas.</p>
+                </div>
+            </a>
+
+            <a href="caja.html" class="menu-card">
+                <div class="card-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                </div>
+                <div class="card-info">
+                    <h3>Flujo de Caja</h3>
+                    <p>Monitoreo de ingresos, egresos y arqueos diarios.</p>
+                </div>
+            </a>
+
+            <a href="empleados.html" class="menu-card">
+                <div class="card-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>
+                </div>
+                <div class="card-info">
+                    <h3>Nómina de Empleados</h3>
+                    <p>Registro de legajos, asistencia y datos del personal.</p>
+                </div>
+            </a>
+
+            <a href="proveedores.html" class="menu-card">
+                <div class="card-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                </div>
+                <div class="card-info">
+                    <h3>Cartera de Proveedores</h3>
+                    <p>Directorio, contratos y plazos de logística externa.</p>
+                </div>
+            </a>
+
+            <a href="registrar_factura.html" class="menu-card">
+                <div class="card-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="9"></line><line x1="9" y1="13" x2="15" y2="13"></line></svg>
+                </div>
+                <div class="card-info">
+                    <h3>Registrar Facturas</h3>
+                    <p>Carga e imputación contable de comprobantes de pago.</p>
+                </div>
+            </a>
+
+            <a href="reportes.html" class="menu-card">
+                <div class="card-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                </div>
+                <div class="card-info">
+                    <h3>Reportes Analíticos</h3>
+                    <p>Gráficos y balances de rendimiento corporativo.</p>
+                </div>
+            </a>
+
+            <a href="archivos.html" class="menu-card">
+                <div class="card-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                </div>
+                <div class="card-info">
+                    <h3>Repositorio Documental</h3>
+                    <p>Centralización de contratos, planos y respaldos digitales.</p>
+                </div>
+            </a>
+
+            <a href="materiales.html" class="menu-card">
+                <div class="card-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+                <div class="card-info">
+                    <h3>Catálogo de Materiales</h3>
+                    <p>Índice de insumos, unidades de medida y stock mínimo.</p>
+                </div>
+            </a>
+
+            <a href="presupuesto.html" class="menu-card">
+                <div class="card-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                </div>
+                <div class="card-info">
+                    <h3>Presupuestos Meta</h3>
+                    <p>Configuración de los techos financieros y partidas madre.</p>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+</body>
+</html>

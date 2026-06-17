@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUILDPRO - Repositorio de Archivos</title>
+    <style>
+        :root {
+            --bg-primary: #070d14;
+            --bg-surface: rgba(17, 30, 43, 0.45);
+            --bg-card-hover: rgba(23, 38, 55, 0.85);
+            --accent: #ffb703;
+            --accent-hover: #fb8500;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.06);
+            --success: #10b981;
+            --info: #3b82f6;
+            --purple: #a855f7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, rgba(7, 13, 20, 0.95) 0%, rgba(10, 17, 24, 0.98) 100%), 
+                        url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Barra de Navegación */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(7, 13, 20, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 18px 40px;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        .logo { font-size: 22px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; color: var(--text-main); }
+        .logo span { color: var(--accent); text-shadow: 0 0 15px rgba(255, 183, 3, 0.5); }
+        .nav-back { color: var(--text-muted); text-decoration: none; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: color 0.3s; }
+        .nav-back:hover { color: var(--accent); }
+
+        /* Contenedor Principal */
+        .main-container { flex: 1; padding: 40px 20px; max-width: 1400px; margin: 0 auto; width: 100%; z-index: 2; }
+        
+        .title-block { margin-bottom: 35px; }
+        .title-block h1 { font-size: 32px; font-weight: 800; background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 6px; }
+        .title-block p { color: var(--text-muted); font-size: 14px; }
+
+        /* Distribución de Paneles */
+        .file-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
+        
+        .glass-panel { background: var(--bg-surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-color); border-radius: 20px; padding: 25px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
+        .panel-title { font-size: 13px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+
+        /* Formulario e Inputs de Archivos */
+        .form-group { margin-bottom: 16px; display: flex; flex-direction: column; gap: 6px; }
+        label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; }
+        select, input[type="text"] { width: 100%; background: rgba(7, 13, 20, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 11px; color: #fff; font-size: 14px; outline: none; }
+        
+        /* Zona Drop / Adjuntar Archivos */
+        .upload-dropzone { border: 2px dashed rgba(255, 255, 255, 0.15); border-radius: 12px; padding: 30px 20px; text-align: center; background: rgba(7, 13, 20, 0.3); cursor: pointer; transition: all 0.3s; margin-bottom: 20px; }
+        .upload-dropzone:hover { border-color: var(--accent); background: rgba(255, 183, 3, 0.02); }
+        .upload-dropzone svg { color: var(--text-muted); margin-bottom: 10px; transition: color 0.3s; }
+        .upload-dropzone:hover svg { color: var(--accent); }
+        .upload-dropzone p { font-size: 13px; color: var(--text-muted); }
+        .upload-dropzone span { color: #fff; font-weight: 600; text-decoration: underline; }
+
+        .btn-submit { width: 100%; background: var(--accent); color: #070d14; padding: 12px; font-size: 12px; font-weight: 700; border: none; border-radius: 8px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+        .btn-submit:hover { background: var(--accent-hover); transform: translateY(-1px); }
+
+        /* Tabla Documental */
+        .table-container { overflow-x: auto; }
+        .file-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .file-table th { color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; padding: 14px; border-bottom: 2px solid rgba(255, 255, 255, 0.08); }
+        .file-table td { padding: 16px 14px; font-size: 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); vertical-align: middle; }
+        .file-table tr:hover { background: rgba(255, 255, 255, 0.01); }
+
+        .file-info { display: flex; align-items: center; gap: 12px; }
+        .file-icon { background: rgba(255,255,255,0.04); padding: 8px; border-radius: 8px; color: var(--accent); display: flex; align-items: center; }
+        .file-meta h4 { font-weight: 700; color: #fff; font-size: 14px; }
+        .file-meta p { font-size: 12px; color: var(--text-muted); }
+
+        /* Categorías */
+        .tag { padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+        .tag.blue { background: rgba(59, 130, 246, 0.1); color: var(--info); }
+        .tag.purple { background: rgba(168, 85, 247, 0.1); color: var(--purple); }
+
+        /* Botones de Control */
+        .action-container { display: flex; gap: 6px; }
+        .btn-ctrl { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: #fff; padding: 6px 12px; font-size: 11px; font-weight: 600; border-radius: 6px; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
+        .btn-ctrl:hover { background: #fff; color: #070d14; border-color: #fff; }
+        .btn-ctrl.view:hover { background: var(--info); color: #fff; border-color: var(--info); }
+        .btn-ctrl.download:hover { background: var(--success); color: #fff; border-color: var(--success); }
+
+        @media (max-width: 1100px) { .file-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <!-- Barra de Navegación -->
+    <header class="navbar">
+        <a href="#" class="logo">BUILD<span>PRO</span></a>
+        <a href="index.html" class="nav-back">✕ Volver a Consola General</a>
+    </header>
+
+    <main class="main-container">
+        
+        <div class="title-block">
+            <h1>Repositorio Central de Archivos y Planos</h1>
+            <p>Adjunte documentación técnica del proyecto, visualice planos estructurales en tiempo real y descargue contratos vigentes.</p>
+        </div>
+
+        <div class="file-grid">
+            
+            <!-- COLUMNA IZQUIERDA: ADJUNTAR ARCHIVOS -->
+            <div class="glass-panel">
+                <h2 class="panel-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                    Adjuntar Documentación
+                </h2>
+                
+                <form onsubmit="event.preventDefault(); alert('Servidor Documental:\nArchivo cargado con éxito, escaneado contra malware e indexado en el almacén la obra.'); this.reset();">
+                    
+                    <!-- Zona Interactiva Dropzone -->
+                    <div class="upload-dropzone" onclick="document.getElementById('file-input').click();">
+                        <input type="file" id="file-input" style="display: none;" onchange="alert('Archivo pre-seleccionado listo para indexar.');">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                        <p>Arrastre el archivo aquí o haga clic para <span>Examinar</span></p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nombre Descriptivo</label>
+                        <input type="text" placeholder="Ej: Plano de Fundaciones V2" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Asociar a Obra / Destino</label>
+                        <select required>
+                            <option value="1">Torre Skyline - Frente Estructural</option>
+                            <option value="2">Complejo Las Heras - Nave Logística A</option>
+                            <option value="g">Repositorio General Corporativo</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 22px;">
+                        <label>Categoría del Documento</label>
+                        <select required>
+                            <option value="planos">Planos Técnicos e Ingeniería</option>
+                            <option value="contratos">Contratos y Pliegos Legales</option>
+                            <option value="certificaciones">Certificaciones de Avance</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Subir y Consolidar Archivo</button>
+                </form>
+            </div>
+
+            <!-- COLUMNA DERECHA: VISUALIZAR Y DESCARGAR ARCHIVOS -->
+            <div class="glass-panel">
+                <h2 class="panel-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                    Explorador de Archivos Indexados
+                </h2>
+
+                <div class="table-container">
+                    <table class="file-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre del Archivo</th>
+                                <th>Categoría</th>
+                                <th>Peso / Fecha</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Archivo 1 -->
+                            <tr>
+                                <td>
+                                    <div class="file-info">
+                                        <div class="file-icon">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                                        </div>
+                                        <div class="file-meta">
+                                            <h4>Plano_Estructura_Piso4.dwg</h4>
+                                            <p>Asociado a: Torre Skyline</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="tag blue">Planos Técnicos</span></td>
+                                <td>
+                                    <div style="font-size: 13px; color: #fff;">18.4 MB</div>
+                                    <div style="font-size: 11px; color: var(--text-muted);">Hoy, 14:20hs</div>
+                                </td>
+                                <td>
+                                    <div class="action-container">
+                                        <!-- Visualizar -->
+                                        <button class="btn-ctrl view" onclick="alert('Visor CAD integrado de BUILDPRO:\n\nAbriendo interfaz de previsualización para Plano_Estructura_Piso4.dwg sin salir del navegador.');">Visualizar</button>
+                                        <!-- Descargar -->
+                                        <button class="btn-ctrl download" onclick="alert('Iniciando descarga segura desde el storage cifrado...');">Descargar</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Archivo 2 -->
+                            <tr>
+                                <td>
+                                    <div class="file-info">
+                                        <div class="file-icon">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                                        </div>
+                                        <div class="file-meta">
+                                            <h4>Contrato_Fideicomiso_Firmado.pdf</h4>
+                                            <p>Asociado a: Repositorio General</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="tag purple">Contratos Legales</span></td>
+                                <td>
+                                    <div style="font-size: 13px; color: #fff;">3.1 MB</div>
+                                    <div style="font-size: 11px; color: var(--text-muted);">12/06/2026</div>
+                                </td>
+                                <td>
+                                    <div class="action-container">
+                                        <button class="btn-ctrl view" onclick="alert('Visor PDF Integrado:\n\nAbriendo lectura en pantalla de Contrato_Fideicomiso_Firmado.pdf.');">Visualizar</button>
+                                        <button class="btn-ctrl download" onclick="alert('Iniciando descarga segura desde el storage cifrado...');">Descargar</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

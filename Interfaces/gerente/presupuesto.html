@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUILDPRO - Gestión de Presupuestos</title>
+    <style>
+        :root {
+            --bg-primary: #070d14;
+            --bg-surface: rgba(17, 30, 43, 0.45);
+            --bg-card-hover: rgba(23, 38, 55, 0.85);
+            --accent: #ffb703;
+            --accent-hover: #fb8500;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 183, 3, 0.4);
+            --success: #10b981;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, rgba(7, 13, 20, 0.95) 0%, rgba(10, 17, 24, 0.98) 100%), 
+                        url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(7, 13, 20, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 18px 40px;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        .logo { font-size: 22px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; color: var(--text-main); }
+        .logo span { color: var(--accent); text-shadow: 0 0 15px rgba(255, 183, 3, 0.5); }
+        .nav-back { color: var(--text-muted); text-decoration: none; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: color 0.3s; }
+        .nav-back:hover { color: var(--accent); }
+
+        .main-container { flex: 1; padding: 40px 20px; max-width: 1200px; margin: 0 auto; width: 100%; z-index: 2; }
+        
+        .title-block { margin-bottom: 35px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .title-block h1 { font-size: 32px; font-weight: 800; background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 6px; }
+        .title-block p { color: var(--text-muted); font-size: 14px; }
+
+        /* Botón de Costos Principal */
+        .btn-costos {
+            background: linear-gradient(135deg, var(--info) 0%, #2563eb 100%);
+            color: #ffffff; padding: 14px 24px; font-size: 13px; font-weight: 700; border-radius: 10px;
+            border: none; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); display: flex; align-items: center; gap: 8px;
+        }
+        .btn-costos:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5); }
+
+        /* Grilla de Operaciones Directas */
+        .budget-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 30px; margin-bottom: 35px; }
+        
+        .glass-panel { background: var(--bg-surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-color); border-radius: 20px; padding: 30px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
+        .panel-title { font-size: 15px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+
+        /* Inputs y Formulario */
+        .form-group { margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
+        label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
+        input, select { width: 100%; background: rgba(7, 13, 20, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 14px; color: #ffffff; font-size: 14px; outline: none; transition: all 0.3s; }
+        input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(255, 183, 3, 0.15); }
+
+        /* Botonera */
+        .btn-action { width: 100%; background: var(--accent); color: #070d14; padding: 15px; font-size: 13px; font-weight: 700; border: none; border-radius: 10px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; font-weight: 700; box-shadow: 0 4px 15px rgba(255, 183, 3, 0.2); }
+        .btn-action:hover { background: var(--accent-hover); transform: translateY(-2px); }
+        
+        .btn-secondary-group { display: flex; gap: 15px; margin-top: 15px; }
+        .btn-sec { flex: 1; padding: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); color: #fff; cursor: pointer; transition: all 0.2s; }
+        .btn-sec.modificar:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-sec.desactivar:hover { border-color: var(--danger); background: rgba(239, 68, 68, 0.05); color: var(--danger); }
+        .btn-sec.imprimir:hover { border-color: var(--success); color: var(--success); }
+
+        /* Historial de Modificaciones */
+        .history-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .history-table th { color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; padding: 14px; border-bottom: 2px solid rgba(255, 255, 255, 0.08); }
+        .history-table td { padding: 16px 14px; font-size: 13px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); }
+        .badge-change { background: rgba(255, 183, 3, 0.1); color: var(--accent); padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="#" class="logo">BUILD<span>PRO</span></a>
+        <a href="gerente-home.html" class="nav-back">🏁 Volver al Menú Gerencial</a>
+    </header>
+
+    <main class="main-container">
+        
+        <div class="title-block">
+            <div>
+                <h1>Estructura de Presupuestos</h1>
+                <p>Formulación de partidas presupuestarias base, tracking de modificaciones legales y análisis de costos.</p>
+            </div>
+            <button class="btn-costos" onclick="window.location.href='gerente-costos.html';">
+                📊 Ver Desglose de Costos ➔
+            </button>
+        </div>
+
+        <div class="budget-grid">
+            
+            <div class="glass-panel">
+                <h2 class="panel-title">Consola de Ajustes Financieros</h2>
+                
+                <form onsubmit="event.preventDefault(); alert('Caso de Uso: Crear Presupuesto\nPartida presupuestaria guardada e incorporada al master contable.');">
+                    <div class="form-group">
+                        <label>Seleccionar Proyecto Asociado</label>
+                        <select id="budget-project">
+                            <option value="1">Torre Skyline Residencial (Estado: Activo)</option>
+                            <option value="2">Complejo Logístico Las Heras (Estado: Activo)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Monto del Presupuesto (USD)</label>
+                        <input type="number" placeholder="Ej: 3800000" required>
+                    </div>
+
+                    <button type="submit" class="btn-action">Crear / Establecer Presupuesto Base</button>
+                </form>
+
+                <div class="btn-secondary-group">
+                    <button class="btn-sec modificar" onclick="alert('Caso de Uso: Modificar Presupuesto\nSe habilita la edición del registro seleccionado. Se generará un token en el historial.');">Modificar</button>
+                    <button class="btn-sec desactivar" onclick="if(confirm('¿Está seguro de que desea desactivar el presupuesto seleccionado? Esta acción congelará los giros financieros.')) alert('Caso de Uso: Desactivar Presupuesto\nPresupuesto revocado y pausado en el sistema.');">Desactivar</button>
+                    <button class="btn-sec imprimir" onclick="alert('Caso de Uso: Imprimir Presupuesto\nGenerando vista de impresión de alta fidelidad para firmas institucionales...'); window.print();">Imprimir</button>
+                </div>
+            </div>
+
+            <div class="glass-panel">
+                <h2 class="panel-title">Historial de Modificación de Presupuestos</h2>
+                
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Editor</th>
+                            <th>Variación (USD)</th>
+                            <th>Motivo / Orden de Cambio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>08/06/2026</td>
+                            <td>Ing. C. Rossi</td>
+                            <td><span class="badge-change">+$120,000</span></td>
+                            <td>Adicional de pilotes estructurales</td>
+                        </tr>
+                        <tr>
+                            <td>20/05/2026</td>
+                            <td>Gerencia General</td>
+                            <td><span class="badge-change" style="background:rgba(239,68,68,0.1); color:var(--danger); shrink:0;">-$45,000</span></td>
+                            <td>Optimización de logística de áridos</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

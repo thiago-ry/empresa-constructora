@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUILDPRO - Panel del Jefe de Obras</title>
+    <style>
+        :root {
+            --bg-primary: #070d14;
+            --bg-surface: rgba(17, 30, 43, 0.75);
+            --bg-card-hover: rgba(23, 38, 55, 0.85);
+            --accent: #ffb703;
+            --accent-hover: #fb8500;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --border-color: rgba(36, 59, 83, 0.6);
+            --border-hover: rgba(255, 183, 3, 0.5);
+            --danger: #ef4444;
+            --success: #10b981;
+            --info: #3b82f6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, rgba(7, 13, 20, 0.94) 0%, rgba(10, 17, 24, 0.97) 100%), 
+                        url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Barra de Navegación */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(17, 30, 43, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 15px 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+
+        .logo span {
+            color: var(--accent);
+            text-shadow: 0 0 15px rgba(255, 183, 3, 0.4);
+        }
+
+        /* Perfil de Usuario Integrado (Caso de Uso: Visualizar propio perfil) */
+        .user-profile-nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 6px 14px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .user-profile-nav:hover {
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: #070d14;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .user-info {
+            text-align: left;
+        }
+
+        .user-info .name {
+            font-size: 13px;
+            font-weight: 600;
+            display: block;
+        }
+
+        .user-info .role {
+            font-size: 11px;
+            color: var(--text-muted);
+            display: block;
+        }
+
+        /* Contenedor Principal */
+        .main-container {
+            flex: 1;
+            padding: 40px 20px;
+            max-width: 1300px;
+            margin: 0 auto;
+            width: 100%;
+            z-index: 2;
+        }
+
+        /* Encabezado del Menú Principal del Jefe de Obras */
+        .header-area {
+            margin-bottom: 35px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .header-area {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        .title-block h1 {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+
+        .title-block p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Caso de Uso: Buscar obras con un buscador */
+        .search-wrapper {
+            position: relative;
+            min-width: 300px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 42px;
+            background: rgba(7, 13, 20, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(255, 183, 3, 0.15);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        /* Bloque de Acciones Inmediatas de Registro */
+        .quick-registers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+
+        .btn-action-card {
+            background: rgba(255, 183, 3, 0.08);
+            border: 1px solid rgba(255, 183, 3, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .btn-action-card:hover {
+            background: rgba(255, 183, 3, 0.15);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .icon-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: var(--accent);
+            color: #070d14;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-action-card h3 { font-size: 15px; font-weight: 700; }
+        .btn-action-card p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+        /* Contenedor del Dashboard Operativo */
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 35px;
+        }
+
+        @media (min-width: 1024px) {
+            .dashboard-layout {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        /* Glass Panels */
+        .glass-panel {
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .panel-heading {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--accent);
+        }
+
+        /* Caso de Uso: Visualizar Obras y Visualizar Gastos por Obra */
+        .project-card {
+            background: rgba(7, 13, 20, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        @media (min-width: 600px) {
+            .project-card {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        .project-details h3 { font-size: 16px; font-weight: 700; }
+        .project-details p { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+
+        .finance-metrics {
+            text-align: right;
+        }
+        .finance-metrics .amount {
+            font-size: 18px;
+            font-weight: 700;
+            color: #cbd5e1;
+            display: block;
+        }
+        .finance-metrics .label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Caso de Uso: Matriz de Acceso a Módulos Complementarios */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .module-btn {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px 15px;
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .module-btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .module-btn svg {
+            color: var(--text-muted);
+            transition: color 0.2s ease;
+        }
+
+        .module-btn:hover svg {
+            color: var(--accent);
+        }
+
+        .module-btn span {
+            font-size: 13px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra de Navegación / Caso de Uso: Visualizar Propio Perfil -->
+    <header class="navbar">
+        <a href="#" class="logo">BUILD<span>PRO</span></a>
+        <div class="user-profile-nav" onclick="alert('Abriendo: Ficha de Perfil del Ingeniero / Jefe de Obras Autenticado')">
+            <div class="user-info">
+                <span class="name">Ing. Carlos Mendoza</span>
+                <span class="role">Jefe de Obras Principal</span>
+            </div>
+            <div class="avatar">CM</div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        
+        <!-- Encabezado de la Sección con Buscador integrado -->
+        <div class="header-area">
+            <div class="title-block">
+                <h1>Menú Principal de Control</h1>
+                <p>Consola central operativa exclusiva para la Dirección y Despacho de Frentes de Obra.</p>
+            </div>
+            
+            <!-- Caso de Uso: Buscar obras con un buscador -->
+            <div class="search-wrapper">
+                <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" class="search-input" placeholder="Buscar frente de obra..." onkeyup="console.log('Filtrando obras en tiempo real...')">
+            </div>
+        </div>
+
+        <!-- ACCIONES DE REGISTRO DIRECTO -->
+        <section class="quick-registers">
+            <!-- Caso de Uso: Registrar incidencias y obligaciones -->
+            <button class="btn-action-card" onclick="alert('Caso de uso: Registrar Incidencias y Obligaciones\nPermite asentar anomalías climáticas, retrasos de gremios u obligaciones legales.')">
+                <div class="icon-box" style="background: rgba(239, 68, 68, 0.2); color: var(--danger);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                </div>
+                <div>
+                    <h3>Incidencias y Obligaciones</h3>
+                    <p>Asentar novedades críticas o multas</p>
+                </div>
+            </button>
+
+            <!-- Caso de Uso: Registrar solicitudes de materiales -->
+            <button class="btn-action-card" onclick="alert('Caso de uso: Registrar Solicitudes de Materiales\nPermite emitir un pedido de insumos (ej. Cemento, Arena) directo al depósito central.')">
+                <div class="icon-box" style="background: rgba(16, 185, 129, 0.2); color: var(--success);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                </div>
+                <div>
+                    <h3>Solicitar Materiales</h3>
+                    <p>Requerir insumos críticos al pañol</p>
+                </div>
+            </button>
+        </section>
+
+        <!-- DISEÑO DIVIDIDO: SEGUIMIENTO DE OBRAS Y COMPLEMENTOS -->
+        <div class="dashboard-layout">
+            
+            <!-- PANEL: SEGUIMIENTO, OBRAS Y GASTOS -->
+            <div class="glass-panel">
+                <h2 class="panel-heading">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    Frentes de Proyecto Asignados
+                </h2>
+
+                <!-- Obra 1 (Visualizar obras y visualizar gastos) -->
+                <div class="project-card">
+                    <div class="project-details">
+                        <h3>Torre Skyline Residencial</h3>
+                        <p>Ubicación: Av. Corrientes 4500 • Etapa: Extracción e Infraestructura</p>
+                    </div>
+                    <div class="finance-metrics">
+                        <span class="amount" style="color: var(--danger);">$1.240.500</span>
+                        <span class="label">Gastos Acumulados</span>
+                    </div>
+                </div>
+
+                <!-- Obra 2 -->
+                <div class="project-card">
+                    <div class="project-details">
+                        <h3>Complejo Logístico Las Heras</h3>
+                        <p>Ubicación: Ruta 8 Km 42 • Etapa: Cimientos y Estructura Base</p>
+                    </div>
+                    <div class="finance-metrics">
+                        <span class="amount" style="color: var(--warning);">$890.000</span>
+                        <span class="label">Gastos Acumulados</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL CENTRAL DE REDIRECCIÓN A MÓDULOS -->
+            <div class="glass-panel">
+                <h2 class="panel-heading">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><grid></grid><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    Módulos y Consultas
+                </h2>
+
+                <!-- Matriz de botones solicitados del caso de uso -->
+                <div class="modules-grid">
+                    <!-- Botón Herramientas y Equipos -->
+                    <button class="module-btn" onclick="location.href='herramientas.html'">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 0-7.94-7.94L11 5v6H5L1.37 7.37a6 6 0 0 0 7.94 7.94l3.77-3.77a1 1 0 0 0 0-1.4l-1.6-1.6a1 1 0 0 0-1.4 0L6.3 12.3"></path></svg>
+                        <span>Herramientas y Equipos</span>
+                    </button>
+
+                    <!-- Botón Reportes -->
+                    <button class="module-btn" onclick="location.href='reportes.html'">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                        <span>Reportes</span>
+                    </button>
+
+                    <!-- Botón Empleados -->
+                    <button class="module-btn" onclick="location.href='empleados.html'">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span>Empleados</span>
+                    </button>
+
+                    <!-- Botón Archivos -->
+                    <button class="module-btn" onclick="location.href='archivos.html'">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                        <span>Archivos</span>
+                    </button>
+
+                    <!-- Botón Avances -->
+                    <button class="module-btn" onclick="location.href='obras.html'">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                        <span>Obras</span>
+                    </button>
+
+                    <!-- Botón Materiales -->
+                    <button class="module-btn" onclick="location.href='materiales.html'">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                        <span>Materiales</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+</body>
+</html>

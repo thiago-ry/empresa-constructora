@@ -1441,6 +1441,28 @@ ALTER TABLE `usuario`
   ADD CONSTRAINT `fk_usuario_rol` FOREIGN KEY (`id_rol`) REFERENCES `roles` (`id_rol`);
 COMMIT;
 
+ALTER TABLE `empleado` 
+DROP COLUMN `cargo`;
+
+create table `cargo` (
+  `id_cargo` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre_cargo` varchar(100) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  PRIMARY KEY (`id_cargo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+create table `empleado_cargo` (
+  `id_empleado_cargo` int(11) NOT NULL AUTO_INCREMENT,
+  `id_empleado` int(11) NOT NULL,
+  `id_cargo` int(11) NOT NULL,
+  PRIMARY KEY (`id_empleado_cargo`),
+  KEY `idx_empcargo_empleado` (`id_empleado`),
+  KEY `idx_empcargo_cargo` (`id_cargo`),
+  CONSTRAINT `fk_empcargo_empleado` FOREIGN KEY (`id_empleado`) REFERENCES `empleado` (`id_empleado`) ON DELETE CASCADE,
+  CONSTRAINT `fk_empcargo_cargo` FOREIGN KEY (`id_cargo`) REFERENCES `cargo` (`id_cargo`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

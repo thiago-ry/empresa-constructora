@@ -1476,3 +1476,6 @@ drop table `thiago`;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
 drop table observacion;
+
+
+alter table material_obra add column 'unidad_medida' varchar(20) default null;

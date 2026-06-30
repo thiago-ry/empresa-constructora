@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUILDPRO - Registro de Empresa</title>
+    <style>
+        :root {
+            --bg-primary: #02060d;
+            --bg-surface: rgba(15, 27, 43, 0.45);
+            --bg-surface-hover: rgba(22, 42, 69, 0.6);
+            --accent: #ffb703;
+            --accent-hover: #fb8500;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.06);
+            --glow: rgba(255, 183, 3, 0.35);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, rgba(2, 6, 13, 0.95) 0%, rgba(4, 12, 23, 0.98) 100%), 
+                        url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 550px;
+            background: var(--bg-surface);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+            text-align: center;
+        }
+
+        .logo { font-size: 28px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; color: var(--text-main); margin-bottom: 8px; display: inline-block; }
+        .logo span { color: var(--accent); text-shadow: 0 0 20px var(--glow); }
+
+        .subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 30px; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: left; margin-bottom: 24px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group.full-width { grid-column: span 2; }
+        
+        label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; }
+        input, select { width: 100%; background: rgba(2, 6, 13, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 13px 16px; color: #fff; font-size: 14px; outline: none; transition: all 0.3s; }
+        input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(255, 183, 3, 0.1); }
+
+        .terms-check { display: flex; align-items: flex-start; gap: 10px; text-align: left; font-size: 13px; color: var(--text-muted); margin-bottom: 30px; cursor: pointer; }
+        .terms-check input { width: auto; margin-top: 3px; cursor: pointer; }
+        .terms-check a { color: var(--accent); text-decoration: none; font-weight: 600; }
+
+        .btn-submit { width: 100%; background: var(--accent); color: #02060d; padding: 16px; font-size: 14px; font-weight: 800; border: none; border-radius: 10px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; letter-spacing: 0.5px; box-shadow: 0 4px 20px rgba(255, 183, 3, 0.25); margin-bottom: 25px; }
+        .btn-submit:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 6px 25px var(--glow); }
+
+        .footer-link { color: var(--text-muted); font-size: 13px; }
+        .footer-link a { color: var(--text-main); text-decoration: none; font-weight: 700; transition: color 0.2s; }
+        .footer-link a:hover { color: var(--accent); }
+
+        @media (max-width: 500px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group.full-width { grid-column: span 1; }
+            .register-container { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="register-container">
+        <a href="index.html" class="logo">BUILD<span>PRO</span></a>
+        <p class="subtitle">Cree una infraestructura organizativa para su firma constructora</p>
+
+        <form onsubmit="event.preventDefault(); alert('Registro Inicial Exitoso:\nSu solicitud de entorno Cloud empresarial ha sido enviada al departamento técnico. Recibirá sus credenciales maestras vía e-mail.'); window.location.href='login.html';">
+            
+            <div class="form-grid">
+                <!-- Datos Personales / Representante -->
+                <div class="form-group">
+                    <label>Nombre del Administrador</label>
+                    <input type="text" placeholder="Ej: Carlos" required>
+                </div>
+                <div class="form-group">
+                    <label>Apellido</label>
+                    <input type="text" placeholder="Ej: Rossi" required>
+                </div>
+
+                <!-- Correo Electrónico -->
+                <div class="form-group full-width">
+                    <label>Correo Corporativo Oficial</label>
+                    <input type="email" placeholder="c.rossi@tuempresa.com" required>
+                </div>
+
+                <!-- Datos Corporativos -->
+                <div class="form-group">
+                    <label>Razón Social / Empresa</label>
+                    <input type="text" placeholder="Ej: Alfa Construcciones S.A." required>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Operación Principal</label>
+                    <select required>
+                        <option value="1">Obras Civiles / Residenciales</option>
+                        <option value="2">Infraestructura Vía y Pública</option>
+                        <option value="3">Desarrolladora Inmobiliaria</option>
+                        <option value="4">Subcontratista Técnico</option>
+                    </select>
+                </div>
+
+                <!-- Contraseñas de Seguridad -->
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" placeholder="Mínimo 8 caracteres" minlength="8" required>
+                </div>
+                <div class="form-group">
+                    <label>Confirmar Contraseña</label>
+                    <input type="password" placeholder="Repita la contraseña" minlength="8" required>
+                </div>
+            </div>
+
+            <label class="terms-check">
+                <input type="checkbox" required>
+                <span>Acepto los <a href="#">Términos de Licencia Enterprise</a> y las <a href="#">Políticas de Resguardo y Cifrado de Datos</a> de BUILDPRO.</span>
+            </label>
+
+            <button type="submit" class="btn-submit">Solicitar Entorno Digital</button>
+        </form>
+
+        <p class="footer-link">¿Su empresa ya está registrada? <a href="login.html">Inicie sesión aquí</a></p>
+    </div>
+
+</body>
+</html>

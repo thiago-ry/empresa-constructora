@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUILDPRO - Ecosistema de Gestión de Infraestructura & Operaciones</title>
+    <style>
+        :root {
+            --bg-primary: #02060d;
+            --bg-surface: rgba(15, 27, 43, 0.45);
+            --bg-surface-hover: rgba(22, 42, 69, 0.75);
+            --accent: #ffb703;
+            --accent-hover: #fb8500;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.06);
+            --glow: rgba(255, 183, 3, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* ANIMACIÓN DE DEGRADADO DINÁMICO */
+        @keyframes shine {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* BARRA DE NAVEGACIÓN PREMIUM */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(2, 6, 13, 0.85);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            padding: 22px 60px;
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo { font-size: 26px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; color: var(--text-main); }
+        .logo span { color: var(--accent); text-shadow: 0 0 20px var(--glow); }
+        
+        .nav-links { display: flex; gap: 40px; align-items: center; list-style: none; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--accent); }
+        
+        .btn-login { background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 11px 24px; font-size: 13px; font-weight: 700; border-radius: 8px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; text-decoration: none; }
+        .btn-login:hover { background: var(--accent); color: #02060d; box-shadow: 0 0 30px var(--glow); transform: translateY(-1px); }
+
+        /* SECCIÓN HERO INTEGRAL ULTRA-PREMIUM */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 140px 60px 80px 60px;
+            position: relative;
+            background: linear-gradient(90deg, rgba(2,6,13,1) 35%, rgba(2,6,13,0.7) 65%, rgba(2,6,13,0.2) 100%), 
+                        url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=1920&auto=format&fit=crop') no-repeat center center;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+
+        .hero-content { max-width: 850px; z-index: 2; }
+        .hero-tag { display: inline-block; background: rgba(255, 183, 3, 0.08); border: 1px solid rgba(255, 183, 3, 0.3); color: var(--accent); padding: 7px 18px; border-radius: 30px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; }
+        
+        .hero h1 { 
+            font-size: 76px; 
+            font-weight: 900; 
+            line-height: 1.05; 
+            margin-bottom: 25px; 
+            background: linear-gradient(90deg, #ffffff, #94a3b8, #ffffff);
+            background-size: 200% auto;
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+            animation: shine 5s linear infinite;
+        }
+        
+        .hero p { color: var(--text-muted); font-size: 20px; line-height: 1.6; margin-bottom: 45px; max-width: 720px; }
+        
+        .btn-primary { background: var(--accent); color: #02060d; padding: 18px 40px; font-size: 13px; font-weight: 800; border: none; border-radius: 8px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-block; box-shadow: 0 5px 25px rgba(255, 183, 3, 0.25); letter-spacing: 0.5px; }
+        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 8px 35px var(--glow); }
+
+        /* BARRA DE MÉTRICAS */
+        .metrics-bar {
+            background: linear-gradient(90deg, rgba(15, 27, 43, 0.5) 0%, rgba(2, 6, 13, 0.9) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            padding: 60px;
+            text-align: center;
+        }
+
+        .metric-item h3 { font-size: 52px; font-weight: 900; color: var(--accent); margin-bottom: 8px; text-shadow: 0 0 20px rgba(255,183,3,0.15); }
+        .metric-item p { color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; }
+
+        /* GALERÍA DE FLUJO VISUAL ASIMÉTRICO (SHOWCASE CON NUEVAS IMÁGENES FIJAS) */
+        .showcase-section {
+            padding: 120px 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .showcase-section.reverse { grid-template-columns: 0.9fr 1.1fr; }
+
+        .showcase-text h2 { font-size: 46px; font-weight: 800; margin-bottom: 25px; line-height: 1.15; background: linear-gradient(135deg, #ffffff 50%, #cbd5e1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .showcase-text p { color: var(--text-muted); font-size: 17px; line-height: 1.7; margin-bottom: 25px; }
+        
+        .showcase-img-container { position: relative; border-radius: 24px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: 0 30px 70px rgba(0,0,0,0.6); background: #0f172a; }
+        .showcase-img { width: 100%; height: 500px; object-fit: cover; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); display: block; }
+        .showcase-img-container:hover .showcase-img { transform: scale(1.05); }
+
+        /* SECCIÓN DE MÓDULOS DE CONTROL CENTRALIZADO */
+        .features { padding: 120px 60px; background: linear-gradient(180deg, var(--bg-primary) 0%, #040c17 100%); position: relative; }
+        .section-header { text-align: center; margin-bottom: 80px; }
+        .section-header h2 { font-size: 44px; font-weight: 800; margin-bottom: 20px; }
+        .section-header p { color: var(--text-muted); font-size: 17px; max-width: 700px; margin: 0 auto; }
+
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 35px; max-width: 1400px; margin: 0 auto; }
+        
+        /* Paneles Glassmorphism Refinados */
+        .feat-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 45px 40px;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .feat-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 183, 3, 0.4);
+            background: var(--bg-surface-hover);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 40px rgba(255,183,3,0.05);
+        }
+
+        .feat-icon {
+            background: rgba(255, 183, 3, 0.08);
+            color: var(--accent);
+            width: 58px;
+            height: 58px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 183, 3, 0.1);
+        }
+        .feat-card:hover .feat-icon {
+            background: var(--accent);
+            color: #02060d;
+            box-shadow: 0 0 25px var(--glow);
+            border-color: var(--accent);
+        }
+
+        .feat-card h3 { font-size: 24px; font-weight: 700; margin-bottom: 16px; color: #fff; }
+        .feat-card p { color: var(--text-muted); font-size: 15px; line-height: 1.65; }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 60px 20px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 14px;
+            background: #010306;
+        }
+
+        @media (max-width: 1100px) {
+            .hero { padding: 140px 30px 80px 30px; text-align: center; background-position: center; }
+            .hero h1 { font-size: 52px; }
+            .navbar { padding: 20px 30px; }
+            .metrics-bar { grid-template-columns: repeat(2, 1fr); gap: 40px; padding: 45px 30px; }
+            .showcase-section, .showcase-section.reverse { grid-template-columns: 1fr; gap: 50px; padding: 80px 30px; }
+            .showcase-section.reverse .showcase-img-container { order: 2; }
+            .showcase-img { height: 380px; }
+            .features { padding: 80px 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===========================
+         BARRA DE NAVEGACIÓN
+    ============================ -->
+
+    <header class="navbar">
+        <a href="#" class="logo">BUILD<span>PRO</span></a>
+
+        <nav>
+            <ul class="nav-links">
+
+                <li>
+                    <a href="#">Inicio</a>
+                </li>
+
+                <li>
+                    <a href="#como-funciona">¿Cómo funciona?</a>
+                </li>
+
+                <li>
+                    <a href="#caracteristicas">Características</a>
+                </li>
+
+                <li>
+                    <a href="#contacto">Contacto</a>
+                </li>
+
+                <li>
+                    <a href="Login.html" class="btn-login">
+                        Iniciar sesión
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+
+    </header>
+
+
+    <!-- ===========================
+           HERO PRINCIPAL
+    ============================ -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <div class="hero-tag">
+                Portal exclusivo para clientes
+            </div>
+
+            <h1>
+                Seguí el avance de tu obra desde cualquier lugar.
+            </h1>
+
+            <p>
+                BUILDPRO es una plataforma web diseñada para que los clientes puedan consultar
+                el estado de sus proyectos de construcción de forma rápida, segura y sencilla.
+                Accedé al progreso de la obra, fotografías, documentación, presupuestos y
+                novedades desde cualquier dispositivo y en cualquier momento.
+            </p>
+
+            <a href="Login.html" class="btn-primary">
+                Ingresar al Portal
+            </a>
+
+        </div>
+
+    </section>
+
+       <!-- ==========================================
+            MÉTRICAS DEL PORTAL
+    =========================================== -->
+
+    <section class="metrics-bar">
+
+        <div class="metric-item">
+            <h3>24/7</h3>
+            <p>Acceso al estado de tu obra</p>
+        </div>
+
+        <div class="metric-item">
+            <h3>100%</h3>
+            <p>Seguimiento del progreso</p>
+        </div>
+
+        <div class="metric-item">
+            <h3>Online</h3>
+            <p>Documentación disponible</p>
+        </div>
+
+        <div class="metric-item">
+            <h3>Seguro</h3>
+            <p>Información protegida</p>
+        </div>
+
+    </section>
+
+
+
+    <!-- ==========================================
+            ¿CÓMO FUNCIONA?
+    =========================================== -->
+
+    <section class="showcase-section reverse" id="como-funciona">
+
+        <div class="showcase-img-container">
+
+            <img
+                class="showcase-img"
+                src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=1200&auto=format&fit=crop"
+                alt="Seguimiento de obra">
+
+        </div>
+
+        <div class="showcase-text">
+
+            <h2>
+                Mantenete informado sobre cada avance de tu proyecto.
+            </h2>
+
+            <p>
+                BUILDPRO permite que cada cliente pueda consultar el estado
+                de su obra desde cualquier dispositivo.
+                La información es actualizada por la empresa constructora,
+                permitiendo conocer el progreso real de cada etapa del proyecto.
+            </p>
+
+            <p>
+                Visualizá fotografías del avance, porcentajes de ejecución,
+                tareas finalizadas y próximas actividades sin necesidad de
+                realizar consultas telefónicas o presenciales.
+            </p>
+
+        </div>
+
+    </section>
+
+        <!-- ==========================================
+            DOCUMENTACIÓN DEL PROYECTO
+    =========================================== -->
+
+    <section class="showcase-section" id="caracteristicas">
+
+        <div class="showcase-text">
+
+            <h2>
+                Toda la información de tu obra en un solo lugar.
+            </h2>
+
+            <p>
+                Accedé de manera rápida y segura a toda la documentación
+                relacionada con tu proyecto. Consultá presupuestos,
+                contratos, planos y archivos importantes cuando lo necesites.
+            </p>
+
+            <p>
+                Toda la información se encuentra organizada para que puedas
+                realizar el seguimiento de tu obra de forma clara,
+                manteniéndote informado durante cada etapa del proceso
+                constructivo.
+            </p>
+
+        </div>
+
+        <div class="showcase-img-container">
+
+            <img
+                class="showcase-img"
+                src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop"
+                alt="Documentación de la obra">
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ==========================================
+                CARACTERÍSTICAS
+    =========================================== -->
+
+    <section class="features" id="contacto">
+
+        <div class="section-header">
+
+            <h2>
+                Todo lo que necesitás para seguir tu obra
+            </h2>
+
+            <p>
+                BUILDPRO reúne en un único portal toda la información
+                necesaria para que puedas conocer el estado de tu proyecto
+                en cualquier momento.
+            </p>
+
+        </div>
+
+
+
+        <div class="features-grid">
+
+
+            <!-- AVANCES -->
+
+            <div class="feat-card">
+
+                <div class="feat-icon">
+
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                        <polyline points="17 6 23 6 23 12"></polyline>
+                    </svg>
+
+                </div>
+
+                <h3>Avances de la obra</h3>
+
+                <p>
+                    Consultá fotografías, porcentajes de avance y el estado
+                    actualizado de cada etapa del proyecto.
+                </p>
+
+            </div>
+
+
+
+            <!-- CRONOGRAMA -->
+
+            <div class="feat-card">
+
+                <div class="feat-icon">
+
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+
+                </div>
+
+                <h3>Cronograma</h3>
+
+                <p>
+                    Visualizá las actividades realizadas, las tareas en
+                    ejecución y las próximas etapas planificadas.
+                </p>
+
+            </div>
+
+
+
+            <!-- DOCUMENTACIÓN -->
+
+            <div class="feat-card">
+
+                <div class="feat-icon">
+
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+
+                </div>
+
+                <h3>Documentación</h3>
+
+                <p>
+                    Accedé a contratos, planos, presupuestos y demás
+                    documentos relacionados con tu obra.
+                </p>
+
+            </div>
+
+
+
+            <!-- PRESUPUESTO -->
+
+            <div class="feat-card">
+
+                <div class="feat-icon">
+
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+
+                </div>
+
+                <h3>Presupuesto</h3>
+
+                <p>
+                    Consultá el presupuesto aprobado y conocé el estado
+                    financiero general de tu proyecto.
+                </p>
+
+            </div>
+
+
+
+            <!-- NOVEDADES -->
+
+            <div class="feat-card">
+
+                <div class="feat-icon">
+
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+
+                </div>
+
+                <h3>Novedades</h3>
+
+                <p>
+                    Recibí actualizaciones sobre el avance de la obra y
+                    mantenete informado sobre cada cambio importante.
+                </p>
+
+            </div>
+
+
+
+            <!-- PERFIL -->
+
+            <div class="feat-card">
+
+                <div class="feat-icon">
+
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+
+                </div>
+
+                <h3>Mi Perfil</h3>
+
+                <p>
+                    Administrá tus datos personales y consultá toda la
+                    información de tus proyectos desde una única cuenta.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+        <!-- ==========================================
+                SECCIÓN FINAL
+    =========================================== -->
+
+    <section style="padding:100px 40px; text-align:center;">
+
+        <h2 style="
+            font-size:46px;
+            font-weight:800;
+            margin-bottom:25px;
+            color:white;
+        ">
+            Tu obra siempre al alcance de un clic.
+        </h2>
+
+        <p style="
+            max-width:800px;
+            margin:auto;
+            color:#94a3b8;
+            font-size:18px;
+            line-height:1.8;
+            margin-bottom:45px;
+        ">
+
+            Con BUILDPRO podrás consultar el avance de tu proyecto,
+            acceder a documentación importante y mantenerte informado
+            durante todo el proceso de construcción de forma rápida,
+            segura y desde cualquier dispositivo.
+
+        </p>
+
+        <a href="Login.html" class="btn-primary">
+            Acceder al Portal
+        </a>
+
+    </section>
+
+
+
+    <!-- ==========================================
+                    FOOTER
+    =========================================== -->
+
+    <footer>
+
+        <h3 style="
+            color:white;
+            font-size:24px;
+            margin-bottom:15px;
+        ">
+            BUILD<span style="color:#ffb703;">PRO</span>
+        </h3>
+
+        <p style="
+            max-width:700px;
+            margin:auto;
+            line-height:1.8;
+        ">
+
+            Plataforma web desarrollada para brindar a los clientes
+            acceso al seguimiento de sus proyectos de construcción,
+            permitiendo consultar el progreso de la obra,
+            documentación, fotografías y novedades de manera
+            simple, segura y transparente.
+
+        </p>
+
+        <br><br>
+
+        <p>
+
+            © 2026 BUILDPRO. Todos los derechos reservados.
+
+        </p>
+
+    </footer>
+
+</body>
+</html>

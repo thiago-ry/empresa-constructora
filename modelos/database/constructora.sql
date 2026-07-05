@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 16-06-2026 a las 20:14:33
+-- Tiempo de generación: 05-07-2026 a las 02:11:00
 -- Versión del servidor: 10.4.11-MariaDB
 -- Versión de PHP: 7.4.2
 
@@ -74,6 +74,18 @@ CREATE TABLE `avance_obra` (
   `fecha` date NOT NULL,
   `porcentaje` decimal(5,2) NOT NULL,
   `observaciones` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `cargo`
+--
+
+CREATE TABLE `cargo` (
+  `id_cargo` int(11) NOT NULL,
+  `nombre_cargo` varchar(100) NOT NULL,
+  `descripcion` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -195,10 +207,21 @@ CREATE TABLE `empleado` (
   `documento` varchar(20) NOT NULL,
   `telefono` varchar(20) DEFAULT NULL,
   `direccion` varchar(255) DEFAULT NULL,
-  `cargo` varchar(100) DEFAULT NULL,
   `salario` decimal(12,2) DEFAULT NULL,
   `estado` tinyint(1) DEFAULT 1,
   `id_usuario` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `empleado_cargo`
+--
+
+CREATE TABLE `empleado_cargo` (
+  `id_empleado_cargo` int(11) NOT NULL,
+  `id_empleado` int(11) NOT NULL,
+  `id_cargo` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -396,7 +419,8 @@ CREATE TABLE `material_obra` (
   `id_material_obra` int(11) NOT NULL,
   `id_material` int(11) NOT NULL,
   `id_obra` int(11) NOT NULL,
-  `cantidad` decimal(10,2) NOT NULL
+  `cantidad` decimal(10,2) NOT NULL,
+  `unidad_medida` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -458,19 +482,6 @@ CREATE TABLE `obra` (
   `fecha_fin` date DEFAULT NULL,
   `porcentaje_avance` decimal(5,2) DEFAULT 0.00,
   `estado` enum('Planificacion','En Proceso','Finalizada','Cancelada','Suspendida') DEFAULT 'Planificacion'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `observacion`
---
-
-CREATE TABLE `observacion` (
-  `id_observacion` int(11) NOT NULL,
-  `id_incidencia` int(11) NOT NULL,
-  `descripcion` text NOT NULL,
-  `fecha` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -662,6 +673,12 @@ ALTER TABLE `avance_obra`
   ADD KEY `idx_avance_obra` (`id_obra`);
 
 --
+-- Indices de la tabla `cargo`
+--
+ALTER TABLE `cargo`
+  ADD PRIMARY KEY (`id_cargo`);
+
+--
 -- Indices de la tabla `cliente`
 --
 ALTER TABLE `cliente`
@@ -722,6 +739,14 @@ ALTER TABLE `empleado`
   ADD UNIQUE KEY `documento` (`documento`),
   ADD KEY `idx_empleado_documento` (`documento`),
   ADD KEY `fk_empleado_usuario` (`id_usuario`);
+
+--
+-- Indices de la tabla `empleado_cargo`
+--
+ALTER TABLE `empleado_cargo`
+  ADD PRIMARY KEY (`id_empleado_cargo`),
+  ADD KEY `idx_empcargo_empleado` (`id_empleado`),
+  ADD KEY `idx_empcargo_cargo` (`id_cargo`);
 
 --
 -- Indices de la tabla `empleado_obra`
@@ -855,13 +880,6 @@ ALTER TABLE `obra`
   ADD KEY `idx_obra_cliente` (`id_cliente`);
 
 --
--- Indices de la tabla `observacion`
---
-ALTER TABLE `observacion`
-  ADD PRIMARY KEY (`id_observacion`),
-  ADD KEY `idx_observacion_incidencia` (`id_incidencia`);
-
---
 -- Indices de la tabla `orden_compra`
 --
 ALTER TABLE `orden_compra`
@@ -971,6 +989,12 @@ ALTER TABLE `avance_obra`
   MODIFY `id_avance` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `cargo`
+--
+ALTER TABLE `cargo`
+  MODIFY `id_cargo` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
@@ -1017,6 +1041,12 @@ ALTER TABLE `documento_obra`
 --
 ALTER TABLE `empleado`
   MODIFY `id_empleado` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `empleado_cargo`
+--
+ALTER TABLE `empleado_cargo`
+  MODIFY `id_empleado_cargo` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `empleado_obra`
@@ -1125,12 +1155,6 @@ ALTER TABLE `movimiento_inventario`
 --
 ALTER TABLE `obra`
   MODIFY `id_obra` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `observacion`
---
-ALTER TABLE `observacion`
-  MODIFY `id_observacion` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `orden_compra`
@@ -1279,6 +1303,13 @@ ALTER TABLE `empleado`
   ADD CONSTRAINT `fk_empleado_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
 
 --
+-- Filtros para la tabla `empleado_cargo`
+--
+ALTER TABLE `empleado_cargo`
+  ADD CONSTRAINT `fk_empcargo_cargo` FOREIGN KEY (`id_cargo`) REFERENCES `cargo` (`id_cargo`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_empcargo_empleado` FOREIGN KEY (`id_empleado`) REFERENCES `empleado` (`id_empleado`) ON DELETE CASCADE;
+
+--
 -- Filtros para la tabla `empleado_obra`
 --
 ALTER TABLE `empleado_obra`
@@ -1376,12 +1407,6 @@ ALTER TABLE `obra`
   ADD CONSTRAINT `fk_obra_cliente` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`);
 
 --
--- Filtros para la tabla `observacion`
---
-ALTER TABLE `observacion`
-  ADD CONSTRAINT `fk_observacion_incidencia` FOREIGN KEY (`id_incidencia`) REFERENCES `incidencia` (`id_incidencia`) ON DELETE CASCADE;
-
---
 -- Filtros para la tabla `orden_compra`
 --
 ALTER TABLE `orden_compra`
@@ -1441,41 +1466,6 @@ ALTER TABLE `usuario`
   ADD CONSTRAINT `fk_usuario_rol` FOREIGN KEY (`id_rol`) REFERENCES `roles` (`id_rol`);
 COMMIT;
 
-ALTER TABLE `empleado` 
-DROP COLUMN `cargo`;
-
-create table `cargo` (
-  `id_cargo` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre_cargo` varchar(100) NOT NULL,
-  `descripcion` text DEFAULT NULL,
-  PRIMARY KEY (`id_cargo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
-create table `empleado_cargo` (
-  `id_empleado_cargo` int(11) NOT NULL AUTO_INCREMENT,
-  `id_empleado` int(11) NOT NULL,
-  `id_cargo` int(11) NOT NULL,
-  PRIMARY KEY (`id_empleado_cargo`),
-  KEY `idx_empcargo_empleado` (`id_empleado`),
-  KEY `idx_empcargo_cargo` (`id_cargo`),
-  CONSTRAINT `fk_empcargo_empleado` FOREIGN KEY (`id_empleado`) REFERENCES `empleado` (`id_empleado`) ON DELETE CASCADE,
-  CONSTRAINT `fk_empcargo_cargo` FOREIGN KEY (`id_cargo`) REFERENCES `cargo` (`id_cargo`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
-create table `thiago`(
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-drop table `thiago`;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
-drop table observacion;
-
-
-alter table material_obra add column 'unidad_medida' varchar(20) default null;

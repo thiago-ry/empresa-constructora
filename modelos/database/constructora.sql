@@ -1469,3 +1469,55 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+--
+-- Volcado de datos para la tabla `roles`
+--
+
+INSERT INTO `roles` (`id_rol`, `nombre_rol`, `descripcion`) VALUES
+(1, 'Empleado', 'Realiza las tareas asignadas dentro de las obras de construcción.'),
+(2, 'Gerente', 'Administra obras, clientes, empleados, presupuestos y reportes.'),
+(3, 'Administrativo', 'Gestiona clientes, documentos, presupuestos, cobros y pagos.'),
+(4, 'Jefe de Obra', 'Supervisa el avance de las obras y coordina empleados.'),
+(5, 'Depósito', 'Administra materiales, herramientas e inventario.'),
+(6, 'Cliente', 'Consulta el estado de sus obras, documentos y presupuestos.');
+
+--
+-- Volcado de datos para la tabla `usuario`
+--
+
+INSERT INTO `usuario`
+(`id_rol`, `nombre`, `apellido`, `correo`, `contraseña`, `fecha_registro`, `estado`)
+VALUES
+(2, 'Carlos', 'Martínez', 'carlos.martinez@constructora.com', 'gerente123', '2026-07-01 08:00:00', 1),
+(2, 'Mariana', 'López', 'mariana.lopez@constructora.com', 'gerente123', '2026-07-01 08:10:00', 1),
+(3, 'Laura', 'Gómez', 'laura.gomez@constructora.com', 'admin123', '2026-07-01 08:20:00', 1),
+(3, 'Diego', 'Benítez', 'diego.benitez@constructora.com', 'admin123', '2026-07-01 08:30:00', 1),
+(3, 'Valeria', 'Romero', 'valeria.romero@constructora.com', 'admin123', '2026-07-01 08:40:00', 1),
+(4, 'Miguel', 'Fernández', 'miguel.fernandez@constructora.com', 'jefe123', '2026-07-01 08:50:00', 1),
+(4, 'Ricardo', 'Acosta', 'ricardo.acosta@constructora.com', 'jefe123', '2026-07-01 09:00:00', 1),
+(4, 'Sergio', 'Vera', 'sergio.vera@constructora.com', 'jefe123', '2026-07-01 09:10:00', 1),
+(5, 'Jorge', 'Ramírez', 'jorge.ramirez@constructora.com', 'deposito123', '2026-07-01 09:20:00', 1),
+(5, 'Ramón', 'Ortiz', 'ramon.ortiz@constructora.com', 'deposito123', '2026-07-01 09:30:00', 1),
+(1, 'Juan', 'Pérez', 'juan.perez@constructora.com', 'empleado123', '2026-07-01 09:40:00', 1),
+(1, 'Pedro', 'Sosa', 'pedro.sosa@constructora.com', 'empleado123', '2026-07-01 09:50:00', 1),
+(1, 'Lucas', 'Giménez', 'lucas.gimenez@constructora.com', 'empleado123', '2026-07-01 10:00:00', 1),
+(1, 'Gabriel', 'Rojas', 'gabriel.rojas@constructora.com', 'empleado123', '2026-07-01 10:10:00', 1),
+(1, 'Matías', 'Silva', 'matias.silva@constructora.com', 'empleado123', '2026-07-01 10:20:00', 1),
+(1, 'José', 'Mendoza', 'jose.mendoza@constructora.com', 'empleado123', '2026-07-01 10:30:00', 1),
+(6, 'Ana', 'López', 'ana.lopez@gmail.com', 'cliente123', '2026-07-01 10:40:00', 1),
+(6, 'Roberto', 'Suárez', 'roberto.suarez@gmail.com', 'cliente123', '2026-07-01 10:50:00', 1),
+(6, 'Patricia', 'Morales', 'patricia.morales@gmail.com', 'cliente123', '2026-07-01 11:00:00', 1),
+(6, 'Fernando', 'Almirón', 'fernando.almiron@gmail.com', 'cliente123', '2026-07-01 11:10:00', 1);
+
+--
+-- Volcado de datos para la tabla `cliente`
+--
+
+INSERT INTO `cliente`
+(`nombre`, `apellido`, `telefono`, `direccion`, `correo`, `id_usuario`)
+VALUES
+('Ana', 'López', '3704123456', 'Av. Italia 1250, Formosa', 'ana.lopez@gmail.com', 17),
+('Roberto', 'Suárez', '3704234567', 'B° San Martín 845, Formosa', 'roberto.suarez@gmail.com', 18),
+('Patricia', 'Morales', '3704345678', 'Av. González Lelong 542, Formosa', 'patricia.morales@gmail.com', 19),
+('Fernando', 'Almirón', '3704456789', 'B° Guadalupe 1130, Formosa', 'fernando.almiron@gmail.com', 20);

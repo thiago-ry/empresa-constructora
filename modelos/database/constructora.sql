@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 05-07-2026 a las 02:11:00
+-- Tiempo de generación: 08-07-2026 a las 18:40:45
 -- Versión del servidor: 10.4.11-MariaDB
 -- Versión de PHP: 7.4.2
 
@@ -62,6 +62,28 @@ CREATE TABLE `avance_diario` (
   `descripcion` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Volcado de datos para la tabla `avance_diario`
+--
+
+INSERT INTO `avance_diario` (`id_avance_diario`, `id_obra`, `fecha`, `descripcion`) VALUES
+(1, 1, '2026-01-12', 'Se realizó excavación del terreno y preparación para la construcción de los cimientos.'),
+(2, 1, '2026-01-18', 'Se colocaron hierros estructurales y se preparó el hormigonado de la base.'),
+(3, 1, '2026-01-25', 'Finalización de cimientos y preparación para iniciar la estructura.'),
+(4, 1, '2026-02-10', 'Construcción de columnas y vigas principales de la vivienda.'),
+(5, 1, '2026-03-05', 'Avance en levantamiento de paredes interiores y exteriores.'),
+(6, 1, '2026-04-10', 'Instalación de cableado eléctrico y cañerías sanitarias.'),
+(7, 1, '2026-05-05', 'Trabajos de pintura, colocación de pisos y terminaciones finales.'),
+(8, 2, '2026-02-10', 'Inicio de demolición de sectores internos del local.'),
+(9, 2, '2026-02-18', 'Retiro de materiales antiguos y limpieza del área de trabajo.'),
+(10, 2, '2026-03-05', 'Modificación de espacios internos según el nuevo diseño.'),
+(11, 2, '2026-04-01', 'Instalación de sistema eléctrico y adecuación de iluminación.'),
+(12, 3, '2026-03-15', 'Preparación del terreno y nivelación del área de construcción.'),
+(13, 3, '2026-03-25', 'Finalización del movimiento de suelo e inicio de excavaciones.'),
+(14, 3, '2026-04-15', 'Construcción inicial de bases y cimientos del edificio.'),
+(15, 4, '2026-04-10', 'Revisión del espacio disponible y planificación de la ampliación.'),
+(16, 4, '2026-05-05', 'Preparación del terreno para comenzar la construcción.');
+
 -- --------------------------------------------------------
 
 --
@@ -76,6 +98,28 @@ CREATE TABLE `avance_obra` (
   `observaciones` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Volcado de datos para la tabla `avance_obra`
+--
+
+INSERT INTO `avance_obra` (`id_avance`, `id_obra`, `fecha`, `porcentaje`, `observaciones`) VALUES
+(1, 1, '2026-01-08', '15.00', 'Finalización de planificación y comienzo de preparación del terreno.'),
+(2, 1, '2026-01-25', '30.00', 'Cimientos terminados correctamente.'),
+(3, 1, '2026-02-20', '50.00', 'Estructura principal finalizada.'),
+(4, 1, '2026-03-15', '65.00', 'Mampostería completada.'),
+(5, 1, '2026-03-30', '75.00', 'Techado finalizado.'),
+(6, 1, '2026-04-25', '90.00', 'Instalaciones terminadas.'),
+(7, 1, '2026-05-10', '95.00', 'Obra en etapa de terminaciones finales.'),
+(8, 2, '2026-02-07', '15.00', 'Planificación terminada.'),
+(9, 2, '2026-02-20', '35.00', 'Demolición completada.'),
+(10, 2, '2026-03-15', '60.00', 'Adecuaciones estructurales realizadas.'),
+(11, 2, '2026-04-05', '75.00', 'Instalaciones en proceso.'),
+(12, 3, '2026-03-10', '10.00', 'Planificación inicial completada.'),
+(13, 3, '2026-03-25', '25.00', 'Movimiento de suelo finalizado.'),
+(14, 3, '2026-04-20', '40.00', 'Construcción de cimientos en proceso.'),
+(15, 4, '2026-04-10', '10.00', 'Inicio de planificación de ampliación.'),
+(16, 4, '2026-05-01', '20.00', 'Preparación del área de construcción.');
+
 -- --------------------------------------------------------
 
 --
@@ -87,6 +131,22 @@ CREATE TABLE `cargo` (
   `nombre_cargo` varchar(100) NOT NULL,
   `descripcion` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `cargo`
+--
+
+INSERT INTO `cargo` (`id_cargo`, `nombre_cargo`, `descripcion`) VALUES
+(1, 'Albañil', 'Ejecuta trabajos generales de construcción.'),
+(2, 'Ayudante de Obra', 'Asiste en las tareas de construcción y apoyo al personal.'),
+(3, 'Carpintero', 'Realiza trabajos de carpintería en obras.'),
+(4, 'Electricista', 'Instala y mantiene sistemas eléctricos.'),
+(5, 'Plomero', 'Instala y repara sistemas de agua y desagües.'),
+(6, 'Pintor', 'Realiza trabajos de pintura y terminaciones.'),
+(7, 'Soldador', 'Realiza trabajos de soldadura en estructuras metálicas.'),
+(8, 'Herrero', 'Fabrica e instala estructuras metálicas y herrería.'),
+(9, 'Operador de Maquinaria', 'Opera maquinaria pesada utilizada en la construcción.'),
+(10, 'Maestro Mayor de Obras', 'Coordina y supervisa aspectos técnicos de la ejecución de la obra.');
 
 -- --------------------------------------------------------
 
@@ -103,6 +163,16 @@ CREATE TABLE `cliente` (
   `correo` varchar(150) DEFAULT NULL,
   `id_usuario` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `cliente`
+--
+
+INSERT INTO `cliente` (`id_cliente`, `nombre`, `apellido`, `telefono`, `direccion`, `correo`, `id_usuario`) VALUES
+(1, 'Ana', 'López', '3704123456', 'Av. Italia 1250, Formosa', 'ana.lopez@gmail.com', 17),
+(2, 'Roberto', 'Suárez', '3704234567', 'B° San Martín 845, Formosa', 'roberto.suarez@gmail.com', 18),
+(3, 'Patricia', 'Morales', '3704345678', 'Av. González Lelong 542, Formosa', 'patricia.morales@gmail.com', 19),
+(4, 'Fernando', 'Almirón', '3704456789', 'B° Guadalupe 1130, Formosa', 'fernando.almiron@gmail.com', 20);
 
 -- --------------------------------------------------------
 
@@ -212,6 +282,22 @@ CREATE TABLE `empleado` (
   `id_usuario` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Volcado de datos para la tabla `empleado`
+--
+
+INSERT INTO `empleado` (`id_empleado`, `nombre`, `apellido`, `documento`, `telefono`, `direccion`, `salario`, `estado`, `id_usuario`) VALUES
+(1, 'Juan', 'Pérez', '40123456', '3704123456', 'Barrio San Miguel, Formosa', '950000.00', 1, 11),
+(2, 'Pedro', 'Sosa', '39234567', '3704234567', 'Barrio Eva Perón, Formosa', '850000.00', 1, 12),
+(3, 'Lucas', 'Giménez', '41345678', '3704345678', 'Barrio Guadalupe, Formosa', '900000.00', 1, 13),
+(4, 'Gabriel', 'Rojas', '38765432', '3704456789', 'Barrio San Francisco, Formosa', '920000.00', 1, 14),
+(5, 'Matías', 'Silva', '39876543', '3704567890', 'Barrio Independencia, Formosa', '870000.00', 1, 15),
+(6, 'José', 'Mendoza', '40567891', '3704678901', 'Barrio Liborsi, Formosa', '980000.00', 1, 16),
+(7, 'Cristian', 'Benítez', '39654321', '3704789012', 'Barrio Colluccio, Formosa', '1100000.00', 1, NULL),
+(8, 'Diego', 'Ramírez', '38987654', '3704890123', 'Barrio Obrero, Formosa', '1250000.00', 1, NULL),
+(9, 'Ricardo', 'Fernández', '37654321', '3704901234', 'Barrio San Antonio, Formosa', '1400000.00', 1, NULL),
+(10, 'Carlos', 'Acosta', '38543210', '3704012345', 'Barrio Don Bosco, Formosa', '1500000.00', 1, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -223,6 +309,30 @@ CREATE TABLE `empleado_cargo` (
   `id_empleado` int(11) NOT NULL,
   `id_cargo` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `empleado_cargo`
+--
+
+INSERT INTO `empleado_cargo` (`id_empleado_cargo`, `id_empleado`, `id_cargo`) VALUES
+(1, 1, 1),
+(2, 1, 2),
+(3, 2, 2),
+(4, 2, 6),
+(5, 3, 3),
+(6, 3, 8),
+(7, 4, 4),
+(8, 5, 5),
+(9, 6, 6),
+(10, 6, 1),
+(11, 7, 7),
+(12, 7, 8),
+(13, 8, 8),
+(14, 8, 9),
+(15, 9, 9),
+(16, 9, 2),
+(17, 10, 10),
+(18, 10, 1);
 
 -- --------------------------------------------------------
 
@@ -236,6 +346,27 @@ CREATE TABLE `empleado_obra` (
   `id_obra` int(11) NOT NULL,
   `fecha_asignacion` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `empleado_obra`
+--
+
+INSERT INTO `empleado_obra` (`id_empleado_obra`, `id_empleado`, `id_obra`, `fecha_asignacion`) VALUES
+(21, 1, 1, '2026-01-10'),
+(22, 2, 1, '2026-01-10'),
+(23, 10, 1, '2026-01-10'),
+(24, 3, 2, '2026-02-05'),
+(25, 4, 2, '2026-02-05'),
+(26, 5, 2, '2026-02-05'),
+(27, 10, 2, '2026-02-05'),
+(28, 1, 3, '2026-03-12'),
+(29, 6, 3, '2026-03-12'),
+(30, 7, 3, '2026-03-12'),
+(31, 10, 3, '2026-03-12'),
+(32, 2, 4, '2026-04-08'),
+(33, 8, 4, '2026-04-08'),
+(34, 9, 4, '2026-04-08'),
+(35, 10, 4, '2026-04-08');
 
 -- --------------------------------------------------------
 
@@ -252,6 +383,33 @@ CREATE TABLE `etapa_obra` (
   `fecha_fin` date DEFAULT NULL,
   `estado` enum('Pendiente','En Proceso','Finalizada','Cancelada') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `etapa_obra`
+--
+
+INSERT INTO `etapa_obra` (`id_etapa`, `id_obra`, `nombre_etapa`, `descripcion`, `fecha_inicio`, `fecha_fin`, `estado`) VALUES
+(1, 1, 'Planificación', 'Planificación y organización inicial del proyecto.', '2026-01-02', '2026-01-08', 'Finalizada'),
+(2, 1, 'Cimientos', 'Excavación y construcción de cimientos.', '2026-01-09', '2026-01-25', 'Finalizada'),
+(3, 1, 'Estructura', 'Construcción de columnas, vigas y losas.', '2026-01-26', '2026-02-20', 'Finalizada'),
+(4, 1, 'Mampostería', 'Levantamiento de paredes.', '2026-02-21', '2026-03-15', 'Finalizada'),
+(5, 1, 'Techado', 'Construcción y colocación del techo.', '2026-03-16', '2026-03-30', 'Finalizada'),
+(6, 1, 'Instalaciones', 'Instalaciones eléctricas y sanitarias.', '2026-04-01', '2026-04-25', 'Finalizada'),
+(7, 1, 'Terminaciones', 'Pintura, pisos y detalles finales.', '2026-04-26', NULL, 'En Proceso'),
+(8, 2, 'Planificación', 'Planificación de la remodelación.', '2026-02-01', '2026-02-07', 'Finalizada'),
+(9, 2, 'Demolición', 'Retiro de estructuras existentes.', '2026-02-08', '2026-02-20', 'Finalizada'),
+(10, 2, 'Estructura', 'Adecuación estructural del local.', '2026-02-21', '2026-03-15', 'Finalizada'),
+(11, 2, 'Instalaciones', 'Instalaciones eléctricas y sanitarias.', '2026-03-16', NULL, 'En Proceso'),
+(12, 2, 'Terminaciones', 'Pintura y acabados.', NULL, NULL, 'Pendiente'),
+(13, 3, 'Planificación', 'Planificación del edificio.', '2026-03-01', '2026-03-10', 'Finalizada'),
+(14, 3, 'Movimiento de Suelo', 'Preparación del terreno.', '2026-03-11', '2026-03-25', 'Finalizada'),
+(15, 3, 'Cimientos', 'Construcción de bases del edificio.', '2026-03-26', NULL, 'En Proceso'),
+(16, 3, 'Estructura', 'Construcción de la estructura principal.', NULL, NULL, 'Pendiente'),
+(17, 3, 'Mampostería', 'Construcción de paredes.', NULL, NULL, 'Pendiente'),
+(18, 4, 'Planificación', 'Planificación de la ampliación.', '2026-04-01', NULL, 'En Proceso'),
+(19, 4, 'Cimientos', 'Construcción de cimientos.', NULL, NULL, 'Pendiente'),
+(20, 4, 'Estructura', 'Construcción de estructura.', NULL, NULL, 'Pendiente'),
+(21, 4, 'Terminaciones', 'Acabados finales.', NULL, NULL, 'Pendiente');
 
 -- --------------------------------------------------------
 
@@ -280,6 +438,22 @@ CREATE TABLE `foto_obra` (
   `descripcion` varchar(255) DEFAULT NULL,
   `fecha` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `foto_obra`
+--
+
+INSERT INTO `foto_obra` (`id_foto`, `id_obra`, `ruta_imagen`, `descripcion`, `fecha`) VALUES
+(1, 1, 'assets/img/obras/obra1_planificacion.jpg', 'Inicio de planificación y preparación del terreno.', '2026-01-05'),
+(2, 1, 'assets/img/obras/obra1_cimientos.jpg', 'Construcción de los cimientos de la vivienda.', '2026-01-20'),
+(3, 1, 'assets/img/obras/obra1_estructura.jpg', 'Avance de columnas y estructura principal.', '2026-02-15'),
+(4, 1, 'assets/img/obras/obra1_terminaciones.jpg', 'Trabajos finales de pintura y acabados.', '2026-05-05'),
+(5, 2, 'assets/img/obras/obra2_inicio.jpg', 'Estado inicial del local antes de la remodelación.', '2026-02-05'),
+(6, 2, 'assets/img/obras/obra2_demolicion.jpg', 'Retiro de estructuras antiguas.', '2026-02-15'),
+(7, 2, 'assets/img/obras/obra2_instalaciones.jpg', 'Instalación eléctrica del nuevo espacio comercial.', '2026-04-01'),
+(8, 3, 'assets/img/obras/obra3_terreno.jpg', 'Preparación del terreno para construcción.', '2026-03-15'),
+(9, 3, 'assets/img/obras/obra3_cimientos.jpg', 'Construcción de bases del edificio.', '2026-04-15'),
+(10, 4, 'assets/img/obras/obra4_inicio.jpg', 'Inicio del proyecto de ampliación.', '2026-04-10');
 
 -- --------------------------------------------------------
 
@@ -345,9 +519,27 @@ CREATE TABLE `incidencia` (
   `id_incidencia` int(11) NOT NULL,
   `id_obra` int(11) NOT NULL,
   `fecha` date NOT NULL,
+  `tipo_incidencia` enum('Material','Seguridad','Clima','Herramientas','Personal','Cliente','Diseño/Planos','Retraso') DEFAULT NULL,
   `descripcion` text DEFAULT NULL,
-  `problema_detectado` text DEFAULT NULL
+  `estado` enum('Pendiente','En revisión','Resuelta') DEFAULT 'Pendiente',
+  `solucion` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `incidencia`
+--
+
+INSERT INTO `incidencia` (`id_incidencia`, `id_obra`, `fecha`, `tipo_incidencia`, `descripcion`, `estado`, `solucion`) VALUES
+(1, 1, '2026-02-03', 'Clima', 'Las lluvias intensas impidieron continuar con los trabajos exteriores de la obra.', 'Resuelta', 'Se reprogramaron las actividades y se retomaron los trabajos una vez mejoradas las condiciones climáticas.'),
+(2, 1, '2026-04-12', 'Material', 'Se detectó falta de materiales eléctricos necesarios para finalizar las instalaciones.', 'Resuelta', 'Se realizó la compra de materiales faltantes al proveedor correspondiente.'),
+(3, 1, '2026-05-02', 'Personal', 'Un empleado no pudo asistir durante varios días afectando el cronograma de terminaciones.', 'Resuelta', 'Se reorganizaron las tareas asignando personal disponible de la obra.'),
+(4, 2, '2026-02-14', 'Diseño/Planos', 'Durante la demolición se encontraron diferencias entre los planos y la estructura existente.', 'Resuelta', 'Se actualizaron los planos y se adaptó el diseño según las condiciones encontradas.'),
+(5, 2, '2026-03-25', 'Retraso', 'Los trabajos internos tuvieron una demora debido a problemas con la entrega de materiales.', 'Resuelta', 'Se coordinó una nueva fecha de entrega con el proveedor.'),
+(6, 2, '2026-04-08', 'Herramientas', 'Una herramienta utilizada para trabajos eléctricos presentó fallas.', 'Resuelta', 'Se realizó mantenimiento y reemplazo temporal de la herramienta.'),
+(7, 3, '2026-03-28', 'Clima', 'Las condiciones climáticas retrasaron la preparación inicial del terreno.', 'Resuelta', 'Se modificó el cronograma de trabajo para compensar los días perdidos.'),
+(8, 3, '2026-04-18', 'Herramientas', 'La maquinaria necesaria para excavación no estuvo disponible en la fecha prevista.', 'En revisión', 'Se está coordinando disponibilidad de maquinaria con proveedores.'),
+(9, 4, '2026-05-08', 'Cliente', 'El cliente solicitó modificaciones en la distribución del espacio construido.', 'En revisión', 'Pendiente de aprobación del nuevo diseño de ampliación.'),
+(10, 4, '2026-05-15', 'Diseño/Planos', 'Se requirió modificar parte de los planos originales por cambios solicitados.', 'Pendiente', NULL);
 
 -- --------------------------------------------------------
 
@@ -484,6 +676,16 @@ CREATE TABLE `obra` (
   `estado` enum('Planificacion','En Proceso','Finalizada','Cancelada','Suspendida') DEFAULT 'Planificacion'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Volcado de datos para la tabla `obra`
+--
+
+INSERT INTO `obra` (`id_obra`, `id_cliente`, `nombre_obra`, `direccion`, `descripcion`, `fecha_inicio`, `fecha_fin`, `porcentaje_avance`, `estado`) VALUES
+(1, 1, 'Construcción Vivienda Familiar López', 'Av. Italia 1250, Formosa', 'Construcción de una vivienda unifamiliar de dos plantas.', '2026-01-15', '2026-10-30', '95.00', 'En Proceso'),
+(2, 2, 'Remodelación Local Comercial Suárez', 'B° San Martín 845, Formosa', 'Remodelación completa de un local comercial, incluyendo instalaciones eléctricas y sanitarias.', '2026-02-10', '2026-06-20', '70.00', 'Finalizada'),
+(3, 3, 'Edificio Residencial Morales', 'Av. González Lelong 542, Formosa', 'Construcción de un edificio residencial de cuatro departamentos.', '2026-03-05', '2027-02-28', '30.00', 'En Proceso'),
+(4, 4, 'Ampliación Vivienda Almirón', 'B° Guadalupe 1130, Formosa', 'Ampliación de vivienda con construcción de cochera y dos habitaciones.', '2026-04-01', '2026-08-15', '10.00', 'En Proceso');
+
 -- --------------------------------------------------------
 
 --
@@ -595,6 +797,18 @@ CREATE TABLE `roles` (
   `descripcion` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Volcado de datos para la tabla `roles`
+--
+
+INSERT INTO `roles` (`id_rol`, `nombre_rol`, `descripcion`) VALUES
+(1, 'Empleado', 'Realiza las tareas asignadas dentro de las obras de construcción.'),
+(2, 'Gerente', 'Administra obras, clientes, empleados, presupuestos y reportes.'),
+(3, 'Administrativo', 'Gestiona clientes, documentos, presupuestos, cobros y pagos.'),
+(4, 'Jefe de Obra', 'Supervisa el avance de las obras y coordina empleados.'),
+(5, 'Depósito', 'Administra materiales, herramientas e inventario.'),
+(6, 'Cliente', 'Consulta el estado de sus obras, documentos y presupuestos.');
+
 -- --------------------------------------------------------
 
 --
@@ -638,6 +852,32 @@ CREATE TABLE `usuario` (
   `fecha_registro` datetime DEFAULT current_timestamp(),
   `estado` tinyint(1) DEFAULT 1 COMMENT '1=Activo, 0=Inactivo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `usuario`
+--
+
+INSERT INTO `usuario` (`id_usuario`, `id_rol`, `nombre`, `apellido`, `correo`, `contraseña`, `fecha_registro`, `estado`) VALUES
+(7, 2, 'Carlos', 'Martínez', 'carlos.martinez@constructora.com', 'gerente123', '2026-07-01 08:00:00', 1),
+(8, 2, 'Mariana', 'López', 'mariana.lopez@constructora.com', 'gerente123', '2026-07-01 08:10:00', 1),
+(9, 3, 'Laura', 'Gómez', 'laura.gomez@constructora.com', 'admin123', '2026-07-01 08:20:00', 1),
+(10, 3, 'Diego', 'Benítez', 'diego.benitez@constructora.com', 'admin123', '2026-07-01 08:30:00', 1),
+(11, 3, 'Valeria', 'Romero', 'valeria.romero@constructora.com', 'admin123', '2026-07-01 08:40:00', 1),
+(12, 4, 'Miguel', 'Fernández', 'miguel.fernandez@constructora.com', 'jefe123', '2026-07-01 08:50:00', 1),
+(13, 4, 'Ricardo', 'Acosta', 'ricardo.acosta@constructora.com', 'jefe123', '2026-07-01 09:00:00', 1),
+(14, 4, 'Sergio', 'Vera', 'sergio.vera@constructora.com', 'jefe123', '2026-07-01 09:10:00', 1),
+(15, 5, 'Jorge', 'Ramírez', 'jorge.ramirez@constructora.com', 'deposito123', '2026-07-01 09:20:00', 1),
+(16, 5, 'Ramón', 'Ortiz', 'ramon.ortiz@constructora.com', 'deposito123', '2026-07-01 09:30:00', 1),
+(17, 1, 'Juan', 'Pérez', 'juan.perez@constructora.com', 'empleado123', '2026-07-01 09:40:00', 1),
+(18, 1, 'Pedro', 'Sosa', 'pedro.sosa@constructora.com', 'empleado123', '2026-07-01 09:50:00', 1),
+(19, 1, 'Lucas', 'Giménez', 'lucas.gimenez@constructora.com', 'empleado123', '2026-07-01 10:00:00', 1),
+(20, 1, 'Gabriel', 'Rojas', 'gabriel.rojas@constructora.com', 'empleado123', '2026-07-01 10:10:00', 1),
+(21, 1, 'Matías', 'Silva', 'matias.silva@constructora.com', 'empleado123', '2026-07-01 10:20:00', 1),
+(22, 1, 'José', 'Mendoza', 'jose.mendoza@constructora.com', 'empleado123', '2026-07-01 10:30:00', 1),
+(23, 6, 'Ana', 'López', 'ana.lopez@gmail.com', 'cliente123', '2026-07-01 10:40:00', 1),
+(24, 6, 'Roberto', 'Suárez', 'roberto.suarez@gmail.com', 'cliente123', '2026-07-01 10:50:00', 1),
+(25, 6, 'Patricia', 'Morales', 'patricia.morales@gmail.com', 'cliente123', '2026-07-01 11:00:00', 1),
+(26, 6, 'Fernando', 'Almirón', 'fernando.almiron@gmail.com', 'cliente123', '2026-07-01 11:10:00', 1);
 
 --
 -- Índices para tablas volcadas
@@ -980,25 +1220,25 @@ ALTER TABLE `asistencia`
 -- AUTO_INCREMENT de la tabla `avance_diario`
 --
 ALTER TABLE `avance_diario`
-  MODIFY `id_avance_diario` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_avance_diario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `avance_obra`
 --
 ALTER TABLE `avance_obra`
-  MODIFY `id_avance` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_avance` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `cargo`
 --
 ALTER TABLE `cargo`
-  MODIFY `id_cargo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_cargo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `cobro`
@@ -1040,25 +1280,25 @@ ALTER TABLE `documento_obra`
 -- AUTO_INCREMENT de la tabla `empleado`
 --
 ALTER TABLE `empleado`
-  MODIFY `id_empleado` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_empleado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `empleado_cargo`
 --
 ALTER TABLE `empleado_cargo`
-  MODIFY `id_empleado_cargo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_empleado_cargo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `empleado_obra`
 --
 ALTER TABLE `empleado_obra`
-  MODIFY `id_empleado_obra` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_empleado_obra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT de la tabla `etapa_obra`
 --
 ALTER TABLE `etapa_obra`
-  MODIFY `id_etapa` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_etapa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT de la tabla `factura`
@@ -1070,7 +1310,7 @@ ALTER TABLE `factura`
 -- AUTO_INCREMENT de la tabla `foto_obra`
 --
 ALTER TABLE `foto_obra`
-  MODIFY `id_foto` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_foto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `gasto_general`
@@ -1100,7 +1340,7 @@ ALTER TABLE `horas_trabajadas`
 -- AUTO_INCREMENT de la tabla `incidencia`
 --
 ALTER TABLE `incidencia`
-  MODIFY `id_incidencia` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_incidencia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `ingreso`
@@ -1154,7 +1394,7 @@ ALTER TABLE `movimiento_inventario`
 -- AUTO_INCREMENT de la tabla `obra`
 --
 ALTER TABLE `obra`
-  MODIFY `id_obra` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_obra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `orden_compra`
@@ -1202,7 +1442,7 @@ ALTER TABLE `reporte`
 -- AUTO_INCREMENT de la tabla `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id_rol` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `solicitud_material`
@@ -1220,7 +1460,7 @@ ALTER TABLE `tarea`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- Restricciones para tablas volcadas
@@ -1469,70 +1709,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
---
--- Volcado de datos para la tabla `roles`
---
-
-INSERT INTO `roles` (`id_rol`, `nombre_rol`, `descripcion`) VALUES
-(1, 'Empleado', 'Realiza las tareas asignadas dentro de las obras de construcción.'),
-(2, 'Gerente', 'Administra obras, clientes, empleados, presupuestos y reportes.'),
-(3, 'Administrativo', 'Gestiona clientes, documentos, presupuestos, cobros y pagos.'),
-(4, 'Jefe de Obra', 'Supervisa el avance de las obras y coordina empleados.'),
-(5, 'Depósito', 'Administra materiales, herramientas e inventario.'),
-(6, 'Cliente', 'Consulta el estado de sus obras, documentos y presupuestos.');
-
---
--- Volcado de datos para la tabla `usuario`
---
-
-INSERT INTO `usuario`
-(`id_rol`, `nombre`, `apellido`, `correo`, `contraseña`, `fecha_registro`, `estado`)
-VALUES
-(2, 'Carlos', 'Martínez', 'carlos.martinez@constructora.com', 'gerente123', '2026-07-01 08:00:00', 1),
-(2, 'Mariana', 'López', 'mariana.lopez@constructora.com', 'gerente123', '2026-07-01 08:10:00', 1),
-(3, 'Laura', 'Gómez', 'laura.gomez@constructora.com', 'admin123', '2026-07-01 08:20:00', 1),
-(3, 'Diego', 'Benítez', 'diego.benitez@constructora.com', 'admin123', '2026-07-01 08:30:00', 1),
-(3, 'Valeria', 'Romero', 'valeria.romero@constructora.com', 'admin123', '2026-07-01 08:40:00', 1),
-(4, 'Miguel', 'Fernández', 'miguel.fernandez@constructora.com', 'jefe123', '2026-07-01 08:50:00', 1),
-(4, 'Ricardo', 'Acosta', 'ricardo.acosta@constructora.com', 'jefe123', '2026-07-01 09:00:00', 1),
-(4, 'Sergio', 'Vera', 'sergio.vera@constructora.com', 'jefe123', '2026-07-01 09:10:00', 1),
-(5, 'Jorge', 'Ramírez', 'jorge.ramirez@constructora.com', 'deposito123', '2026-07-01 09:20:00', 1),
-(5, 'Ramón', 'Ortiz', 'ramon.ortiz@constructora.com', 'deposito123', '2026-07-01 09:30:00', 1),
-(1, 'Juan', 'Pérez', 'juan.perez@constructora.com', 'empleado123', '2026-07-01 09:40:00', 1),
-(1, 'Pedro', 'Sosa', 'pedro.sosa@constructora.com', 'empleado123', '2026-07-01 09:50:00', 1),
-(1, 'Lucas', 'Giménez', 'lucas.gimenez@constructora.com', 'empleado123', '2026-07-01 10:00:00', 1),
-(1, 'Gabriel', 'Rojas', 'gabriel.rojas@constructora.com', 'empleado123', '2026-07-01 10:10:00', 1),
-(1, 'Matías', 'Silva', 'matias.silva@constructora.com', 'empleado123', '2026-07-01 10:20:00', 1),
-(1, 'José', 'Mendoza', 'jose.mendoza@constructora.com', 'empleado123', '2026-07-01 10:30:00', 1),
-(6, 'Ana', 'López', 'ana.lopez@gmail.com', 'cliente123', '2026-07-01 10:40:00', 1),
-(6, 'Roberto', 'Suárez', 'roberto.suarez@gmail.com', 'cliente123', '2026-07-01 10:50:00', 1),
-(6, 'Patricia', 'Morales', 'patricia.morales@gmail.com', 'cliente123', '2026-07-01 11:00:00', 1),
-(6, 'Fernando', 'Almirón', 'fernando.almiron@gmail.com', 'cliente123', '2026-07-01 11:10:00', 1);
-
---
--- Volcado de datos para la tabla `cliente`
---
-
-INSERT INTO `cliente`
-(`nombre`, `apellido`, `telefono`, `direccion`, `correo`, `id_usuario`)
-VALUES
-('Ana', 'López', '3704123456', 'Av. Italia 1250, Formosa', 'ana.lopez@gmail.com', 17),
-('Roberto', 'Suárez', '3704234567', 'B° San Martín 845, Formosa', 'roberto.suarez@gmail.com', 18),
-('Patricia', 'Morales', '3704345678', 'Av. González Lelong 542, Formosa', 'patricia.morales@gmail.com', 19),
-('Fernando', 'Almirón', '3704456789', 'B° Guadalupe 1130, Formosa', 'fernando.almiron@gmail.com', 20);
-
---
--- Volcado de datos para la tabla `obra`
---
-
-INSERT INTO `obra`
-(`id_cliente`, `nombre_obra`, `direccion`, `descripcion`, `fecha_inicio`, `fecha_fin`, `porcentaje_avance`, `estado`)
-VALUES
-(1, 'Construcción Vivienda Familiar López', 'Av. Italia 1250, Formosa', 'Construcción de una vivienda unifamiliar de dos plantas.', '2026-01-15', '2026-10-30', 45.00, 'En Proceso'),
-
-(2, 'Remodelación Local Comercial Suárez', 'B° San Martín 845, Formosa', 'Remodelación completa de un local comercial, incluyendo instalaciones eléctricas y sanitarias.', '2026-02-10', '2026-06-20', 100.00, 'Finalizada'),
-
-(3, 'Edificio Residencial Morales', 'Av. González Lelong 542, Formosa', 'Construcción de un edificio residencial de cuatro departamentos.', '2026-03-05', '2027-02-28', 25.00, 'En Proceso'),
-
-(4, 'Ampliación Vivienda Almirón', 'B° Guadalupe 1130, Formosa', 'Ampliación de vivienda con construcción de cochera y dos habitaciones.', '2026-04-01', '2026-08-15', 70.00, 'En Proceso');

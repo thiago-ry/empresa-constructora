@@ -1521,3 +1521,18 @@ VALUES
 ('Roberto', 'Suárez', '3704234567', 'B° San Martín 845, Formosa', 'roberto.suarez@gmail.com', 18),
 ('Patricia', 'Morales', '3704345678', 'Av. González Lelong 542, Formosa', 'patricia.morales@gmail.com', 19),
 ('Fernando', 'Almirón', '3704456789', 'B° Guadalupe 1130, Formosa', 'fernando.almiron@gmail.com', 20);
+
+--
+-- Volcado de datos para la tabla `obra`
+--
+
+INSERT INTO `obra`
+(`id_cliente`, `nombre_obra`, `direccion`, `descripcion`, `fecha_inicio`, `fecha_fin`, `porcentaje_avance`, `estado`)
+VALUES
+(1, 'Construcción Vivienda Familiar López', 'Av. Italia 1250, Formosa', 'Construcción de una vivienda unifamiliar de dos plantas.', '2026-01-15', '2026-10-30', 45.00, 'En Proceso'),
+
+(2, 'Remodelación Local Comercial Suárez', 'B° San Martín 845, Formosa', 'Remodelación completa de un local comercial, incluyendo instalaciones eléctricas y sanitarias.', '2026-02-10', '2026-06-20', 100.00, 'Finalizada'),
+
+(3, 'Edificio Residencial Morales', 'Av. González Lelong 542, Formosa', 'Construcción de un edificio residencial de cuatro departamentos.', '2026-03-05', '2027-02-28', 25.00, 'En Proceso'),
+
+(4, 'Ampliación Vivienda Almirón', 'B° Guadalupe 1130, Formosa', 'Ampliación de vivienda con construcción de cochera y dos habitaciones.', '2026-04-01', '2026-08-15', 70.00, 'En Proceso');

@@ -1,4 +1,3 @@
-Me parece una muy buena idea. De hecho, si vas a desarrollar este proyecto durante varios meses, conviene dejar anotadas todas las decisiones importantes desde ahora. Estas son las recomendaciones que te fui haciendo y que considero que realmente valen la pena implementar.
 
 ---
 

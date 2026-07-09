@@ -17,33 +17,57 @@ class UsuarioController
         $password = $_POST['password'];
         $usuarioEncontrado = $this->usuario->buscarPorCorreo($correo);
 
-     if ($usuarioEncontrado) {
+        if ($usuarioEncontrado) {
 
-    if ($usuarioEncontrado['estado'] == 0) {
-        echo "Usuario inactivo";
-        exit();
-    }
+            if ($usuarioEncontrado['estado'] == 0) {
+                echo "Usuario inactivo";
+                exit();
+            }
 
-    if ($password == $usuarioEncontrado['contraseña']) {
+            if ($password == $usuarioEncontrado['contraseña']) {
 
-        $this->usuario->registrarIngreso($usuarioEncontrado['id_usuario']);
+                $this->usuario->registrarIngreso($usuarioEncontrado['id_usuario']);
 
-        $_SESSION['usuario'] = [
-            "id" => $usuarioEncontrado['id_usuario'],
-            "nombre" => $usuarioEncontrado['nombre'],
-            "apellido" => $usuarioEncontrado['apellido'],
-            "id_rol" => $usuarioEncontrado['id_rol'],
-            "rol" => $usuarioEncontrado['nombre_rol']
-        ];
+                $_SESSION['usuario'] = [
+                    "id" => $usuarioEncontrado['id_usuario'],
+                    "nombre" => $usuarioEncontrado['nombre'],
+                    "apellido" => $usuarioEncontrado['apellido'],
+                    "id_rol" => $usuarioEncontrado['id_rol'],
+                    "rol" => $usuarioEncontrado['nombre_rol']
+                ];
 
-        header("Location: ../vistas/dashboard/index.php");
-        exit();
+                switch ($usuarioEncontrado['nombre_rol']) {
 
-    } else {
-        echo "Contraseña incorrecta";
-    }
+                    case "Gerente":
+                        header("Location: ../vistas/dashboard/gerente.php");
+                        break;
 
-} else {
+                    case "Administrativo":
+                        header("Location: ../vistas/dashboard/administrativo.php");
+                        break;
+
+                    case "Jefe de Obra":
+                        header("Location: ../vistas/dashboard/jefe_obra.php");
+                        break;
+
+                    case "Depósito":
+                        header("Location: ../vistas/dashboard/deposito.php");
+                        break;
+
+                    case "Empleado":
+                        header("Location: ../vistas/dashboard/empleado.php");
+                        break;
+
+                    case "Cliente":
+                        header("Location: ../vistas/dashboard/cliente.php");
+                        break;
+                }
+
+                exit();
+            } else {
+                echo "Contraseña incorrecta";
+            }
+        } else {
             echo "Usuario no encontrado";
         }
     }

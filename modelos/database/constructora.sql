@@ -1934,6 +1934,44 @@ ALTER TABLE `usuario`
   ADD CONSTRAINT `fk_usuario_rol` FOREIGN KEY (`id_rol`) REFERENCES `roles` (`id_rol`);
 COMMIT;
 
+CREATE TABLE permisos (
+    id_permiso INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_permiso VARCHAR(100) NOT NULL
+);
+
+INSERT INTO permisos (nombre_permiso) VALUES
+('usuarios'),
+('roles'),
+('obras'),
+('clientes'),
+('empleados'),
+('materiales'),
+('herramientas'),
+('inventario'),
+('presupuestos'),
+('costos'),
+('documentos'),
+('avances'),
+('tareas'),
+('asistencia'),
+('incidencias'),
+('reportes'),
+('caja'),
+('cuentas cobrar'),
+('cuentas pagar'),
+('proveedores'),
+('pagos'),
+('perfil');
+
+CREATE TABLE rol_permiso (
+    id_rol INT NOT NULL,
+    id_permiso INT NOT NULL,
+    PRIMARY KEY (id_rol, id_permiso),
+    FOREIGN KEY (id_rol) REFERENCES roles(id_rol),
+    FOREIGN KEY (id_permiso) REFERENCES permisos(id_permiso)
+);
+
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

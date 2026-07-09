@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-07-2026 a las 18:40:45
+-- Tiempo de generación: 09-07-2026 a las 02:38:55
 -- Versión del servidor: 10.4.11-MariaDB
 -- Versión de PHP: 7.4.2
 
@@ -47,6 +47,21 @@ CREATE TABLE `asistencia` (
   `fecha` date NOT NULL,
   `hora_entrada` time DEFAULT NULL,
   `hora_salida` time DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `auditoria`
+--
+
+CREATE TABLE `auditoria` (
+  `id_auditoria` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `accion` varchar(100) NOT NULL,
+  `tabla_afectada` varchar(100) DEFAULT NULL,
+  `fecha` datetime DEFAULT current_timestamp(),
+  `descripcion` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -278,7 +293,7 @@ CREATE TABLE `empleado` (
   `telefono` varchar(20) DEFAULT NULL,
   `direccion` varchar(255) DEFAULT NULL,
   `salario` decimal(12,2) DEFAULT NULL,
-  `estado` tinyint(1) DEFAULT 1,
+  `estado` enum('Activo','Inactivo','Suspendido') DEFAULT 'Activo',
   `id_usuario` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -287,16 +302,16 @@ CREATE TABLE `empleado` (
 --
 
 INSERT INTO `empleado` (`id_empleado`, `nombre`, `apellido`, `documento`, `telefono`, `direccion`, `salario`, `estado`, `id_usuario`) VALUES
-(1, 'Juan', 'Pérez', '40123456', '3704123456', 'Barrio San Miguel, Formosa', '950000.00', 1, 11),
-(2, 'Pedro', 'Sosa', '39234567', '3704234567', 'Barrio Eva Perón, Formosa', '850000.00', 1, 12),
-(3, 'Lucas', 'Giménez', '41345678', '3704345678', 'Barrio Guadalupe, Formosa', '900000.00', 1, 13),
-(4, 'Gabriel', 'Rojas', '38765432', '3704456789', 'Barrio San Francisco, Formosa', '920000.00', 1, 14),
-(5, 'Matías', 'Silva', '39876543', '3704567890', 'Barrio Independencia, Formosa', '870000.00', 1, 15),
-(6, 'José', 'Mendoza', '40567891', '3704678901', 'Barrio Liborsi, Formosa', '980000.00', 1, 16),
-(7, 'Cristian', 'Benítez', '39654321', '3704789012', 'Barrio Colluccio, Formosa', '1100000.00', 1, NULL),
-(8, 'Diego', 'Ramírez', '38987654', '3704890123', 'Barrio Obrero, Formosa', '1250000.00', 1, NULL),
-(9, 'Ricardo', 'Fernández', '37654321', '3704901234', 'Barrio San Antonio, Formosa', '1400000.00', 1, NULL),
-(10, 'Carlos', 'Acosta', '38543210', '3704012345', 'Barrio Don Bosco, Formosa', '1500000.00', 1, NULL);
+(1, 'Juan', 'Pérez', '40123456', '3704123456', 'Barrio San Miguel, Formosa', '950000.00', 'Activo', 11),
+(2, 'Pedro', 'Sosa', '39234567', '3704234567', 'Barrio Eva Perón, Formosa', '850000.00', 'Activo', 12),
+(3, 'Lucas', 'Giménez', '41345678', '3704345678', 'Barrio Guadalupe, Formosa', '900000.00', 'Activo', 13),
+(4, 'Gabriel', 'Rojas', '38765432', '3704456789', 'Barrio San Francisco, Formosa', '920000.00', 'Activo', 14),
+(5, 'Matías', 'Silva', '39876543', '3704567890', 'Barrio Independencia, Formosa', '870000.00', 'Activo', 15),
+(6, 'José', 'Mendoza', '40567891', '3704678901', 'Barrio Liborsi, Formosa', '980000.00', 'Activo', 16),
+(7, 'Cristian', 'Benítez', '39654321', '3704789012', 'Barrio Colluccio, Formosa', '1100000.00', 'Activo', NULL),
+(8, 'Diego', 'Ramírez', '38987654', '3704890123', 'Barrio Obrero, Formosa', '1250000.00', 'Activo', NULL),
+(9, 'Ricardo', 'Fernández', '37654321', '3704901234', 'Barrio San Antonio, Formosa', '1400000.00', 'Activo', NULL),
+(10, 'Carlos', 'Acosta', '38543210', '3704012345', 'Barrio Don Bosco, Formosa', '1500000.00', 'Activo', NULL);
 
 -- --------------------------------------------------------
 
@@ -478,9 +493,35 @@ CREATE TABLE `herramienta` (
   `id_herramienta` int(11) NOT NULL,
   `nombre` varchar(100) NOT NULL,
   `tipo` varchar(50) DEFAULT NULL,
-  `estado` enum('Disponible','Asignada','En Reparacion','Fuera de Servicio') DEFAULT 'Disponible',
-  `disponibilidad` tinyint(1) DEFAULT 1
+  `marca` varchar(100) DEFAULT NULL,
+  `modelo` varchar(100) DEFAULT NULL,
+  `numero_inventario` varchar(50) DEFAULT NULL,
+  `cantidad_total` int(11) DEFAULT 1,
+  `fecha_adquisicion` date DEFAULT NULL,
+  `costo` decimal(12,2) DEFAULT NULL,
+  `estado` enum('Disponible','Asignada','En reparación','Fuera de servicio') NOT NULL DEFAULT 'Disponible'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `herramienta`
+--
+
+INSERT INTO `herramienta` (`id_herramienta`, `nombre`, `tipo`, `marca`, `modelo`, `numero_inventario`, `cantidad_total`, `fecha_adquisicion`, `costo`, `estado`) VALUES
+(16, 'Martillo de acero', 'Manual', NULL, NULL, NULL, 1, NULL, NULL, 'Disponible'),
+(17, 'Taladro eléctrico', 'Eléctrica', NULL, NULL, NULL, 1, NULL, NULL, 'Disponible'),
+(18, 'Amoladora angular', 'Eléctrica', NULL, NULL, NULL, 1, NULL, NULL, 'Disponible'),
+(19, 'Cinta métrica 5 metros', 'Medición', NULL, NULL, NULL, 1, NULL, NULL, 'Disponible'),
+(20, 'Nivel de burbuja', 'Medición', NULL, NULL, NULL, 1, NULL, NULL, 'Disponible'),
+(21, 'Pala de punta', 'Manual', NULL, NULL, NULL, 1, NULL, NULL, 'Disponible'),
+(22, 'Pico de construcción', 'Manual', NULL, NULL, NULL, 1, NULL, NULL, 'Asignada'),
+(23, 'Carretilla metálica', 'Transporte', NULL, NULL, NULL, 1, NULL, NULL, 'Asignada'),
+(24, 'Mezcladora de cemento', 'Maquinaria', NULL, NULL, NULL, 1, NULL, NULL, 'Asignada'),
+(25, 'Escalera extensible de aluminio', 'Altura', NULL, NULL, NULL, 1, NULL, NULL, 'Disponible'),
+(26, 'Juego de destornilladores', 'Manual', NULL, NULL, NULL, 1, NULL, NULL, 'Disponible'),
+(27, 'Llave inglesa ajustable', 'Manual', NULL, NULL, NULL, 1, NULL, NULL, 'Disponible'),
+(28, 'Soldadora eléctrica', 'Eléctrica', NULL, NULL, NULL, 1, NULL, NULL, 'En reparación'),
+(29, 'Compresor de aire', 'Maquinaria', NULL, NULL, NULL, 1, NULL, NULL, 'Disponible'),
+(30, 'Generador eléctrico portátil', 'Maquinaria', NULL, NULL, NULL, 1, NULL, NULL, 'Fuera de servicio');
 
 -- --------------------------------------------------------
 
@@ -491,8 +532,25 @@ CREATE TABLE `herramienta` (
 CREATE TABLE `herramienta_obra` (
   `id_herramienta_obra` int(11) NOT NULL,
   `id_herramienta` int(11) NOT NULL,
+  `cantidad` int(11) DEFAULT 1,
   `id_obra` int(11) NOT NULL,
-  `fecha_asignacion` date NOT NULL
+  `fecha_asignacion` date NOT NULL,
+  `fecha_devolucion` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `historial_estado_obra`
+--
+
+CREATE TABLE `historial_estado_obra` (
+  `id_historial` int(11) NOT NULL,
+  `id_obra` int(11) NOT NULL,
+  `estado_anterior` varchar(50) DEFAULT NULL,
+  `estado_nuevo` varchar(50) NOT NULL,
+  `fecha` datetime DEFAULT current_timestamp(),
+  `id_usuario` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -583,7 +641,9 @@ CREATE TABLE `mantenimiento` (
   `id_herramienta` int(11) NOT NULL,
   `fecha` date NOT NULL,
   `descripcion` text DEFAULT NULL,
-  `costo` decimal(12,2) DEFAULT NULL
+  `costo` decimal(12,2) DEFAULT NULL,
+  `id_usuario` int(11) DEFAULT NULL,
+  `estado` enum('Pendiente','En proceso','Finalizado') DEFAULT 'Pendiente'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -597,9 +657,46 @@ CREATE TABLE `material` (
   `nombre_material` varchar(150) NOT NULL,
   `descripcion` text DEFAULT NULL,
   `stock` decimal(10,2) DEFAULT 0.00,
+  `stock_minimo` decimal(10,2) DEFAULT 0.00,
   `unidad_medida` varchar(20) DEFAULT NULL,
   `estado` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `material`
+--
+
+INSERT INTO `material` (`id_material`, `nombre_material`, `descripcion`, `stock`, `stock_minimo`, `unidad_medida`, `estado`) VALUES
+(1, 'Cemento Portland 50 kg', 'Bolsa de cemento Portland de 50 kg.', '250.00', '0.00', 'Bolsa', 1),
+(2, 'Arena fina', 'Arena fina para revoques y terminaciones.', '80.00', '0.00', 'm³', 1),
+(3, 'Arena gruesa', 'Arena gruesa para hormigón.', '120.00', '0.00', 'm³', 1),
+(4, 'Piedra partida', 'Piedra para elaboración de hormigón.', '90.00', '0.00', 'm³', 1),
+(5, 'Cal hidratada', 'Cal para mezclas de albañilería.', '120.00', '0.00', 'Bolsa', 1),
+(6, 'Ladrillo común', 'Ladrillo macizo de arcilla.', '8000.00', '0.00', 'Unidad', 1),
+(7, 'Ladrillo hueco 18x18x33', 'Ladrillo cerámico hueco.', '4500.00', '0.00', 'Unidad', 1),
+(8, 'Hierro Ø6 mm', 'Varilla de acero de 6 mm.', '350.00', '0.00', 'Unidad', 1),
+(9, 'Hierro Ø8 mm', 'Varilla de acero de 8 mm.', '300.00', '0.00', 'Unidad', 1),
+(10, 'Hierro Ø10 mm', 'Varilla de acero de 10 mm.', '250.00', '0.00', 'Unidad', 1),
+(11, 'Hierro Ø12 mm', 'Varilla de acero de 12 mm.', '180.00', '0.00', 'Unidad', 1),
+(12, 'Malla electrosoldada', 'Malla para refuerzo de losas.', '70.00', '0.00', 'Unidad', 1),
+(13, 'Alambre recocido', 'Alambre para atado de armaduras.', '100.00', '0.00', 'Rollo', 1),
+(14, 'Clavo 2\"', 'Clavo de acero de 2 pulgadas.', '50.00', '0.00', 'Kg', 1),
+(15, 'Clavo 3\"', 'Clavo de acero de 3 pulgadas.', '40.00', '0.00', 'Kg', 1),
+(16, 'Tornillo autoperforante', 'Tornillo para chapa galvanizada.', '5000.00', '0.00', 'Unidad', 1),
+(17, 'Caño PVC 50 mm', 'Caño sanitario de PVC.', '120.00', '0.00', 'Unidad', 1),
+(18, 'Caño PVC 110 mm', 'Caño sanitario de PVC.', '80.00', '0.00', 'Unidad', 1),
+(19, 'Codo PVC 90°', 'Accesorio para instalaciones sanitarias.', '150.00', '0.00', 'Unidad', 1),
+(20, 'Cable unipolar 2,5 mm²', 'Cable para instalación eléctrica.', '1000.00', '0.00', 'Metro', 1),
+(21, 'Cable unipolar 4 mm²', 'Cable eléctrico de mayor sección.', '700.00', '0.00', 'Metro', 1),
+(22, 'Interruptor térmico', 'Protección para circuitos eléctricos.', '45.00', '0.00', 'Unidad', 1),
+(23, 'Llave de luz', 'Interruptor simple de embutir.', '120.00', '0.00', 'Unidad', 1),
+(24, 'Pintura látex interior', 'Pintura para interiores.', '80.00', '0.00', 'Balde', 1),
+(25, 'Pintura látex exterior', 'Pintura para exteriores.', '60.00', '0.00', 'Balde', 1),
+(26, 'Membrana asfáltica', 'Membrana impermeabilizante.', '45.00', '0.00', 'Rollo', 1),
+(27, 'Cerámica 45x45 cm', 'Piso cerámico.', '900.00', '0.00', 'm²', 1),
+(28, 'Adhesivo para cerámicos', 'Pegamento para revestimientos.', '120.00', '0.00', 'Bolsa', 1),
+(29, 'Pastina', 'Material para juntas de cerámicos.', '90.00', '0.00', 'Bolsa', 1),
+(30, 'Chapa galvanizada', 'Chapa para cubiertas.', '130.00', '0.00', 'Unidad', 1);
 
 -- --------------------------------------------------------
 
@@ -652,6 +749,7 @@ CREATE TABLE `movimiento_caja` (
 CREATE TABLE `movimiento_inventario` (
   `id_movimiento` int(11) NOT NULL,
   `id_material` int(11) NOT NULL,
+  `id_usuario` int(11) DEFAULT NULL,
   `tipo_movimiento` varchar(50) NOT NULL COMMENT 'Entrada, Salida, Ajuste',
   `cantidad` decimal(10,2) NOT NULL,
   `fecha` datetime DEFAULT current_timestamp(),
@@ -728,6 +826,39 @@ CREATE TABLE `precio_material` (
   `fecha_actualizacion` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Volcado de datos para la tabla `precio_material`
+--
+
+INSERT INTO `precio_material` (`id_precio`, `id_material`, `id_proveedor`, `precio`, `fecha_actualizacion`) VALUES
+(55, 1, 1, '9800.00', '2026-01-01 00:00:00'),
+(56, 2, 1, '45000.00', '2026-01-01 00:00:00'),
+(57, 3, 1, '52000.00', '2026-01-01 00:00:00'),
+(58, 4, 1, '980.00', '2026-01-01 00:00:00'),
+(59, 5, 1, '13800.00', '2026-01-01 00:00:00'),
+(60, 6, 1, '16900.00', '2026-01-01 00:00:00'),
+(61, 5, 2, '13650.00', '2026-01-01 00:00:00'),
+(62, 6, 2, '16750.00', '2026-01-01 00:00:00'),
+(63, 11, 2, '1480.00', '2026-01-01 00:00:00'),
+(64, 12, 2, '3950.00', '2026-01-01 00:00:00'),
+(65, 13, 2, '19750.00', '2026-01-01 00:00:00'),
+(66, 8, 3, '8700.00', '2026-01-01 00:00:00'),
+(67, 9, 3, '28500.00', '2026-01-01 00:00:00'),
+(68, 10, 4, '18500.00', '2026-01-01 00:00:00'),
+(69, 15, 5, '32000.00', '2026-01-01 00:00:00'),
+(70, 1, 6, '9600.00', '2026-01-01 00:00:00'),
+(71, 2, 6, '44000.00', '2026-01-01 00:00:00'),
+(72, 3, 6, '51000.00', '2026-01-01 00:00:00'),
+(73, 4, 6, '950.00', '2026-01-01 00:00:00'),
+(74, 7, 6, '7100.00', '2026-01-01 00:00:00'),
+(75, 10, 6, '18200.00', '2026-01-01 00:00:00'),
+(76, 11, 7, '1430.00', '2026-01-01 00:00:00'),
+(77, 12, 7, '3850.00', '2026-01-01 00:00:00'),
+(78, 5, 8, '13450.00', '2026-01-01 00:00:00'),
+(79, 6, 8, '16600.00', '2026-01-01 00:00:00'),
+(80, 13, 8, '19500.00', '2026-01-01 00:00:00'),
+(81, 14, 8, '49000.00', '2026-01-01 00:00:00');
+
 -- --------------------------------------------------------
 
 --
@@ -741,7 +872,9 @@ CREATE TABLE `presupuesto` (
   `version` int(11) DEFAULT 1,
   `costo_total` decimal(15,2) DEFAULT 0.00,
   `estado` enum('Activo','Inactivo','Aprobado','Rechazado') DEFAULT 'Activo',
-  `detalle_general` text DEFAULT NULL COMMENT 'RF extra: observaciones'
+  `detalle_general` text DEFAULT NULL COMMENT 'RF extra: observaciones',
+  `fecha_aprobacion` date DEFAULT NULL,
+  `id_usuario_aprobacion` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -758,6 +891,22 @@ CREATE TABLE `proveedor` (
   `correo` varchar(150) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Volcado de datos para la tabla `proveedor`
+--
+
+INSERT INTO `proveedor` (`id_proveedor`, `nombre_proveedor`, `telefono`, `direccion`, `correo`) VALUES
+(1, 'Corralón San Miguel', '3704123456', 'Av. Gendarmería Nacional 1450, Formosa', 'ventas@corralonsanmiguel.com'),
+(2, 'Corralón El Constructor', '3704234567', 'Av. Italia 980, Formosa', 'contacto@elconstructor.com'),
+(3, 'Ferretería Industrial Norte', '3704345678', 'Av. 9 de Julio 2130, Formosa', 'ventas@industrialnorte.com'),
+(4, 'Materiales Formosa S.R.L.', '3704456789', 'Av. Pantaleón Gómez 1675, Formosa', 'info@materialesformosa.com'),
+(5, 'Electricidad Norte', '3704567890', 'Av. González Lelong 1040, Formosa', 'ventas@electricidadnorte.com'),
+(6, 'Sanitarios del Litoral', '3704678901', 'Av. Independencia 870, Formosa', 'contacto@sanitarioslitoral.com'),
+(7, 'Pinturería Color Hogar', '3704789012', 'Av. Kirchner 650, Formosa', 'ventas@colorhogar.com'),
+(8, 'Aceros del Norte', '3704890123', 'Ruta Nacional 11 Km 1188, Formosa', 'info@acerosdelnorte.com'),
+(9, 'Hormigones Formosa', '3704901234', 'Parque Industrial, Formosa', 'ventas@hormigonesformosa.com'),
+(10, 'Distribuidora ConstruMax', '3704012345', 'Av. Néstor Kirchner 2150, Formosa', 'administracion@construmax.com');
+
 -- --------------------------------------------------------
 
 --
@@ -769,6 +918,39 @@ CREATE TABLE `proveedor_material` (
   `id_proveedor` int(11) NOT NULL,
   `id_material` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `proveedor_material`
+--
+
+INSERT INTO `proveedor_material` (`id_proveedor_material`, `id_proveedor`, `id_material`) VALUES
+(28, 1, 1),
+(29, 1, 2),
+(30, 1, 3),
+(31, 1, 4),
+(32, 1, 5),
+(33, 1, 6),
+(34, 2, 5),
+(35, 2, 6),
+(36, 2, 11),
+(37, 2, 12),
+(38, 2, 13),
+(39, 3, 9),
+(40, 3, 8),
+(41, 4, 10),
+(42, 5, 15),
+(43, 6, 1),
+(44, 6, 2),
+(45, 6, 3),
+(46, 6, 4),
+(47, 6, 7),
+(48, 6, 10),
+(49, 7, 11),
+(50, 7, 12),
+(51, 8, 5),
+(52, 8, 6),
+(53, 8, 13),
+(54, 8, 14);
 
 -- --------------------------------------------------------
 
@@ -897,6 +1079,13 @@ ALTER TABLE `asistencia`
   ADD PRIMARY KEY (`id_asistencia`),
   ADD KEY `idx_asistencia_empleado` (`id_empleado`),
   ADD KEY `idx_asistencia_fecha` (`fecha`);
+
+--
+-- Indices de la tabla `auditoria`
+--
+ALTER TABLE `auditoria`
+  ADD PRIMARY KEY (`id_auditoria`),
+  ADD KEY `id_usuario` (`id_usuario`);
 
 --
 -- Indices de la tabla `avance_diario`
@@ -1039,6 +1228,14 @@ ALTER TABLE `herramienta_obra`
   ADD KEY `idx_herrobra_obra` (`id_obra`);
 
 --
+-- Indices de la tabla `historial_estado_obra`
+--
+ALTER TABLE `historial_estado_obra`
+  ADD PRIMARY KEY (`id_historial`),
+  ADD KEY `id_obra` (`id_obra`),
+  ADD KEY `id_usuario` (`id_usuario`);
+
+--
 -- Indices de la tabla `horas_trabajadas`
 --
 ALTER TABLE `horas_trabajadas`
@@ -1074,7 +1271,8 @@ ALTER TABLE `mano_obra_presupuesto`
 --
 ALTER TABLE `mantenimiento`
   ADD PRIMARY KEY (`id_mantenimiento`),
-  ADD KEY `idx_mant_herramienta` (`id_herramienta`);
+  ADD KEY `idx_mant_herramienta` (`id_herramienta`),
+  ADD KEY `fk_mantenimiento_usuario` (`id_usuario`);
 
 --
 -- Indices de la tabla `material`
@@ -1110,7 +1308,8 @@ ALTER TABLE `movimiento_caja`
 --
 ALTER TABLE `movimiento_inventario`
   ADD PRIMARY KEY (`id_movimiento`),
-  ADD KEY `idx_movinventario_material` (`id_material`);
+  ADD KEY `idx_movinventario_material` (`id_material`),
+  ADD KEY `fk_movinventario_usuario` (`id_usuario`);
 
 --
 -- Indices de la tabla `obra`
@@ -1147,7 +1346,8 @@ ALTER TABLE `precio_material`
 --
 ALTER TABLE `presupuesto`
   ADD PRIMARY KEY (`id_presupuesto`),
-  ADD KEY `idx_presupuesto_obra` (`id_obra`);
+  ADD KEY `idx_presupuesto_obra` (`id_obra`),
+  ADD KEY `fk_presupuesto_aprobacion` (`id_usuario_aprobacion`);
 
 --
 -- Indices de la tabla `proveedor`
@@ -1215,6 +1415,12 @@ ALTER TABLE `acceso_usuario`
 --
 ALTER TABLE `asistencia`
   MODIFY `id_asistencia` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `auditoria`
+--
+ALTER TABLE `auditoria`
+  MODIFY `id_auditoria` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `avance_diario`
@@ -1322,13 +1528,19 @@ ALTER TABLE `gasto_general`
 -- AUTO_INCREMENT de la tabla `herramienta`
 --
 ALTER TABLE `herramienta`
-  MODIFY `id_herramienta` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_herramienta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT de la tabla `herramienta_obra`
 --
 ALTER TABLE `herramienta_obra`
   MODIFY `id_herramienta_obra` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `historial_estado_obra`
+--
+ALTER TABLE `historial_estado_obra`
+  MODIFY `id_historial` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `horas_trabajadas`
@@ -1364,7 +1576,7 @@ ALTER TABLE `mantenimiento`
 -- AUTO_INCREMENT de la tabla `material`
 --
 ALTER TABLE `material`
-  MODIFY `id_material` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_material` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT de la tabla `material_obra`
@@ -1412,7 +1624,7 @@ ALTER TABLE `pago`
 -- AUTO_INCREMENT de la tabla `precio_material`
 --
 ALTER TABLE `precio_material`
-  MODIFY `id_precio` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_precio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
 
 --
 -- AUTO_INCREMENT de la tabla `presupuesto`
@@ -1424,13 +1636,13 @@ ALTER TABLE `presupuesto`
 -- AUTO_INCREMENT de la tabla `proveedor`
 --
 ALTER TABLE `proveedor`
-  MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedor_material`
 --
 ALTER TABLE `proveedor_material`
-  MODIFY `id_proveedor_material` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_proveedor_material` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT de la tabla `reporte`
@@ -1477,6 +1689,12 @@ ALTER TABLE `acceso_usuario`
 --
 ALTER TABLE `asistencia`
   ADD CONSTRAINT `fk_asistencia_empleado` FOREIGN KEY (`id_empleado`) REFERENCES `empleado` (`id_empleado`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `auditoria`
+--
+ALTER TABLE `auditoria`
+  ADD CONSTRAINT `auditoria_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
 
 --
 -- Filtros para la tabla `avance_diario`
@@ -1588,6 +1806,13 @@ ALTER TABLE `herramienta_obra`
   ADD CONSTRAINT `fk_herrobra_obra` FOREIGN KEY (`id_obra`) REFERENCES `obra` (`id_obra`) ON DELETE CASCADE;
 
 --
+-- Filtros para la tabla `historial_estado_obra`
+--
+ALTER TABLE `historial_estado_obra`
+  ADD CONSTRAINT `historial_estado_obra_ibfk_1` FOREIGN KEY (`id_obra`) REFERENCES `obra` (`id_obra`) ON DELETE CASCADE,
+  ADD CONSTRAINT `historial_estado_obra_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
+
+--
 -- Filtros para la tabla `horas_trabajadas`
 --
 ALTER TABLE `horas_trabajadas`
@@ -1618,7 +1843,8 @@ ALTER TABLE `mano_obra_presupuesto`
 -- Filtros para la tabla `mantenimiento`
 --
 ALTER TABLE `mantenimiento`
-  ADD CONSTRAINT `fk_mant_herramienta` FOREIGN KEY (`id_herramienta`) REFERENCES `herramienta` (`id_herramienta`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_mant_herramienta` FOREIGN KEY (`id_herramienta`) REFERENCES `herramienta` (`id_herramienta`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_mantenimiento_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
 
 --
 -- Filtros para la tabla `material_obra`
@@ -1638,7 +1864,8 @@ ALTER TABLE `movimiento_caja`
 -- Filtros para la tabla `movimiento_inventario`
 --
 ALTER TABLE `movimiento_inventario`
-  ADD CONSTRAINT `fk_movinventario_material` FOREIGN KEY (`id_material`) REFERENCES `material` (`id_material`);
+  ADD CONSTRAINT `fk_movinventario_material` FOREIGN KEY (`id_material`) REFERENCES `material` (`id_material`),
+  ADD CONSTRAINT `fk_movinventario_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
 
 --
 -- Filtros para la tabla `obra`
@@ -1670,6 +1897,7 @@ ALTER TABLE `precio_material`
 -- Filtros para la tabla `presupuesto`
 --
 ALTER TABLE `presupuesto`
+  ADD CONSTRAINT `fk_presupuesto_aprobacion` FOREIGN KEY (`id_usuario_aprobacion`) REFERENCES `usuario` (`id_usuario`),
   ADD CONSTRAINT `fk_presupuesto_obra` FOREIGN KEY (`id_obra`) REFERENCES `obra` (`id_obra`) ON DELETE CASCADE;
 
 --

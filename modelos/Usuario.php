@@ -96,24 +96,43 @@ class Usuario
 
   public function agregar($datos)
 {
+
     $sql = "INSERT INTO usuario
-            (id_rol, nombre, apellido, correo, contraseña, estado)
+            (
+                id_rol,
+                nombre,
+                apellido,
+                correo,
+                contraseña,
+                estado
+            )
             VALUES
-            (:id_rol, :nombre, :apellido, :correo, :clave, 1)";
+            (
+                :id_rol,
+                :nombre,
+                :apellido,
+                :correo,
+                :clave,
+                1
+            )";
 
 
     $consulta = $this->conexion->prepare($sql);
 
 
-    return $consulta->execute([
+    $consulta->execute([
 
         ":id_rol" => $datos["id_rol"],
-        "nombre" => ucwords(strtolower($_POST["nombre"])),
-        "apellido" => ucwords(strtolower($_POST["apellido"])),
+        ":nombre" => ucwords(strtolower($datos["nombre"])),
+        ":apellido" => ucwords(strtolower($datos["apellido"])),
         ":correo" => $datos["correo"],
         ":clave" => $datos["contraseña"]
 
     ]);
+
+
+    return $this->conexion->lastInsertId();
+
 }
 
     public function buscarPorId($id)

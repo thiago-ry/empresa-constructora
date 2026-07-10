@@ -9,6 +9,10 @@ if (!isset($_SESSION['usuario'])) {
 }
 ?>
 
+<?php
+date_default_timezone_set("America/Argentina/Buenos_Aires");
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -28,7 +32,7 @@ if (!isset($_SESSION['usuario'])) {
 
 <body>
 
-<header class="navbar">
+<header class="navbar no-print">
 
     <div class="logo">
         BUILD<span>PRO</span>

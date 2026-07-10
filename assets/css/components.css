@@ -289,3 +289,83 @@ color:#ff6b6b;
     }
 
 }
+
+@media print{
+
+    .sidebar,
+    .toolbar,
+    .btn{
+        display:none !important;
+    }
+
+
+    .main{
+        margin:0;
+        width:100%;
+    }
+
+
+    .table-container{
+        border:none;
+        background:white;
+    }
+
+
+    .table{
+        color:black;
+    }
+
+}
+
+.print-header{
+    display:none;
+}
+
+
+@media print{
+
+
+    body{
+        background:white;
+        color:black;
+    }
+
+
+    .sidebar,
+    .no-print{
+        display:none !important;
+    }
+
+
+    .content{
+        margin:0;
+        width:100%;
+    }
+
+
+    .table-container{
+        border:none;
+        background:white;
+    }
+
+
+    .print-header{
+        display:block;
+        text-align:center;
+        margin-bottom:30px;
+    }
+
+
+    .table th{
+        background:#ddd;
+        color:black;
+    }
+
+
+    .table td,
+    .table th{
+        color:black;
+    }
+
+
+}

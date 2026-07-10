@@ -44,7 +44,7 @@ class UsuarioController
 
 
             if ($usuarioEncontrado['estado'] == 0) {
-                echo "Usuario inactivo";
+                echo "<script> alert('El usuario está inactivo.'); window.location.href='../vistas/login.php';</script>";
                 exit();
             }
 
@@ -116,7 +116,7 @@ class UsuarioController
 
                     default:
 
-                        echo "Rol no configurado";
+                        echo "<script> alert('Rol no configurado'); window.location.href='../vistas/login.php';</script>";
 
                         break;
                 }
@@ -124,10 +124,10 @@ class UsuarioController
 
                 exit();
             } else {
-                echo "Contraseña incorrecta";
+                echo "<script> alert('Contraseña incorrecta'); window.location.href='../vistas/login.php';</script>";
             }
         } else {
-            echo "Usuario no encontrado";
+            echo "<script> alert('Usuario no encontrado'); window.location.href='../vistas/login.php';</script>";
         }
     }
 

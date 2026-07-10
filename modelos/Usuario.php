@@ -161,4 +161,16 @@ class Usuario
 
         return $consulta->execute();
     }
+
+    public function activarUsuario($id)
+{
+    $sql = "UPDATE usuario
+            SET estado = 1
+            WHERE id_usuario = :id";
+
+    $consulta = $this->conexion->prepare($sql);
+    $consulta->bindParam(":id",$id);
+
+    return $consulta->execute();
+}
 }

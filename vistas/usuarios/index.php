@@ -1,10 +1,14 @@
 <?php
 
 require_once "../../modelos/Usuario.php";
+require_once "../../modelos/Rol.php";
 
 $usuario = new Usuario();
+$rol = new Rol();
 
 $usuarios = $usuario->obtenerTodos();
+$roles = $rol->obtenerTodos();
+
 
 require_once "../../layouts/header.php";
 require_once "../../layouts/sidebar.php";
@@ -26,13 +30,17 @@ require_once "../../layouts/sidebar.php";
                 <input type="text" id="buscarUsuario" class="search-box" placeholder="Buscar usuario...">
 
                 <select class="filter" id="filtroRol">
+
                     <option value="">Todos los roles</option>
-                    <option>Gerente</option>
-                    <option>Administrativo</option>
-                    <option>Jefe de Obra</option>
-                    <option>Depósito</option>
-                    <option>Empleado</option>
-                    <option>Cliente</option>
+
+                    <?php foreach ($roles as $r) { ?>
+
+                        <option value="<?= $r['nombre_rol']; ?>">
+                            <?= $r['nombre_rol']; ?>
+                        </option>
+
+                    <?php } ?>
+
                 </select>
 
                 <select id="filtroEstado" class="filter">
@@ -74,9 +82,26 @@ require_once "../../layouts/sidebar.php";
                             <a href="editar.php?id=<?php echo $u['id_usuario']; ?>">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
-                            <a href="../../controladores/UsuarioController.php?accion=baja&id=<?php echo $u['id_usuario']; ?>">
-                                <?= $u['estado'] == 1 ? '<i class="fa-solid fa-times"></i>' : '<i class="fa-solid fa-check link-accionA"></i> ' ?>
-                            </a>
+                            <?php if ($u["estado"] == 1) { ?>
+
+                                <a
+                                    href="../../controladores/UsuarioController.php?accion=baja&id=<?php echo $u['id_usuario']; ?>"
+                                    onclick="return confirm('¿Está seguro que desea dar de baja este usuario?');">
+
+                                    <i class="fa-solid fa-times"></i>
+
+                                </a>
+
+                            <?php } else { ?>
+
+                                <a
+                                    href="../../controladores/UsuarioController.php?accion=activar&id=<?php echo $u['id_usuario']; ?>">
+
+                                    <i class="fa-solid fa-check link-accionA"></i>
+
+                                </a>
+
+                            <?php } ?>
 
 
                         </td>

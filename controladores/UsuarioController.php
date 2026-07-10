@@ -1,5 +1,6 @@
 <?php
 
+
 require_once "../modelos/Usuario.php";
 
 class UsuarioController
@@ -71,17 +72,13 @@ class UsuarioController
                 }
 
                 exit();
-
             } else {
 
                 echo "Contraseña incorrecta";
-
             }
-
         } else {
 
             echo "Usuario no encontrado";
-
         }
     }
 
@@ -106,7 +103,6 @@ class UsuarioController
 
         header("Location: ../vistas/usuarios/index.php");
         exit();
-
     }
 
     /* ==========================
@@ -119,9 +115,13 @@ class UsuarioController
         $datos = [
 
             "id_usuario" => $_POST["id_usuario"],
-            "id_rol" => $_POST["rol"],
-            "nombre" => $_POST["nombre"],
-            "apellido" => $_POST["apellido"],
+
+            "id_rol" => $_POST["id_rol"],
+
+            "nombre" => ucwords(strtolower($_POST["nombre"])),
+
+            "apellido" => ucwords(strtolower($_POST["apellido"])),
+
             "correo" => $_POST["correo"]
 
         ];
@@ -130,7 +130,6 @@ class UsuarioController
 
         header("Location: ../vistas/usuarios/index.php");
         exit();
-
     }
 
     /* ==========================
@@ -144,9 +143,15 @@ class UsuarioController
 
         header("Location: ../vistas/usuarios/index.php");
         exit();
-
     }
 
+    public function activar()
+    {
+        $this->usuario->activarUsuario($_GET["id"]);
+
+        header("Location: ../vistas/usuarios/index.php");
+        exit();
+    }
 }
 
 /* ==========================
@@ -171,8 +176,10 @@ if (isset($_POST["accion"])) {
             $controlador->editar();
             break;
 
+        case "activar":
+            $controlador->activar();
+            break;
     }
-
 }
 
 if (isset($_GET["accion"])) {
@@ -183,6 +190,8 @@ if (isset($_GET["accion"])) {
             $controlador->eliminar();
             break;
 
+        case "activar":
+            $controlador->activar();
+            break;
     }
-
 }

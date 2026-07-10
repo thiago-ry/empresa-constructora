@@ -2,6 +2,9 @@
 
 require_once "../../modelos/Usuario.php";
 require_once "../../modelos/Rol.php";
+require_once "../../config/permisos.php";
+
+verificarPermiso("usuarios");
 
 $usuario = new Usuario();
 $rol = new Rol();

@@ -1,57 +1,57 @@
 <?php
 
-$menu = [
+$menu=[
 
 "Gerente"=>[
-["Dashboard","index.php"],
-["Usuarios","usuarios/index.php"],
-["Clientes","clientes/index.php"],
-["Empleados","empleados/index.php"],
-["Obras","obras/index.php"],
-["Materiales","materiales/index.php"],
-["Herramientas","herramientas/index.php"],
-["Reportes","reportes/index.php"],
-["Perfil","perfil/index.php"]
+["fa-solid fa-house","Dashboard","/empresa_constructora/vistas/dashboard/gerente.php"],
+["fa-solid fa-users","Usuarios","/empresa_constructora/vistas/usuarios/"],
+["fa-solid fa-user-group","Clientes","/empresa_constructora/vistas/clientes/"],
+["fa-solid fa-hard-hat","Empleados","/empresa_constructora/vistas/empleados/"],
+["fa-solid fa-building","Obras","/empresa_constructora/vistas/obras/"],
+["fa-solid fa-boxes-stacked","Materiales","/empresa_constructora/vistas/materiales/"],
+["fa-solid fa-screwdriver-wrench","Herramientas","/empresa_constructora/vistas/herramientas/"],
+["fa-solid fa-chart-column","Reportes","/empresa_constructora/vistas/reportes/"],
+["fa-solid fa-user","Perfil","/empresa_constructora/vistas/perfil/"]
 ],
 
 "Administrativo"=>[
-["Dashboard","index.php"],
-["Clientes","clientes/index.php"],
-["Empleados","empleados/index.php"],
-["Presupuestos","presupuestos/index.php"],
-["Caja","caja/index.php"],
-["Perfil","perfil/index.php"]
+["fa-solid fa-house","Dashboard","/empresa_constructora/vistas/dashboard/administrativo.php"],
+["fa-solid fa-user-group","Clientes","/empresa_constructora/vistas/clientes/"],
+["fa-solid fa-hard-hat","Empleados","/empresa_constructora/vistas/empleados/"],
+["fa-solid fa-file-invoice-dollar","Presupuestos","/empresa_constructora/vistas/presupuestos/"],
+["fa-solid fa-cash-register","Caja","/empresa_constructora/vistas/caja/"],
+["fa-solid fa-user","Perfil","/empresa_constructora/vistas/perfil/"]
 ],
 
 "Jefe de Obra"=>[
-["Dashboard","index.php"],
-["Obras","obras/index.php"],
-["Avances","avances/index.php"],
-["Tareas","tareas/index.php"],
-["Incidencias","incidencias/index.php"],
-["Perfil","perfil/index.php"]
+["fa-solid fa-house","Dashboard","/empresa_constructora/vistas/dashboard/jefe_obra.php"],
+["fa-solid fa-building","Obras","/empresa_constructora/vistas/obras/"],
+["fa-solid fa-chart-line","Avances","/empresa_constructora/vistas/avances/"],
+["fa-solid fa-list-check","Tareas","/empresa_constructora/vistas/tareas/"],
+["fa-solid fa-triangle-exclamation","Incidencias","/empresa_constructora/vistas/incidencias/"],
+["fa-solid fa-user","Perfil","/empresa_constructora/vistas/perfil/"]
 ],
 
 "Depósito"=>[
-["Dashboard","index.php"],
-["Materiales","materiales/index.php"],
-["Herramientas","herramientas/index.php"],
-["Inventario","inventario/index.php"],
-["Perfil","perfil/index.php"]
+["fa-solid fa-house","Dashboard","/empresa_constructora/vistas/dashboard/deposito.php"],
+["fa-solid fa-boxes-stacked","Materiales","/empresa_constructora/vistas/materiales/"],
+["fa-solid fa-screwdriver-wrench","Herramientas","/empresa_constructora/vistas/herramientas/"],
+["fa-solid fa-warehouse","Inventario","/empresa_constructora/vistas/inventario/"],
+["fa-solid fa-user","Perfil","/empresa_constructora/vistas/perfil/"]
 ],
 
 "Empleado"=>[
-["Dashboard","index.php"],
-["Mis tareas","tareas/index.php"],
-["Asistencia","asistencia/index.php"],
-["Perfil","perfil/index.php"]
+["fa-solid fa-house","Dashboard","/empresa_constructora/vistas/dashboard/empleado.php"],
+["fa-solid fa-list-check","Mis tareas","/empresa_constructora/vistas/tareas/"],
+["fa-solid fa-clock","Asistencia","/empresa_constructora/vistas/asistencia/"],
+["fa-solid fa-user","Perfil","/empresa_constructora/vistas/perfil/"]
 ],
 
 "Cliente"=>[
-["Dashboard","index.php"],
-["Mis obras","obras/index.php"],
-["Documentos","documentos/index.php"],
-["Perfil","perfil/index.php"]
+["fa-solid fa-house","Dashboard","/empresa_constructora/vistas/dashboard/cliente.php"],
+["fa-solid fa-building","Mis obras","/empresa_constructora/vistas/obras/"],
+["fa-solid fa-folder-open","Documentos","/empresa_constructora/vistas/documentos/"],
+["fa-solid fa-user","Perfil","/empresa_constructora/vistas/perfil/"]
 ]
 
 ];

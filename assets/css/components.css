@@ -1,0 +1,291 @@
+.card-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+}
+
+.card{
+margin-top:20px;
+background:#111e2b;
+border:1px solid rgba(255,255,255,.08);
+border-radius:14px;
+padding:22px;
+transition:.25s;
+}
+
+.card:hover{
+transform:translateY(-4px);
+border-color:#ffb703;
+}
+
+.card h3{
+font-size:15px;
+font-weight:500;
+color:#94a3b8;
+margin-bottom:12px;
+}
+
+.card h2{
+font-size:34px;
+font-weight:700;
+}
+
+.card p{
+margin-top:10px;
+font-size:13px;
+color:#94a3b8;
+}
+
+.btn{
+display:inline-flex;
+align-items:center;
+gap:8px;
+padding:10px 18px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+text-decoration:none;
+font-size:14px;
+font-weight:600;
+transition:.25s;
+}
+
+.btn-primary{
+background:#ffb703;
+color:#070d14;
+}
+
+.btn-primary:hover{
+background:#fb8500;
+}
+
+.btn-danger{
+background:#dc3545;
+color:#fff;
+}
+
+.btn-secondary{
+background:#1f3245;
+color:#fff;
+}
+
+.table-container{
+margin-top:25px;
+background:#111e2b;
+border:1px solid rgba(255,255,255,.08);
+border-radius:14px;
+overflow:hidden;
+}
+
+.table-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px;
+border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.search-box{
+width:300px;
+padding:10px 15px;
+background:#182838;
+border:none;
+border-radius:8px;
+color:#fff;
+outline:none;
+}
+
+.table{
+width:100%;
+border-collapse:collapse;
+}
+
+.table th{
+text-align:left;
+padding:15px 20px;
+background:#182838;
+font-size:14px;
+font-weight:600;
+}
+
+.table td{
+padding:15px 20px;
+border-top:1px solid rgba(255,255,255,.05);
+}
+
+.table tr:hover{
+background:rgba(255,255,255,.03);
+}
+.toolbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px;
+border-bottom:1px solid rgba(255,255,255,.08);
+gap:15px;
+}
+
+.toolbar-left{
+display:flex;
+align-items:center;
+gap:12px;
+flex-wrap:wrap;
+}
+
+.search-box,.filter{
+height:42px;
+padding:0 14px;
+background:#182838;
+border:1px solid rgba(255,255,255,.08);
+border-radius:10px;
+color:#fff;
+outline:none;
+font-size:14px;
+}
+
+.search-box{
+width:300px;
+}
+
+.filter{
+min-width:170px;
+cursor:pointer;
+}
+
+
+.badge{
+display:inline-block;
+padding:6px 12px;
+border-radius:30px;
+font-size:12px;
+font-weight:600;
+}
+
+.badge-success{
+background:rgba(25,135,84,.15);
+color:#20c997;
+}
+
+.badge-danger{
+background:rgba(220,53,69,.15);
+color:#ff6b6b;
+}
+.form-group{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.form-group label{
+    font-size:14px;
+    font-weight:500;
+    color:#cbd5e1;
+}
+
+.input{
+    width:100%;
+    height:45px;
+    padding:0 15px;
+    background:#182838;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:10px;
+    color:#fff;
+    outline:none;
+    transition:.2s;
+}
+
+.input:focus{
+    border-color:#ffb703;
+}
+
+.textarea{
+    width:100%;
+    min-height:120px;
+    padding:14px;
+    background:#182838;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,.08);
+    color:white;
+    resize:vertical;
+}
+
+.form{
+    display:grid;
+    gap:18px;
+}
+
+.form-row{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:18px;
+}
+
+.form-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-top:15px;
+}
+
+.form-card{
+    background:#111e2b;
+    padding:30px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.btn-warning{
+    background:#fb8500;
+    color:white;
+}
+
+.btn-success{
+    background:#198754;
+    color:white;
+}
+
+.btn-secondary:hover{
+    background:#29435c;
+}
+
+.btn-danger:hover{
+    background:#bb2d3b;
+}
+
+.btn-success:hover{
+    background:#157347;
+}
+
+.btn-warning:hover{
+    background:#d97706;
+}
+
+.filter{
+    transition:.2s;
+}
+
+.filter:focus{
+    border-color:#ffb703;
+}
+
+@media(max-width:768px){
+
+    .form-row{
+        grid-template-columns:1fr;
+    }
+
+    .toolbar{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .toolbar-left{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .search-box{
+        width:100%;
+    }
+
+}

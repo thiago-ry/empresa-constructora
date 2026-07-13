@@ -6,11 +6,12 @@ require_once "../../config/permisos.php";
 
 verificarPermiso("obras");
 
-$obra=new Obra();
-$cliente=new Cliente();
+$obra = new Obra();
+$cliente = new Cliente();
 
-$obraEditar=$obra->buscarPorId($_GET["id"]);
-$clientes=$cliente->obtenerTodos();
+$obraEditar = $obra->buscarPorId($_GET["id"]);
+$clientes = $cliente->obtenerTodos();
+$estados = $obra->obtenerEstados();
 
 require_once "../../layouts/header.php";
 require_once "../../layouts/sidebar.php";
@@ -60,13 +61,13 @@ require_once "../../layouts/sidebar.php";
                         name="id_cliente"
                         required>
 
-                        <?php foreach($clientes as $c){ ?>
+                        <?php foreach ($clientes as $c) { ?>
 
                             <option
                                 value="<?= $c["id_cliente"] ?>"
-                                <?= $obraEditar["id_cliente"]==$c["id_cliente"]?"selected":"" ?>>
+                                <?= $obraEditar["id_cliente"] == $c["id_cliente"] ? "selected" : "" ?>>
 
-                                <?= $c["nombre"]." ".$c["apellido"] ?>
+                                <?= $c["nombre"] . " " . $c["apellido"] ?>
 
                             </option>
 
@@ -124,37 +125,19 @@ require_once "../../layouts/sidebar.php";
 
                     <label>Estado</label>
 
-                    <select name="estado">
+                    <select name="estado" required>
 
-                        <option
-                            value="Planificacion"
-                            <?= $obraEditar["estado"]=="Planificacion"?"selected":"" ?>>
-                            Planificación
-                        </option>
+                        <?php foreach ($estados as $estado) { ?>
 
-                        <option
-                            value="En Proceso"
-                            <?= $obraEditar["estado"]=="En Proceso"?"selected":"" ?>>
-                            En Proceso
-                        </option>
+                            <option
+                                value="<?= $estado ?>"
+                                <?= $obraEditar["estado"] == $estado ? "selected" : "" ?>>
 
-                        <option
-                            value="Suspendida"
-                            <?= $obraEditar["estado"]=="Suspendida"?"selected":"" ?>>
-                            Suspendida
-                        </option>
+                                <?= $estado ?>
 
-                        <option
-                            value="Finalizada"
-                            <?= $obraEditar["estado"]=="Finalizada"?"selected":"" ?>>
-                            Finalizada
-                        </option>
+                            </option>
 
-                        <option
-                            value="Cancelada"
-                            <?= $obraEditar["estado"]=="Cancelada"?"selected":"" ?>>
-                            Cancelada
-                        </option>
+                        <?php } ?>
 
                     </select>
 

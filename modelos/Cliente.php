@@ -31,8 +31,6 @@ class Cliente
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
-
     // Buscar cliente por ID
     public function obtenerPorId($id)
     {

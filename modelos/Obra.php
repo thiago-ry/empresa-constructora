@@ -38,6 +38,19 @@ class Obra
     return $consulta->fetchAll(PDO::FETCH_ASSOC);
 }
 
+public function obtenerEstados()
+{
+    $sql = "SHOW COLUMNS FROM obra LIKE 'estado'";
+
+    $consulta = $this->conexion->prepare($sql);
+    $consulta->execute();
+
+    $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
+
+    preg_match("/^enum\(\'(.*)\'\)$/", $resultado["Type"], $matches);
+
+    return explode("','", $matches[1]);
+}
     public function buscarPorId($id)
     {
         $sql = "SELECT *

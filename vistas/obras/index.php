@@ -7,6 +7,7 @@ verificarPermiso("obras");
 
 $obra = new Obra();
 $obras = $obra->obtenerTodos();
+$estados = $obra->obtenerEstados();
 
 require_once "../../layouts/header.php";
 require_once "../../layouts/sidebar.php";
@@ -58,34 +59,19 @@ require_once "../../layouts/sidebar.php";
                     id="buscarObra"
                     class="search-box"
                     placeholder="Buscar obra...">
-
-                <select
-                    id="filtroEstado"
-                    class="filter">
+                <select id="filtroEstado" class="filter">
 
                     <option value="">
                         Todos los estados
                     </option>
 
-                    <option value="Planificacion">
-                        Planificación
-                    </option>
+                    <?php foreach ($estados as $estado) { ?>
 
-                    <option value="En Proceso">
-                        En Proceso
-                    </option>
+                        <option value="<?= strtolower($estado) ?>">
+                            <?= $estado ?>
+                        </option>
 
-                    <option value="Finalizada">
-                        Finalizada
-                    </option>
-
-                    <option value="Suspendida">
-                        Suspendida
-                    </option>
-
-                    <option value="Cancelada">
-                        Cancelada
-                    </option>
+                    <?php } ?>
 
                 </select>
 
@@ -145,57 +131,57 @@ require_once "../../layouts/sidebar.php";
 
             <tbody>
 
-               <?php foreach($obras as $o){ ?>
+                <?php foreach ($obras as $o) { ?>
 
-<tr>
+                    <tr>
 
-<td>
-<?= $o["nombre_obra"] ?>
-</td>
-
-
-<td>
-<?= $o["nombre_cliente"]." ".$o["apellido_cliente"] ?>
-</td>
+                        <td>
+                            <?= $o["nombre_obra"] ?>
+                        </td>
 
 
-<td>
-<?= $o["direccion"] ?>
-</td>
+                        <td>
+                            <?= $o["nombre_cliente"] . " " . $o["apellido_cliente"] ?>
+                        </td>
 
 
-<td>
-<?= $o["fecha_inicio"] ?>
-</td>
+                        <td>
+                            <?= $o["direccion"] ?>
+                        </td>
 
 
-<td>
-<?= $o["fecha_fin"] ?>
-</td>
+                        <td>
+                            <?= $o["fecha_inicio"] ?>
+                        </td>
 
 
-<td>
-<?= $o["porcentaje_avance"] ?>%
-</td>
+                        <td>
+                            <?= $o["fecha_fin"] ?>
+                        </td>
 
 
-<td>
-<?= $o["estado"] ?>
-</td>
+                        <td>
+                            <?= $o["porcentaje_avance"] ?>%
+                        </td>
 
 
-<td class="no-print">
-
-<a href="editar.php?id=<?= $o["id_obra"] ?>">
-Editar
-</a>
-
-</td>
-
-</tr>
+                        <td>
+                            <?= $o["estado"] ?>
+                        </td>
 
 
-<?php } ?>
+                        <td class="no-print">
+
+                            <a href="editar.php?id=<?= $o["id_obra"] ?>">
+                                Editar
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+
+                <?php } ?>
 
             </tbody>
 

@@ -52,17 +52,24 @@ public function obtenerEstados()
     return explode("','", $matches[1]);
 }
     public function buscarPorId($id)
-    {
-        $sql = "SELECT *
-                FROM obra
-                WHERE id_obra = :id";
+{
+    $sql = "SELECT
+                o.*,
+                c.nombre AS nombre_cliente,
+                c.apellido AS apellido_cliente
+            FROM obra o
+            INNER JOIN cliente c
+                ON o.id_cliente = c.id_cliente
+            WHERE o.id_obra = :id";
 
-        $consulta = $this->conexion->prepare($sql);
-        $consulta->bindParam(":id",$id);
-        $consulta->execute();
+    $consulta = $this->conexion->prepare($sql);
 
-        return $consulta->fetch(PDO::FETCH_ASSOC);
-    }
+    $consulta->bindParam(":id",$id);
+
+    $consulta->execute();
+
+    return $consulta->fetch(PDO::FETCH_ASSOC);
+}
 
     public function agregar($datos)
     {

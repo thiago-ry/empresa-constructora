@@ -38,10 +38,16 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
             <h2>
                 Listado de etapas
             </h2>
+            <div>
+               <button
+                    onclick="window.print()"
+                    class="btn btn-primary">
+                    <i class="fa-solid fa-print"></i>
+                </button>
             <a href="../vistas/obras/etapas/crear.php?id_obra=<?= $_GET["id_obra"] ?>" class="btn btn-primary">
                 <i class="fa-solid fa-plus"></i>
-                Nueva etapa
             </a>
+            </div>
         </div>
         <table class="table">
             <thead>
@@ -50,7 +56,7 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
                     <th>Estado</th>
                     <th>Inicio</th>
                     <th>Fin</th>
-                    <th>Acciones</th>
+                    <th class="no-print">Acciones</th>
                 </tr>
             </thead>
             <tbody>

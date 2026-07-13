@@ -79,38 +79,27 @@ class UsuarioController
         }
 
 
-
         $this->usuario->registrarIngreso(
             $usuarioEncontrado["id_usuario"]
         );
 
-
-
         $_SESSION["usuario"]=[
-
             "id"=>$usuarioEncontrado["id_usuario"],
             "nombre"=>$usuarioEncontrado["nombre"],
             "apellido"=>$usuarioEncontrado["apellido"],
             "id_rol"=>$usuarioEncontrado["id_rol"],
             "rol"=>$usuarioEncontrado["nombre_rol"]
-
         ];
 
-
-
-
         switch($usuarioEncontrado["nombre_rol"]){
-
 
             case "Gerente":
                 header("Location: ../vistas/dashboard/gerente.php");
             break;
 
-
             case "Administrativo":
                 header("Location: ../vistas/dashboard/administrativo.php");
             break;
-
 
             case "Jefe de Obra":
                 header("Location: ../vistas/dashboard/jefe_obra.php");
@@ -138,34 +127,15 @@ class UsuarioController
                 alert('Rol no configurado');
                 window.location.href='../vistas/login.php';
                 </script>";
-
             break;
-
         }
-
-
         exit();
-
     }
-
-
-
-
-
-    /*
-    ==========================
-        AGREGAR USUARIO
-    ==========================
-    */
 
 
     public function agregar()
     {
-
         session_start();
-
-
-
         $datos=[
 
             "id_rol"=>$_POST["rol"],
@@ -175,9 +145,6 @@ class UsuarioController
             "contraseña"=>$_POST["password"]
 
         ];
-
-
-
 
         if($this->usuario->existeCorreo($datos["correo"])){
 
@@ -190,16 +157,9 @@ class UsuarioController
 
         }
 
-
-
-
         $id_usuario_creado =
         $this->usuario->agregar($datos);
 
-
-
-
-        // Obtener rol cliente dinámicamente
 
         $rolCliente =
         $this->usuario->obtenerIdRolCliente();
@@ -243,38 +203,17 @@ class UsuarioController
 
     }
 
-
-
-
-
-
-
-
-    /*
-    ==========================
-        EDITAR USUARIO
-    ==========================
-    */
-
 public function editar()
 {
-
     session_start();
 
-
     $datos=[
-
         "id_usuario"=>$_POST["id_usuario"],
         "id_rol"=>$_POST["id_rol"],
         "nombre"=>$_POST["nombre"],
         "apellido"=>$_POST["apellido"],
         "correo"=>$_POST["correo"]
-
     ];
-
-
-
-    // Rol anterior
 
     $rolAnterior = 
     $this->usuario->obtenerRolActual(
@@ -288,14 +227,6 @@ public function editar()
     $rolCliente =
     $this->usuario->obtenerIdRolCliente();
 
-
-
-
-    /*
-    ==================================
-        SALE DE CLIENTE
-    ==================================
-    */
 
 
     if(
@@ -316,22 +247,11 @@ public function editar()
         ){
 
 
-            echo "<script>
-
-            alert('No se puede cambiar el rol porque el cliente tiene obras asociadas.');
-
-            window.location.href='../vistas/usuarios/index.php';
-
-            </script>";
-
-
+            echo "<script>alert('No se puede cambiar el rol porque el cliente tiene obras asociadas.'); window.location.href='../vistas/usuarios/index.php'; </script>";
             exit();
 
         }
 
-
-
-        // Si no tiene obras elimina cliente
 
         $this->usuario->eliminarCliente(
             $datos["id_usuario"]
@@ -339,17 +259,6 @@ public function editar()
 
 
     }
-
-
-
-
-
-
-    /*
-    ==================================
-        ENTRA A CLIENTE
-    ==================================
-    */
 
 
     if(
@@ -384,43 +293,15 @@ public function editar()
     }
 
 
-
-
-
-
-    /*
-    ==================================
-        ACTUALIZAR USUARIO
-    ==================================
-    */
-
-
     $this->usuario->editar($datos);
 
-
-
-
-
     $this->auditoria->registrar([
-
-
         "id_usuario"=>$_SESSION["usuario"]["id"],
-
         "accion"=>"EDITAR",
-
         "tabla_afectada"=>"usuario",
-
         "id_registro"=>$datos["id_usuario"],
-
         "descripcion"=>"Modificó el usuario ".$datos["nombre"]
-
-
     ]);
-
-
-
-
-
 
     header("Location: ../vistas/usuarios/index.php");
 
@@ -429,176 +310,75 @@ public function editar()
 }
     
 
-    public function eliminar()
-    {
+ public function eliminar()
+{
+    session_start();
+    $id=$_GET["id"];
+    $rolActual=$this->usuario->obtenerRolActual($id);
 
-        session_start();
-
-
-        $id=$_GET["id"];
-
-
-
-        $this->usuario->bajaLogica($id);
-
-
-
-
-        $this->auditoria->registrar([
-
-
-            "id_usuario"=>$_SESSION["usuario"]["id"],
-
-            "accion"=>"BAJA",
-
-            "tabla_afectada"=>"usuario",
-
-            "id_registro"=>$id,
-
-            "descripcion"=>"Desactivó un usuario"
-
-
-        ]);
-
-
-
-
-        header("Location: ../vistas/usuarios/index.php");
-
-        exit();
-
+    $rolCliente=$this->usuario->obtenerIdRolCliente(); 
+    if($rolActual["id_rol"]==$rolCliente["id_rol"]){
+        if($this->usuario->tieneObras($id)){
+            echo "<script> alert('No se puede desactivar el cliente porque tiene obras asociadas.'); window.location.href='../vistas/usuarios/index.php';
+            </script>";
+            exit();
+        }
     }
-
-
-
-
-
-
-
-    /*
-    ==========================
-        ACTIVAR
-    ==========================
-    */
-
+    $this->usuario->bajaLogica($id);
+    $this->auditoria->registrar([
+        "id_usuario"=>$_SESSION["usuario"]["id"],
+        "accion"=>"BAJA",
+        "tabla_afectada"=>"usuario",
+        "id_registro"=>$id,
+        "descripcion"=>"Desactivó un usuario"
+    ]);
+    header("Location: ../vistas/usuarios/index.php");
+    exit();
+}
 
     public function activar()
     {
-
         session_start();
 
-
         $id=$_GET["id"];
-
-
-
         $this->usuario->activarUsuario($id);
-
-
-
-
         $this->auditoria->registrar([
-
-
             "id_usuario"=>$_SESSION["usuario"]["id"],
-
             "accion"=>"ACTIVAR",
-
             "tabla_afectada"=>"usuario",
-
             "id_registro"=>$id,
-
             "descripcion"=>"Activó nuevamente un usuario"
-
-
         ]);
-
-
-
-
         header("Location: ../vistas/usuarios/index.php");
-
         exit();
-
     }
-
-
 }
-
-
-
-
-
 
 $controlador = new UsuarioController();
 
-
-
-
-
 if(isset($_POST["accion"])) {
-
 
     switch($_POST["accion"]) {
 
-
         case "login":
-
             $controlador->login();
-
         break;
-
-
-
         case "agregar":
-
             $controlador->agregar();
-
         break;
-
-
-
         case "editar":
-
             $controlador->editar();
-
         break;
-
-
     }
-
 }
-
-
-
-
-
-
-
 if(isset($_GET["accion"])) {
-
-
     switch($_GET["accion"]) {
-
-
         case "baja":
-
             $controlador->eliminar();
-
         break;
-
-
-
         case "activar":
-
             $controlador->activar();
-
         break;
-
-
     }
-
 }
-
-
 ?>

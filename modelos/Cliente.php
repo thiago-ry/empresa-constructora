@@ -31,6 +31,21 @@ class Cliente
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
     }
 
+
+    public function tieneObras($id)
+    {
+        $sql = "SELECT COUNT(*) AS total
+            FROM obra
+            WHERE id_cliente = :id
+            AND activo = 1";
+
+        $consulta = $this->conexion->prepare($sql);
+        $consulta->bindParam(":id", $id);
+        $consulta->execute();
+
+        return $consulta->fetch(PDO::FETCH_ASSOC)["total"] > 0;
+    }
+
     // Buscar cliente por ID
     public function obtenerPorId($id)
     {
@@ -90,14 +105,13 @@ class Cliente
             ":id_usuario" => $datos["id_usuario"]
 
         ]);
-
     }
 
 
 
 
     // Actualizar cliente
-    public function actualizar($id,$datos)
+    public function actualizar($id, $datos)
     {
 
         $sql = "UPDATE cliente
@@ -116,16 +130,15 @@ class Cliente
 
         return $consulta->execute([
 
-            ":nombre"=>$datos["nombre"],
-            ":apellido"=>$datos["apellido"],
-            ":telefono"=>$datos["telefono"],
-            ":direccion"=>$datos["direccion"],
-            ":correo"=>$datos["correo"],
-            ":id_usuario"=>$datos["id_usuario"],
-            ":id"=>$id
+            ":nombre" => $datos["nombre"],
+            ":apellido" => $datos["apellido"],
+            ":telefono" => $datos["telefono"],
+            ":direccion" => $datos["direccion"],
+            ":correo" => $datos["correo"],
+            ":id_usuario" => $datos["id_usuario"],
+            ":id" => $id
 
         ]);
-
     }
 
 
@@ -143,12 +156,8 @@ class Cliente
 
         return $consulta->execute([
 
-            ":id"=>$id
+            ":id" => $id
 
         ]);
-
     }
-
 }
-
-?>

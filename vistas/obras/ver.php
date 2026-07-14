@@ -1,8 +1,8 @@
 <?php
 
 require_once "../../modelos/Obra.php";
-require_once "../../config/permisos.php";
 require_once "../../modelos/Etapa.php";
+require_once "../../config/permisos.php";
 
 verificarPermiso("obras");
 
@@ -16,18 +16,16 @@ $etapa = new Etapa();
 
 $etapas = $etapa->obtenerPorObra($id);
 
-$etapa = new Etapa();
-
 $avance = $etapa->calcularAvance($id);
+
+$resumen = $etapa->obtenerResumen($id);
 
 require_once "../../layouts/header.php";
 require_once "../../layouts/sidebar.php";
 
 ?>
 
-
 <main class="content">
-
 
     <div class="page-header">
 
@@ -38,143 +36,102 @@ require_once "../../layouts/sidebar.php";
             </h1>
 
             <p class="page-subtitle">
-                Información general y módulos de gestión de la obra.
+                Panel de control de la obra.
             </p>
 
         </div>
 
-
         <a href="index.php" class="btn btn-secondary">
 
             <i class="fa-solid fa-arrow-left"></i>
+
             Volver
 
         </a>
 
-
     </div>
-
-
 
 
     <div class="card">
 
-
         <div class="card-header">
 
+            <div>
 
-            <h2>
-                Datos generales
-            </h2>
+                <h2>
+                    Información general
+                </h2>
 
+                <p>
+                    Datos principales de la obra.
+                </p>
+
+            </div>
 
             <span class="badge">
-
                 <?= htmlspecialchars($detalle["estado"]) ?>
-
             </span>
 
-
         </div>
 
 
+        <div class="info-grid">
 
+            <div class="info-item">
 
-        <div class="form-grid">
+                <span>
+                    Cliente
+                </span>
 
-
-            <div>
-
-                <strong>Cliente</strong>
-
-                <p>
+                <strong>
                     <?= htmlspecialchars($detalle["nombre_cliente"]) ?>
-                </p>
+                </strong>
 
             </div>
 
+            <div class="info-item">
 
+                <span>
+                    Dirección
+                </span>
 
-<div>
-
-    <strong>Avance de obra</strong>
-
-
-    <p>
-        <?= $avance ?>%
-    </p>
-
-
-    <div class="progress">
-
-        <div class="progress-bar" 
-             style="width: <?= $avance ?>%">
-        </div>
-
-    </div>
-
-
-</div>
-
-
-
-            <div>
-
-                <strong>Fecha inicio</strong>
-
-                <p>
-                    <?= htmlspecialchars($detalle["fecha_inicio"]) ?>
-                </p>
-
-            </div>
-
-
-
-            <div>
-
-                <strong>Fecha finalización</strong>
-
-                <p>
-                    <?= htmlspecialchars($detalle["fecha_fin"]) ?>
-                </p>
-
-            </div>
-
-
-
-            <div>
-
-                <strong>Dirección</strong>
-
-                <p>
+                <strong>
                     <?= htmlspecialchars($detalle["direccion"]) ?>
-                </p>
+                </strong>
 
             </div>
 
+            <div class="info-item">
 
+                <span>
+                    Fecha de inicio
+                </span>
 
-            <div>
-
-                <strong>Estado</strong>
-
-                <p>
-                    <?= htmlspecialchars($detalle["estado"]) ?>
-                </p>
+                <strong>
+                    <?= htmlspecialchars($detalle["fecha_inicio"]) ?>
+                </strong>
 
             </div>
 
+            <div class="info-item">
+
+                <span>
+                    Fecha estimada de finalización
+                </span>
+
+                <strong>
+                    <?= htmlspecialchars($detalle["fecha_fin"]) ?>
+                </strong>
+
+            </div>
 
         </div>
-
-
-
 
         <br>
 
-
-        <strong>Descripción</strong>
-
+        <strong>
+            Descripción
+        </strong>
 
         <p>
 
@@ -182,135 +139,106 @@ require_once "../../layouts/sidebar.php";
 
         </p>
 
-
-
     </div>
 
-    <div class="card">
 
-
-    <div class="card-header">
+    <div class="toolbar">
 
         <h2>
-            Etapas de la obra
+            Resumen de la obra
         </h2>
-
-
-        <a href="etapas/index.php?id_obra=<?= $detalle["id_obra"] ?>" 
-           class="btn btn-primary">
-
-            Gestionar etapas
-
-        </a>
-
-        
 
     </div>
 
 
-
-    <?php if(count($etapas) > 0){ ?>
-
-
-        <div class="table-container">
+    <div class="cards-grid">
 
 
-            <table class="table">
+        <div class="card">
 
+            <i class="fa-solid fa-list-check fa-2x"></i>
 
-                <thead>
+            <h3>
+                Total de etapas
+            </h3>
 
-                    <tr>
-
-                        <th>
-                            Etapa
-                        </th>
-
-                        <th>
-                            Estado
-                        </th>
-
-                        <th>
-                            Inicio
-                        </th>
-
-                        <th>
-                            Fin
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody>
-
-
-                    <?php foreach($etapas as $e){ ?>
-
-
-                        <tr>
-
-
-                            <td>
-                                <?= htmlspecialchars($e["nombre_etapa"]) ?>
-                            </td>
-
-
-                            <td>
-
-                                <span class="badge">
-
-                                    <?= htmlspecialchars($e["estado"]) ?>
-
-                                </span>
-
-                            </td>
-
-
-                            <td>
-                                <?= $e["fecha_inicio"] ?>
-                            </td>
-
-
-                            <td>
-                                <?= $e["fecha_fin"] ?>
-                            </td>
-
-
-                        </tr>
-
-
-                    <?php } ?>
-
-
-                </tbody>
-
-
-            </table>
-
+            <h2>
+                <?= $resumen["total"] ?>
+            </h2>
 
         </div>
 
 
-    <?php }else{ ?>
+        <div class="card">
+
+            <i class="fa-solid fa-circle-check fa-2x"></i>
+
+            <h3>
+                Finalizadas
+            </h3>
+
+            <h2>
+                <?= $resumen["finalizadas"] ?>
+            </h2>
+
+        </div>
 
 
-        <p>
-            No hay etapas registradas para esta obra.
-        </p>
+        <div class="card">
+
+            <i class="fa-solid fa-person-digging fa-2x"></i>
+
+            <h3>
+                En proceso
+            </h3>
+
+            <h2>
+                <?= $resumen["proceso"] ?>
+            </h2>
+
+        </div>
 
 
-    <?php } ?>
+        <div class="card">
+
+            <i class="fa-regular fa-clock fa-2x"></i>
+
+            <h3>
+                Pendientes
+            </h3>
+
+            <h2>
+                <?= $resumen["pendientes"] ?>
+            </h2>
+
+        </div>
 
 
-</div>
+        <div class="card">
 
+            <i class="fa-solid fa-chart-line fa-2x"></i>
 
+            <h3>
+                Avance general
+            </h3>
 
+            <h2>
+                <?= $avance ?>%
+            </h2>
 
+            <div class="progress">
 
-    <div class="toolbar">
+                <div
+                    class="progress-bar"
+                    style="width: <?= $avance ?>%;">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+        <div class="toolbar">
 
         <h2>
             Módulos de la obra
@@ -318,219 +246,280 @@ require_once "../../layouts/sidebar.php";
 
     </div>
 
-
-
-
     <div class="cards-grid">
-
-
 
         <div class="card">
 
             <i class="fa-solid fa-layer-group fa-2x"></i>
 
-
             <h3>
                 Etapas
             </h3>
 
-
-            <p>
-                Gestionar las etapas constructivas.
-            </p>
-
-
-            <a href="etapas/index.php?id_obra=<?= $detalle["id_obra"] ?>" 
-               class="btn btn-primary">
+            <a
+                href="etapas/index.php?id_obra=<?= $detalle["id_obra"] ?>"
+                class="btn btn-primary">
 
                 Ingresar
 
             </a>
 
-
         </div>
-
-
 
 
         <div class="card">
 
             <i class="fa-solid fa-chart-line fa-2x"></i>
 
-
             <h3>
-                Avances
+                Avances diarios
             </h3>
 
+            <a
+                href="../../controladores/AvanceController.php?accion=listar&id_obra=<?= $detalle["id_obra"] ?>"
+                class="btn btn-primary">
 
-            <p>
-                Registrar avances diarios de obra.
-            </p>
+                Ingresar
 
-
-            <a href="#" class="btn btn-primary">
-                Próximamente
             </a>
 
-
         </div>
-
-
 
 
         <div class="card">
 
             <i class="fa-solid fa-users fa-2x"></i>
 
-
             <h3>
                 Empleados
             </h3>
 
+            <a
+                href="#"
+                class="btn btn-secondary">
 
-            <p>
-                Personal asignado a la obra.
-            </p>
-
-
-            <a href="#" class="btn btn-primary">
                 Próximamente
+
             </a>
 
-
         </div>
-
-
 
 
         <div class="card">
 
             <i class="fa-solid fa-boxes-stacked fa-2x"></i>
 
-
             <h3>
                 Materiales
             </h3>
 
+            <a
+                href="#"
+                class="btn btn-secondary">
 
-            <p>
-                Control de materiales utilizados.
-            </p>
-
-
-            <a href="#" class="btn btn-primary">
                 Próximamente
+
             </a>
 
-
         </div>
-
-
 
 
         <div class="card">
 
             <i class="fa-solid fa-screwdriver-wrench fa-2x"></i>
 
-
             <h3>
                 Herramientas
             </h3>
 
+            <a
+                href="#"
+                class="btn btn-secondary">
 
-            <p>
-                Herramientas asignadas.
-            </p>
-
-
-            <a href="#" class="btn btn-primary">
                 Próximamente
+
             </a>
 
-
         </div>
-
-
 
 
         <div class="card">
 
             <i class="fa-solid fa-triangle-exclamation fa-2x"></i>
 
-
             <h3>
                 Incidencias
             </h3>
 
+            <a
+                href="#"
+                class="btn btn-secondary">
 
-            <p>
-                Problemas registrados durante la obra.
-            </p>
-
-
-            <a href="#" class="btn btn-primary">
                 Próximamente
+
             </a>
 
-
         </div>
-
-
 
 
         <div class="card">
 
             <i class="fa-solid fa-camera fa-2x"></i>
 
-
             <h3>
                 Fotos
             </h3>
 
+            <a
+                href="#"
+                class="btn btn-secondary">
 
-            <p>
-                Registro fotográfico.
-            </p>
-
-
-            <a href="#" class="btn btn-primary">
                 Próximamente
+
             </a>
 
-
         </div>
-
-
 
 
         <div class="card">
 
             <i class="fa-solid fa-folder-open fa-2x"></i>
 
-
             <h3>
                 Documentos
             </h3>
 
+            <a
+                href="#"
+                class="btn btn-secondary">
 
-            <p>
-                Planos, contratos y archivos.
-            </p>
-
-
-            <a href="#" class="btn btn-primary">
                 Próximamente
+
             </a>
 
-
         </div>
-
-
 
     </div>
 
 
-</main>
+    <div class="card">
 
+        <div class="card-header">
+
+            <h2>
+                Etapas de la obra
+            </h2>
+
+        </div>
+
+        <?php if (count($etapas) > 0) { ?>
+
+            <div class="table-container">
+
+                <table class="table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Etapa
+                            </th>
+
+                            <th>
+                                Estado
+                            </th>
+
+                            <th>
+                                Fecha inicio
+                            </th>
+
+                            <th>
+                                Fecha fin
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <?php foreach ($etapas as $e) { ?>
+
+                            <tr>
+
+                                <td>
+
+                                    <?= htmlspecialchars($e["nombre_etapa"]) ?>
+
+                                </td>
+
+                                <td>
+
+                                    <?php
+
+                                    $clase = "";
+
+                                    switch ($e["estado"]) {
+
+                                        case "Finalizada":
+                                            $clase = "badge-success";
+                                            break;
+
+                                        case "Pendiente":
+                                            $clase = "badge-danger";
+                                            break;
+
+                                        default:
+                                            $clase = "";
+                                            break;
+
+                                    }
+
+                                    ?>
+
+                                    <span class="badge <?= $clase ?>">
+
+                                        <?= htmlspecialchars($e["estado"]) ?>
+
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    <?= htmlspecialchars($e["fecha_inicio"]) ?>
+
+                                </td>
+
+                                <td>
+
+                                    <?= htmlspecialchars($e["fecha_fin"]) ?>
+
+                                </td>
+
+                            </tr>
+
+                        <?php } ?>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        <?php } else { ?>
+
+            <p>
+
+                No existen etapas registradas para esta obra.
+
+            </p>
+
+        <?php } ?>
+
+    </div>
+
+</main>
 
 <?php require_once "../../layouts/footer.php"; ?>

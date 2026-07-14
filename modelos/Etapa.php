@@ -15,7 +15,6 @@ class Etapa
         $db = new Conexion();
 
         $this->conexion = $db->conectar();
-
     }
 
 
@@ -42,16 +41,15 @@ class Etapa
 
 
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
-
     }
 
 
 
 
-   public function crear($datos)
-{
+    public function crear($datos)
+    {
 
-$sql="INSERT INTO etapa_obra
+        $sql = "INSERT INTO etapa_obra
 (
 id_obra,
 nombre_etapa,
@@ -65,43 +63,41 @@ VALUES
 (?,?,?,?,?,?)";
 
 
-$stmt=$this->conexion->prepare($sql);
+        $stmt = $this->conexion->prepare($sql);
 
 
-return $stmt->execute([
+        return $stmt->execute([
 
-$datos["id_obra"],
-$datos["nombre_etapa"],
-$datos["descripcion"],
-$datos["fecha_inicio"],
-$datos["fecha_fin"],
-$datos["estado"]
+            $datos["id_obra"],
+            $datos["nombre_etapa"],
+            $datos["descripcion"],
+            $datos["fecha_inicio"],
+            $datos["fecha_fin"],
+            $datos["estado"]
 
-]);
+        ]);
+    }
 
-}
+    public function buscarPorId($id)
+    {
 
-public function buscarPorId($id)
-{
-
-    $sql="SELECT *
+        $sql = "SELECT *
           FROM etapa_obra
           WHERE id_etapa = ?";
 
 
-    $stmt=$this->conexion->prepare($sql);
+        $stmt = $this->conexion->prepare($sql);
 
-    $stmt->execute([$id]);
+        $stmt->execute([$id]);
 
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
-}
+    public function actualizar($datos)
+    {
 
-public function actualizar($datos)
-{
-
-    $sql="UPDATE etapa_obra SET
+        $sql = "UPDATE etapa_obra SET
 
         nombre_etapa=?,
         descripcion=?,
@@ -112,51 +108,67 @@ public function actualizar($datos)
         WHERE id_etapa=?";
 
 
-    $stmt=$this->conexion->prepare($sql);
+        $stmt = $this->conexion->prepare($sql);
 
 
-    return $stmt->execute([
+        return $stmt->execute([
 
-        $datos["nombre_etapa"],
-        $datos["descripcion"],
-        $datos["fecha_inicio"],
-        $datos["fecha_fin"],
-        $datos["estado"],
-        $datos["id_etapa"]
+            $datos["nombre_etapa"],
+            $datos["descripcion"],
+            $datos["fecha_inicio"],
+            $datos["fecha_fin"],
+            $datos["estado"],
+            $datos["id_etapa"]
 
-    ]);
+        ]);
+    }
 
-}
-public function calcularAvance($id_obra)
-{
+    public function calcularAvance($id_obra)
+    {
 
-    $sql = "SELECT 
+        $sql = "SELECT 
                 COUNT(*) AS total,
                 SUM(CASE WHEN estado='Finalizada' THEN 1 ELSE 0 END) AS finalizadas
             FROM etapa_obra
             WHERE id_obra = ?";
 
 
-    $stmt = $this->conexion->prepare($sql);
+        $stmt = $this->conexion->prepare($sql);
 
-    $stmt->execute([$id_obra]);
-
-
-    $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->execute([$id_obra]);
 
 
-    if($resultado["total"] == 0){
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return 0;
 
+        if ($resultado["total"] == 0) {
+
+            return 0;
+        }
+
+
+        return round(
+            ($resultado["finalizadas"] / $resultado["total"]) * 100
+        );
     }
+    public function obtenerResumen($id_obra)
+    {
+        $sql = "SELECT
+                COUNT(*) AS total,
+                SUM(CASE WHEN estado='Finalizada' THEN 1 ELSE 0 END) AS finalizadas,
+                SUM(CASE WHEN estado='En Proceso' THEN 1 ELSE 0 END) AS proceso,
+                SUM(CASE WHEN estado='Pendiente' THEN 1 ELSE 0 END) AS pendientes
+            FROM etapa_obra
+            WHERE id_obra=?";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute([$id_obra]);
+        $datos = $stmt->fetch(PDO::FETCH_ASSOC);
 
-
-    return round(
-        ($resultado["finalizadas"] / $resultado["total"]) * 100
-    );
-
-}
-
-
+        return [
+            "total" => (int)$datos["total"],
+            "finalizadas" => (int)$datos["finalizadas"],
+            "proceso" => (int)$datos["proceso"],
+            "pendientes" => (int)$datos["pendientes"]
+        ];
+    }
 }

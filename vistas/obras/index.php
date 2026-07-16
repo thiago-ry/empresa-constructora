@@ -76,7 +76,6 @@ require_once "../../layouts/sidebar.php";
                     <th>Dirección</th>
                     <th>Inicio</th>
                     <th>Fin</th>
-                    <th>Avance</th>
                     <th>Estado</th>
                     <th class="no-print">
                         Acciones
@@ -107,18 +106,14 @@ require_once "../../layouts/sidebar.php";
                         </td>
 
                         <td>
-                            <?= $o["porcentaje_avance"] ?>%
-                        </td>
-
-                        <td>
                             <?= $o["estado"] ?>
                         </td>
 
-                        <td class="no-print">
-                            <a href="editar.php?id=<?= $o["id_obra"] ?>">
+                        <td class="no-print" style="display: flex;">
+                            <a href="editar.php?id=<?= $o["id_obra"] ?>" class="btn btn-warning">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
-                            <a href="ver.php?id=<?= $o["id_obra"] ?>">
+                            <a href="ver.php?id=<?= $o["id_obra"] ?>" class="btn btn-secondary">
                                 <i class="fa-solid fa-eye"></i>
                             </a>
                         </td>

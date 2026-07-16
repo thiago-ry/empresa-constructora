@@ -272,7 +272,7 @@ require_once "../../layouts/sidebar.php";
             <i class="fa-solid fa-chart-line fa-2x"></i>
 
             <h3>
-                Avances diarios
+                Diario de obra
             </h3>
 
             <a
@@ -401,124 +401,6 @@ require_once "../../layouts/sidebar.php";
 
     </div>
 
-
-    <div class="card">
-
-        <div class="card-header">
-
-            <h2>
-                Etapas de la obra
-            </h2>
-
-        </div>
-
-        <?php if (count($etapas) > 0) { ?>
-
-            <div class="table-container">
-
-                <table class="table">
-
-                    <thead>
-
-                        <tr>
-
-                            <th>
-                                Etapa
-                            </th>
-
-                            <th>
-                                Estado
-                            </th>
-
-                            <th>
-                                Fecha inicio
-                            </th>
-
-                            <th>
-                                Fecha fin
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        <?php foreach ($etapas as $e) { ?>
-
-                            <tr>
-
-                                <td>
-
-                                    <?= htmlspecialchars($e["nombre_etapa"]) ?>
-
-                                </td>
-
-                                <td>
-
-                                    <?php
-
-                                    $clase = "";
-
-                                    switch ($e["estado"]) {
-
-                                        case "Finalizada":
-                                            $clase = "badge-success";
-                                            break;
-
-                                        case "Pendiente":
-                                            $clase = "badge-danger";
-                                            break;
-
-                                        default:
-                                            $clase = "";
-                                            break;
-
-                                    }
-
-                                    ?>
-
-                                    <span class="badge <?= $clase ?>">
-
-                                        <?= htmlspecialchars($e["estado"]) ?>
-
-                                    </span>
-
-                                </td>
-
-                                <td>
-
-                                    <?= htmlspecialchars($e["fecha_inicio"]) ?>
-
-                                </td>
-
-                                <td>
-
-                                    <?= htmlspecialchars($e["fecha_fin"]) ?>
-
-                                </td>
-
-                            </tr>
-
-                        <?php } ?>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        <?php } else { ?>
-
-            <p>
-
-                No existen etapas registradas para esta obra.
-
-            </p>
-
-        <?php } ?>
-
-    </div>
 
 </main>
 

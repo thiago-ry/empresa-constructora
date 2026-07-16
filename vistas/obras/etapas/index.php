@@ -49,6 +49,7 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
             </a>
             </div>
         </div>
+               <?php if (count($etapas) > 0) { ?>
         <table class="table">
             <thead>
                 <tr>
@@ -86,6 +87,29 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
                 <?php endforeach; ?>
             </tbody>
         </table>
+                <?php } else { ?>
+
+            <div style="padding:40px;text-align:center;">
+
+                <i class="fa-solid fa-clipboard-list fa-3x"></i>
+
+                <br><br>
+
+                <h3>
+
+                    Todavía no hay etapas registradas.
+
+                </h3>
+
+                <p>
+
+                    Presione el botón <strong>+</strong> para registrar la primer etapa.
+
+                </p>
+
+            </div>
+
+        <?php } ?>
     </div>
 </main>
 <?php require_once __DIR__ . "/../../../layouts/footer.php"; ?>

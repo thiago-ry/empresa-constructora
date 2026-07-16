@@ -7,7 +7,7 @@ verificarPermiso("obras");
 
 $cliente = new Cliente();
 
-$clientes = $cliente->obtenerTodos();
+$clientes = $cliente->obtenerActivos();
 
 
 require_once "../../layouts/header.php";

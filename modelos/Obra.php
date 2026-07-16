@@ -70,48 +70,56 @@ public function obtenerEstados()
     return $consulta->fetch(PDO::FETCH_ASSOC);
 }
 
-    public function agregar($datos)
-    {
-        $sql = "INSERT INTO obra
-                (
-                    id_cliente,
-                    nombre_obra,
-                    direccion,
-                    descripcion,
-                    fecha_inicio,
-                    fecha_fin,
-                    estado,
-                    activo
-                )
-                VALUES
-                (
-                    :id_cliente,
-                    :nombre_obra,
-                    :direccion,
-                    :descripcion,
-                    :fecha_inicio,
-                    :fecha_fin,
-                    0,
-                    :estado,
-                    1
-                )";
+  public function agregar($datos)
+{
+    $sql = "INSERT INTO obra
+            (
+                id_cliente,
+                nombre_obra,
+                direccion,
+                descripcion,
+                fecha_inicio,
+                fecha_fin,
+                estado,
+                activo
+            )
+            VALUES
+            (
+                :id_cliente,
+                :nombre_obra,
+                :direccion,
+                :descripcion,
+                :fecha_inicio,
+                :fecha_fin,
+                :estado,
+                1
+            )";
 
-        $consulta = $this->conexion->prepare($sql);
 
-        $consulta->execute([
+    $consulta = $this->conexion->prepare($sql);
 
-            ":id_cliente"=>$datos["id_cliente"],
-            ":nombre_obra"=>$datos["nombre_obra"],
-            ":direccion"=>$datos["direccion"],
-            ":descripcion"=>$datos["descripcion"],
-            ":fecha_inicio"=>$datos["fecha_inicio"],
-            ":fecha_fin"=>$datos["fecha_fin"],
-            ":estado"=>$datos["estado"]
 
-        ]);
+    $consulta->execute([
 
-        return $this->conexion->lastInsertId();
-    }
+        ":id_cliente" => $datos["id_cliente"],
+
+        ":nombre_obra" => $datos["nombre_obra"],
+
+        ":direccion" => $datos["direccion"],
+
+        ":descripcion" => $datos["descripcion"],
+
+        ":fecha_inicio" => $datos["fecha_inicio"],
+
+        ":fecha_fin" => $datos["fecha_fin"],
+
+        ":estado" => $datos["estado"]
+
+    ]);
+
+
+    return $this->conexion->lastInsertId();
+}
 
     public function editar($datos)
     {

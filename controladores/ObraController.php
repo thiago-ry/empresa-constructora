@@ -22,6 +22,7 @@ class ObraController
 
     public function agregar()
     {
+        
         session_start();
 
         $datos = [
@@ -48,7 +49,7 @@ class ObraController
 
             "id_registro" => $id_obra,
 
-            "descripcion" => "Registró la obra: ".$datos["nombre_obra"]
+            "descripcion" => "Registró la obra: " . $datos["nombre_obra"]
 
         ]);
 
@@ -91,7 +92,7 @@ class ObraController
 
             "id_registro" => $datos["id_obra"],
 
-            "descripcion" => "Modificó la obra ".$datos["nombre_obra"]
+            "descripcion" => "Modificó la obra " . $datos["nombre_obra"]
 
         ]);
 
@@ -166,9 +167,9 @@ class ObraController
 
 $controlador = new ObraController();
 
-if(isset($_POST["accion"])){
+if (isset($_POST["accion"])) {
 
-    switch($_POST["accion"]){
+    switch ($_POST["accion"]) {
 
         case "agregar":
             $controlador->agregar();
@@ -177,14 +178,12 @@ if(isset($_POST["accion"])){
         case "editar":
             $controlador->editar();
             break;
-
     }
-
 }
 
-if(isset($_GET["accion"])){
+if (isset($_GET["accion"])) {
 
-    switch($_GET["accion"]){
+    switch ($_GET["accion"]) {
 
         case "baja":
             $controlador->eliminar();
@@ -193,7 +192,5 @@ if(isset($_GET["accion"])){
         case "activar":
             $controlador->activar();
             break;
-
     }
-
 }

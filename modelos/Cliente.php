@@ -160,4 +160,25 @@ class Cliente
 
         ]);
     }
+
+public function obtenerActivos()
+{
+
+    $sql = "SELECT 
+                c.*
+            FROM cliente c
+            INNER JOIN usuario u
+                ON c.id_usuario = u.id_usuario
+            WHERE u.estado = 1
+            ORDER BY c.nombre ASC";
+
+
+    $stmt = $this->conexion->prepare($sql);
+
+    $stmt->execute();
+
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+}
 }

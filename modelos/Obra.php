@@ -20,7 +20,6 @@ class Obra
                 o.direccion,
                 o.fecha_inicio,
                 o.fecha_fin,
-                o.porcentaje_avance,
                 o.estado,
                 c.nombre AS nombre_cliente,
                 c.apellido AS apellido_cliente
@@ -81,7 +80,6 @@ public function obtenerEstados()
                     descripcion,
                     fecha_inicio,
                     fecha_fin,
-                    porcentaje_avance,
                     estado,
                     activo
                 )

@@ -180,19 +180,20 @@ require_once "../../layouts/sidebar.php";
                             </span>
                         </td>
                         <td class="no-print">
-                            <a href="editar.php?id=<?= $u['id_usuario']; ?>">
+                            <a href="editar.php?id=<?= $u['id_usuario']; ?>" class="btn btn-warning">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
                             <?php if ($u["estado"] == 1) { ?>
                                 <a
                                     href="../../controladores/UsuarioController.php?accion=baja&id=<?= $u['id_usuario']; ?>"
+                                    class="btn btn-danger"
                                     onclick="return confirm('¿Está seguro que desea dar de baja este usuario?');">
                                     <i class="fa-solid fa-times"></i>
                                 </a>
                             <?php } else { ?>
                                 <a
-                                    href="../../controladores/UsuarioController.php?accion=activar&id=<?= $u['id_usuario']; ?>">
-                                    <i class="fa-solid fa-check link-accionA"></i>
+                                    href="../../controladores/UsuarioController.php?accion=activar&id=<?= $u['id_usuario']; ?> " class="btn btn-success" >
+                                    <i class="fa-solid fa-check "></i>
                                 </a>
                             <?php } ?>
                         </td>

@@ -294,13 +294,13 @@ require_once "../../layouts/sidebar.php";
                 Empleados
             </h3>
 
-            <a
-                href="#"
-                class="btn btn-secondary">
+<a
+href="../../controladores/EmpleadoObraController.php?accion=listar&id_obra=<?= $detalle["id_obra"] ?>"
+class="btn btn-primary">
 
-                Próximamente
+    Ingresar
 
-            </a>
+</a>
 
         </div>
 

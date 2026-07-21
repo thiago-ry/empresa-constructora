@@ -32,7 +32,7 @@ $menu=[
 ["fa-solid fa-user","Perfil","/empresa_constructora/vistas/perfil/"]
 ],
 
-"Depósito"=>[
+"Encargado de Depósito"=>[
 ["fa-solid fa-house","Dashboard","/empresa_constructora/vistas/dashboard/deposito.php"],
 ["fa-solid fa-boxes-stacked","Materiales","/empresa_constructora/vistas/materiales/"],
 ["fa-solid fa-screwdriver-wrench","Herramientas","/empresa_constructora/vistas/herramientas/"],

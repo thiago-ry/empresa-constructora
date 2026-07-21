@@ -244,6 +244,14 @@ require_once "../../layouts/sidebar.php";
 
                         <td class="no-print"
                             style="display:flex; flex-direction:row; justify-content:space-between;">
+
+                            <a
+                                href="../movimientos/index.php?id=<?= $m["id_material"]; ?>"
+                                class="btn btn-secondary">
+
+                                <i class="fa-solid fa-boxes-stacked"></i>
+
+                            </a>
                             <a
                                 href="editar.php?id=<?= $m["id_material"]; ?>"
                                 class="btn btn-warning">

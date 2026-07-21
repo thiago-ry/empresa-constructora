@@ -62,7 +62,7 @@ require_once "../../layouts/sidebar.php";
                 <?= date("d/m/Y H:i"); ?>
                 <br>
                 Generado por:
-                <?= $_SESSION["usuario"]["nombre"]." ".$_SESSION["usuario"]["apellido"]; ?> 
+                <?= $_SESSION["usuario"]["nombre"] . " " . $_SESSION["usuario"]["apellido"]; ?>
             </p>
 
 
@@ -149,7 +149,13 @@ require_once "../../layouts/sidebar.php";
                         Nombre
                     </th>
                     <th>
+                        Documento
+                    </th>
+                    <th>
                         Correo
+                    </th>
+                    <th>
+                        Teléfono
                     </th>
                     <th>
                         Rol
@@ -169,7 +175,15 @@ require_once "../../layouts/sidebar.php";
                             <?= $u["nombre"] . " " . $u["apellido"]; ?>
                         </td>
                         <td>
-                            <?= $u["correo"]; ?>
+                            <?= $u["documento"]; ?>
+                        </td>
+ <td title="<?= $u["correo"]; ?>">
+    <?= strlen($u["correo"]) > 15
+        ? substr($u["correo"], 0, 15) . "..."
+        : $u["correo"]; ?>
+</td>
+                        <td>
+                            <?= $u["telefono"]; ?>
                         </td>
                         <td>
                             <?= $u["nombre_rol"]; ?>
@@ -179,23 +193,44 @@ require_once "../../layouts/sidebar.php";
                                 <?= $u['estado'] == 1 ? 'Activo' : 'Inactivo' ?>
                             </span>
                         </td>
-                        <td class="no-print">
+                        <td class="no-print" style="display: flex; flex-direction: row; justify-content: space-between;">
+
                             <a href="editar.php?id=<?= $u['id_usuario']; ?>" class="btn btn-warning">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
+
                             <?php if ($u["estado"] == 1) { ?>
-                                <a
-                                    href="../../controladores/UsuarioController.php?accion=baja&id=<?= $u['id_usuario']; ?>"
-                                    class="btn btn-danger"
-                                    onclick="return confirm('¿Está seguro que desea dar de baja este usuario?');">
-                                    <i class="fa-solid fa-times"></i>
-                                </a>
+
+                                <?php if ($usuario->tieneObras($u["id_usuario"])) { ?>
+
+                                    <button
+                                        class="btn btn-secondary"
+                                        disabled
+                                        title="No se puede dar de baja porque tiene obras asociadas">
+                                        <i class="fa-solid fa-ban"></i>
+                                    </button>
+
+                                <?php } else { ?>
+
+                                    <a
+                                        href="../../controladores/UsuarioController.php?accion=baja&id=<?= $u['id_usuario']; ?>"
+                                        class="btn btn-danger"
+                                        onclick="return confirm('¿Está seguro que desea dar de baja este usuario?');">
+                                        <i class="fa-solid fa-times"></i>
+                                    </a>
+
+                                <?php } ?>
+
                             <?php } else { ?>
+
                                 <a
-                                    href="../../controladores/UsuarioController.php?accion=activar&id=<?= $u['id_usuario']; ?> " class="btn btn-success" >
-                                    <i class="fa-solid fa-check "></i>
+                                    href="../../controladores/UsuarioController.php?accion=activar&id=<?= $u['id_usuario']; ?>"
+                                    class="btn btn-success">
+                                    <i class="fa-solid fa-check"></i>
                                 </a>
+
                             <?php } ?>
+
                         </td>
                     </tr>
                 <?php } ?>
@@ -205,5 +240,6 @@ require_once "../../layouts/sidebar.php";
 </main>
 <?php
 $script = "usuarios";
+
 require_once "../../layouts/footer.php";
 ?>

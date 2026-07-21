@@ -1,13 +1,13 @@
 <?php
 
-require_once "../../modelos/Cliente.php";
+require_once "../../modelos/Usuario.php";
 require_once "../../config/permisos.php";
 
 verificarPermiso("obras");
 
-$cliente = new Cliente();
+$usuarios = new Usuario();
 
-$clientes = $cliente->obtenerActivos();
+$clientes = $usuarios->obtenerClientes(true);
 
 
 require_once "../../layouts/header.php";
@@ -70,7 +70,7 @@ require_once "../../layouts/sidebar.php";
 
                     <select
                         id="cliente"
-                        name="id_cliente"
+                        name="id_usuario"
                         class="filter"
                         required>
 
@@ -82,7 +82,7 @@ require_once "../../layouts/sidebar.php";
 
                         <?php foreach ($clientes as $c) { ?>
 
-                            <option value="<?= $c["id_cliente"]; ?>">
+                            <option value="<?= $c["id_usuario"]; ?>">
 
                                 <?= $c["nombre"] . " " . $c["apellido"]; ?>
 

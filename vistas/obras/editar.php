@@ -1,16 +1,16 @@
 <?php
 
 require_once "../../modelos/Obra.php";
-require_once "../../modelos/Cliente.php";
+require_once "../../modelos/Usuario.php";
 require_once "../../config/permisos.php";
 
 verificarPermiso("obras");
 
 $obra = new Obra();
-$cliente = new Cliente();
+$usuario = new Usuario();
 
 $obraEditar = $obra->buscarPorId($_GET["id"]);
-$clientes = $cliente->obtenerTodos();
+$clientes = $usuario->obtenerClientes(true);
 $estados = $obra->obtenerEstados();
 
 require_once "../../layouts/header.php";
@@ -50,13 +50,13 @@ require_once "../../layouts/sidebar.php";
                 <div class="form-group">
                     <label class="label">Cliente</label>
                     <select
-                        name="id_cliente"
+                        name="id_usuario"
                         class="select filter"
                         required>
                         <?php foreach ($clientes as $c) { ?>
                             <option
-                                value="<?= $c["id_cliente"] ?>"
-                                <?= $obraEditar["id_cliente"] == $c["id_cliente"] ? "selected" : "" ?>>
+                                value="<?= $c["id_usuario"] ?>"
+                                <?= $obraEditar["id_usuario"] == $c["id_usuario"] ? "selected" : "" ?>>
                                 <?= $c["nombre"] . " " . $c["apellido"] ?>
                             </option>
                         <?php } ?>

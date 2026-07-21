@@ -2,7 +2,7 @@
 
 require_once "../modelos/Auditoria.php";
 require_once "../modelos/EmpleadoObra.php";
-require_once "../modelos/Empleado.php";
+require_once "../modelos/Usuario.php";
 
 class EmpleadoObraController
 {
@@ -21,19 +21,19 @@ class EmpleadoObraController
 ==========================
 */
 
-public function listar()
-{
-    session_start();
+    public function listar()
+    {
+        session_start();
 
-    $id_obra = $_GET["id_obra"] ?? 0;
-
-
-    $empleados = $this->empleadoObra->obtenerPorObra($id_obra);
+        $id_obra = $_GET["id_obra"] ?? 0;
 
 
-    require "../vistas/obras/empleados/index.php";
-}
-/*
+        $empleados = $this->empleadoObra->obtenerPorObra($id_obra);
+
+
+        require "../vistas/obras/empleados/index.php";
+    }
+    /*
 ==========================
     CREAR
 ==========================
@@ -43,19 +43,12 @@ public function crear()
 {
     session_start();
 
+    $usuario = new Usuario();
 
-    require_once "../modelos/Empleado.php";
-
-
-    $empleado = new Empleado();
-
-
-    $empleadosDisponibles = $empleado->obtenerDisponiblesPorObra($_GET['id_obra']);
-
+    $empleadosDisponibles = $usuario->obtenerEmpleadosDisponiblesPorObra($_GET["id_obra"]);
 
     require "../vistas/obras/empleados/crear.php";
 }
-
     /*
     ==========================
         AGREGAR
@@ -66,7 +59,7 @@ public function crear()
     {
         session_start();
 
-        if ($this->empleadoObra->existeEmpleadoActivo($_POST["id_empleado"], $_POST["id_obra"])) {
+        if ($this->empleadoObra->existeEmpleadoActivo($_POST["id_usuario"], $_POST["id_obra"])) {
 
             header("Location: ../vistas/obras/empleados/index.php?id_obra=" . $_POST["id_obra"] . "&error=duplicado");
             exit();
@@ -74,11 +67,10 @@ public function crear()
 
         $datos = [
 
-            "id_empleado" => $_POST["id_empleado"],
+            "id_usuario" => $_POST["id_usuario"],
             "id_obra" => $_POST["id_obra"],
             "fecha_ingreso" => $_POST["fecha_ingreso"],
             "observaciones" => $_POST["observaciones"],
-            "id_usuario" => $_SESSION["usuario"]["id"]
 
         ];
 
@@ -92,7 +84,7 @@ public function crear()
 
             "tabla_afectada" => "empleado_obra",
 
-            "id_registro" => $_POST["id_empleado"],
+            "id_registro" => $_POST["id_usuario"],
 
             "descripcion" => "Asignó un empleado a una obra"
 
@@ -184,10 +176,10 @@ $controlador = new EmpleadoObraController();
 
 
 
-if(isset($_GET["accion"])) {
+if (isset($_GET["accion"])) {
 
 
-    switch($_GET["accion"]) {
+    switch ($_GET["accion"]) {
 
 
         case "listar":
@@ -196,23 +188,22 @@ if(isset($_GET["accion"])) {
 
             break;
 
-case "crear":
+        case "crear":
 
-    $controlador->crear();
+            $controlador->crear();
 
-break;
+            break;
     }
-
 }
 
 
 
 
 
-if(isset($_POST["accion"])) {
+if (isset($_POST["accion"])) {
 
 
-    switch($_POST["accion"]) {
+    switch ($_POST["accion"]) {
 
 
         case "agregar":
@@ -236,8 +227,5 @@ if(isset($_POST["accion"])) {
             $controlador->retirar();
 
             break;
-
-
     }
-
 }

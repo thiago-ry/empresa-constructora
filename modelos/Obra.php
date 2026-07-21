@@ -15,18 +15,17 @@ class Obra
   public function obtenerTodos()
 {
     $sql = "SELECT
-                o.id_obra,
-                o.nombre_obra,
-                o.direccion,
-                o.fecha_inicio,
-                o.fecha_fin,
-                o.estado,
-                c.nombre AS nombre_cliente,
-                c.apellido AS apellido_cliente
-            FROM obra o
-            INNER JOIN cliente c
-                ON o.id_cliente = c.id_cliente
-            ORDER BY o.nombre_obra ASC";
+    o.id_obra,
+    o.nombre_obra,
+    o.direccion,
+    o.fecha_inicio,
+    o.fecha_fin,
+    o.estado,
+    u.nombre AS nombre_cliente,
+    u.apellido AS apellido_cliente
+FROM obra o
+INNER JOIN usuario u
+    ON o.id_usuario = u.id_usuario";
 
 
     $consulta = $this->conexion->prepare($sql);
@@ -53,13 +52,12 @@ public function obtenerEstados()
     public function buscarPorId($id)
 {
     $sql = "SELECT
-                o.*,
-                c.nombre AS nombre_cliente,
-                c.apellido AS apellido_cliente
-            FROM obra o
-            INNER JOIN cliente c
-                ON o.id_cliente = c.id_cliente
-            WHERE o.id_obra = :id";
+    o.*,
+    u.nombre AS nombre_cliente,
+    u.apellido AS apellido_cliente
+FROM obra o
+INNER JOIN usuario u
+    ON o.id_usuario = u.id_usuario";
 
     $consulta = $this->conexion->prepare($sql);
 
@@ -74,7 +72,7 @@ public function obtenerEstados()
 {
     $sql = "INSERT INTO obra
             (
-                id_cliente,
+                id_usuario,
                 nombre_obra,
                 direccion,
                 descripcion,
@@ -85,7 +83,7 @@ public function obtenerEstados()
             )
             VALUES
             (
-                :id_cliente,
+                :id_usuario,
                 :nombre_obra,
                 :direccion,
                 :descripcion,
@@ -101,7 +99,7 @@ public function obtenerEstados()
 
     $consulta->execute([
 
-        ":id_cliente" => $datos["id_cliente"],
+        ":id_usuario" => $datos["id_usuario"],
 
         ":nombre_obra" => $datos["nombre_obra"],
 
@@ -125,7 +123,7 @@ public function obtenerEstados()
     {
         $sql = "UPDATE obra
                 SET
-                    id_cliente=:id_cliente,
+                    id_usuario=:id_usuario,
                     nombre_obra=:nombre_obra,
                     direccion=:direccion,
                     descripcion=:descripcion,
@@ -138,7 +136,7 @@ public function obtenerEstados()
 
         return $consulta->execute([
 
-            ":id_cliente"=>$datos["id_cliente"],
+            ":id_usuario"=>$datos["id_usuario"],
             ":nombre_obra"=>$datos["nombre_obra"],
             ":direccion"=>$datos["direccion"],
             ":descripcion"=>$datos["descripcion"],
@@ -177,14 +175,12 @@ public function obtenerEstados()
     public function obtenerActivas()
     {
         $sql = "SELECT
-                    o.*,
-                    c.nombre,
-                    c.apellido
-                FROM obra o
-                INNER JOIN cliente c
-                    ON o.id_cliente=c.id_cliente
-                WHERE o.activo=1
-                ORDER BY o.nombre_obra";
+    o.*,
+    u.nombre,
+    u.apellido
+FROM obra o
+INNER JOIN usuario u
+    ON o.id_usuario = u.id_usuario";
 
         $consulta = $this->conexion->prepare($sql);
         $consulta->execute();

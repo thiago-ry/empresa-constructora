@@ -5,12 +5,9 @@ if (!isset($empleadosDisponibles)) {
     header("Location: ../../../controladores/EmpleadoObraController.php?accion=crear&id_obra=" . $_GET["id_obra"]);
 
     exit();
+
 }
 
-?>
-
-
-<?php
 
 require_once __DIR__ . "/../../../config/permisos.php";
 
@@ -26,43 +23,17 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 <main class="content">
 
 
-    <div class="page-header">
+    <div class="page-title">
 
 
-        <div>
-
-            <h1 class="page-title">
-
-                Asignar empleado
-
-            </h1>
+        <h1>
+            Asignar empleado
+        </h1>
 
 
-            <p>
-
-                Registrar un nuevo empleado dentro de la obra.
-
-            </p>
-
-
-        </div>
-
-
-
-        <a
-
-            href="index.php?id_obra=<?= $_GET["id_obra"] ?>"
-
-            class="btn btn-secondary">
-
-
-            <i class="fa-solid fa-arrow-left"></i>
-
-            Volver
-
-
-        </a>
-
+        <p>
+            Seleccione un empleado activo para incorporarlo a la obra.
+        </p>
 
 
     </div>
@@ -70,41 +41,37 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
 
 
-
-    <div class="table-container">
-
+    <div class="form-card">
 
 
-        <div class="table-header">
+        <form
 
+            class="form"
 
-            <h2>
+            action="/empresa_constructora/controladores/EmpleadoObraController.php"
 
-                Datos de asignación
+            method="POST"
 
-            </h2>
-
-
-        </div>
+            autocomplete="off">
 
 
 
+            <input
+                type="hidden"
+                name="accion"
+                value="agregar">
 
 
-        <form method="POST" action="/empresa_constructora/controladores/EmpleadoObraController.php">
-
-
-
-            <input type="hidden" name="accion" value="agregar">
-
-
-            <input type="hidden" name="id_obra" value="<?= $_GET["id_obra"] ?>">
+            <input
+                type="hidden"
+                name="id_obra"
+                value="<?= $_GET["id_obra"] ?>">
 
 
 
 
 
-            <div class="form-grid">
+            <div class="form-row">
 
 
 
@@ -121,11 +88,11 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
                     <select
 
-                        name="id_empleado"
+                        name="id_usuario"
 
-                        required
+                        class="filter"
 
-                        class="form-control">
+                        required>
 
 
                         <option value="">
@@ -139,15 +106,18 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
                         <?php foreach ($empleadosDisponibles as $e): ?>
 
 
-                            <option value="<?= $e["id_empleado"] ?>">
+                            <option
+
+                                value="<?= $e["id_usuario"] ?>">
 
 
-                                <?= htmlspecialchars($e["apellido"]) ?>,
+                                <?= htmlspecialchars($e["apellido"]) ?>
 
                                 <?= htmlspecialchars($e["nombre"]) ?>
 
+                                -
 
-                                - DNI:
+                                DNI:
 
                                 <?= htmlspecialchars($e["documento"]) ?>
 
@@ -158,12 +128,10 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
                         <?php endforeach; ?>
 
 
-
                     </select>
 
 
                 </div>
-
 
 
 
@@ -179,47 +147,18 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
                     </label>
 
 
+
                     <input
 
                         type="date"
 
                         name="fecha_ingreso"
 
+                        class="input"
+
                         value="<?= date("Y-m-d") ?>"
 
-                        required
-
-                        class="form-control">
-
-
-                </div>
-
-
-
-
-
-                <div class="form-group">
-
-
-                    <label>
-
-                        Observaciones
-
-                    </label>
-
-
-
-                    <textarea
-
-                        name="observaciones"
-
-                        class="form-control"
-
-                        rows="4"
-
-                        placeholder="Observaciones del empleado">
-
-</textarea>
+                        required>
 
 
 
@@ -234,43 +173,101 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
 
 
-            <br>
+
+            <div class="form-group">
+
+
+                <label>
+
+                    Observaciones
+
+                </label>
 
 
 
-            <button
+                <textarea
 
-                type="submit"
+                    name="observaciones"
 
-                class="btn btn-primary">
+                    class="input"
+
+                    rows="4"
+
+                    placeholder="Ingrese observaciones sobre la asignación"></textarea>
 
 
-                <i class="fa-solid fa-save"></i>
-
-                Guardar
-
-
-            </button>
-
+            </div>
 
 
 
-            <a
-
-                    href="listar.php?id_obra=<?= $_GET["id_obra"] ?>"
-
-                class="btn btn-secondary">
 
 
-                Cancelar
+
+            <div class="form-actions">
 
 
-            </a>
+
+
+
+   <a
+    href="http://localhost/empresa_constructora/controladores/EmpleadoObraController.php?accion=listar&id_obra=<?= $_GET["id_obra"] ?>"
+    class="btn btn-secondary">
+
+    Cancelar
+
+</a>
+
+
+
+
+
+
+                <button
+
+                    type="reset"
+
+                    class="btn btn-warning">
+
+
+                    <i class="fa-solid fa-rotate-left"></i>
+
+
+                    Limpiar
+
+
+                </button>
+
+
+
+
+
+
+
+                <button
+
+                    type="submit"
+
+                    class="btn btn-primary">
+
+
+                    <i class="fa-solid fa-user-plus"></i>
+
+
+                    Asignar empleado
+
+
+                </button>
+
+
+
+
+
+            </div>
+
 
 
 
         </form>
-
 
 
 
@@ -279,6 +276,7 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
 
 </main>
+
 
 
 

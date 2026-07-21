@@ -27,7 +27,7 @@ class ObraController
 
         $datos = [
 
-            "id_cliente" => $_POST["id_cliente"],
+            "id_usuario" => $_POST["id_usuario"],
             "nombre_obra" => $_POST["nombre_obra"],
             "direccion" => $_POST["direccion"],
             "descripcion" => $_POST["descripcion"],
@@ -70,7 +70,7 @@ class ObraController
         $datos = [
 
             "id_obra" => $_POST["id_obra"],
-            "id_cliente" => $_POST["id_cliente"],
+            "id_usuario" => $_POST["id_usuario"],
             "nombre_obra" => $_POST["nombre_obra"],
             "direccion" => $_POST["direccion"],
             "descripcion" => $_POST["descripcion"],

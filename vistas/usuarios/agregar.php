@@ -110,6 +110,31 @@ require_once "../../layouts/sidebar.php";
                 </div>
 
             </div>
+                            <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label>Documento</label>
+
+                        <input
+                            type="text"
+                            name="documento"
+                            class="input">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Teléfono</label>
+
+                        <input
+                            type="text"
+                            name="telefono"
+                            class="input">
+
+                    </div>
+
+                </div>
 
             <div class="form-row">
 
@@ -171,31 +196,6 @@ require_once "../../layouts/sidebar.php";
 
                 </div>
 
-                <div class="form-row">
-
-                    <div class="form-group">
-
-                        <label>Documento</label>
-
-                        <input
-                            type="text"
-                            name="documento"
-                            class="input">
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <label>Teléfono</label>
-
-                        <input
-                            type="text"
-                            name="telefono_empleado"
-                            class="input">
-
-                    </div>
-
-                </div>
 
                 <div class="form-row">
 
@@ -205,7 +205,7 @@ require_once "../../layouts/sidebar.php";
 
                         <input
                             type="text"
-                            name="direccion_empleado"
+                            name="direccion"
                             class="input">
 
                     </div>
@@ -231,59 +231,6 @@ require_once "../../layouts/sidebar.php";
             <!-- ============================= -->
             <!-- DATOS CLIENTE -->
             <!-- ============================= -->
-
-            <div
-                id="datosCliente"
-                class="card"
-                style="display:none;margin-top:30px;">
-
-                <div class="card-header">
-
-                    <div>
-
-                        <h2>
-
-                            Datos del cliente
-
-                        </h2>
-
-                        <p>
-
-                            Información de contacto.
-
-                        </p>
-
-                    </div>
-
-                </div>
-
-                <div class="form-row">
-
-                    <div class="form-group">
-
-                        <label>Teléfono</label>
-
-                        <input
-                            type="text"
-                            name="telefono_cliente"
-                            class="input">
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <label>Dirección</label>
-
-                        <input
-                            type="text"
-                            name="direccion_cliente"
-                            class="input">
-
-                    </div>
-
-                </div>
-
-            </div>
 
 
             <div class="form-actions">
@@ -332,13 +279,10 @@ const rol=document.getElementById("rol");
 
 const empleado=document.getElementById("datosEmpleado");
 
-const cliente=document.getElementById("datosCliente");
 
 rol.addEventListener("change",function(){
 
     empleado.style.display="none";
-
-    cliente.style.display="none";
 
     if(this.value=="<?= $idRolEmpleado ?>"){
 
@@ -346,11 +290,6 @@ rol.addEventListener("change",function(){
 
     }
 
-    if(this.value=="<?= $idRolCliente ?>"){
-
-        cliente.style.display="block";
-
-    }
 
 });
 

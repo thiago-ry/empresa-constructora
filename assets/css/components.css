@@ -554,3 +554,45 @@ color:#ff6b6b;
     }
 
 }
+
+.alert-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.alert{
+    margin-top:20px;
+    background:#111e2b;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:14px;
+    padding:22px;
+    transition:.25s;
+    width: 30%;
+}
+
+.alert-danger h3{
+    color: rgb(238, 44, 44);
+}
+
+.alert-danger p{
+    color: #656f77;
+    font-weight: 500;
+}
+
+.alert-success h3{
+    color: rgb(24, 177, 4);
+}
+
+.alert-success p{
+    color: #656f77;
+    font-weight: 500;
+}
+.alert-info h3{
+    color: rgb(16, 4, 177);
+}
+
+.alert-info p{
+    color: #656f77;
+    font-weight: 500;
+}

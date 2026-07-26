@@ -12,9 +12,9 @@ class Obra
         $this->conexion = $db->conectar();
     }
 
-  public function obtenerTodos()
-{
-    $sql = "SELECT
+    public function obtenerTodos()
+    {
+        $sql = "SELECT
     o.id_obra,
     o.nombre_obra,
     o.direccion,
@@ -28,49 +28,50 @@ INNER JOIN usuario u
     ON o.id_usuario = u.id_usuario";
 
 
-    $consulta = $this->conexion->prepare($sql);
+        $consulta = $this->conexion->prepare($sql);
 
-    $consulta->execute();
+        $consulta->execute();
 
 
-    return $consulta->fetchAll(PDO::FETCH_ASSOC);
-}
+        return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    }
 
-public function obtenerEstados()
-{
-    $sql = "SHOW COLUMNS FROM obra LIKE 'estado'";
+    public function obtenerEstados()
+    {
+        $sql = "SHOW COLUMNS FROM obra LIKE 'estado'";
 
-    $consulta = $this->conexion->prepare($sql);
-    $consulta->execute();
+        $consulta = $this->conexion->prepare($sql);
+        $consulta->execute();
 
-    $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
+        $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
 
-    preg_match("/^enum\(\'(.*)\'\)$/", $resultado["Type"], $matches);
+        preg_match("/^enum\(\'(.*)\'\)$/", $resultado["Type"], $matches);
 
-    return explode("','", $matches[1]);
-}
+        return explode("','", $matches[1]);
+    }
     public function buscarPorId($id)
 {
     $sql = "SELECT
-    o.*,
-    u.nombre AS nombre_cliente,
-    u.apellido AS apellido_cliente
-FROM obra o
-INNER JOIN usuario u
-    ON o.id_usuario = u.id_usuario";
+                o.*,
+                u.nombre AS nombre_cliente,
+                u.apellido AS apellido_cliente
+            FROM obra o
+            INNER JOIN usuario u
+                ON o.id_usuario = u.id_usuario
+            WHERE o.id_obra = :id";
 
     $consulta = $this->conexion->prepare($sql);
 
-    $consulta->bindParam(":id",$id);
+    $consulta->bindParam(":id", $id, PDO::PARAM_INT);
 
     $consulta->execute();
 
     return $consulta->fetch(PDO::FETCH_ASSOC);
 }
 
-  public function agregar($datos)
-{
-    $sql = "INSERT INTO obra
+    public function agregar($datos)
+    {
+        $sql = "INSERT INTO obra
             (
                 id_usuario,
                 nombre_obra,
@@ -94,30 +95,30 @@ INNER JOIN usuario u
             )";
 
 
-    $consulta = $this->conexion->prepare($sql);
+        $consulta = $this->conexion->prepare($sql);
 
 
-    $consulta->execute([
+        $consulta->execute([
 
-        ":id_usuario" => $datos["id_usuario"],
+            ":id_usuario" => $datos["id_usuario"],
 
-        ":nombre_obra" => $datos["nombre_obra"],
+            ":nombre_obra" => $datos["nombre_obra"],
 
-        ":direccion" => $datos["direccion"],
+            ":direccion" => $datos["direccion"],
 
-        ":descripcion" => $datos["descripcion"],
+            ":descripcion" => $datos["descripcion"],
 
-        ":fecha_inicio" => $datos["fecha_inicio"],
+            ":fecha_inicio" => $datos["fecha_inicio"],
 
-        ":fecha_fin" => $datos["fecha_fin"],
+            ":fecha_fin" => $datos["fecha_fin"],
 
-        ":estado" => $datos["estado"]
+            ":estado" => $datos["estado"]
 
-    ]);
+        ]);
 
 
-    return $this->conexion->lastInsertId();
-}
+        return $this->conexion->lastInsertId();
+    }
 
     public function editar($datos)
     {
@@ -136,14 +137,14 @@ INNER JOIN usuario u
 
         return $consulta->execute([
 
-            ":id_usuario"=>$datos["id_usuario"],
-            ":nombre_obra"=>$datos["nombre_obra"],
-            ":direccion"=>$datos["direccion"],
-            ":descripcion"=>$datos["descripcion"],
-            ":fecha_inicio"=>$datos["fecha_inicio"],
-            ":fecha_fin"=>$datos["fecha_fin"],
-            ":estado"=>$datos["estado"],
-            ":id_obra"=>$datos["id_obra"]
+            ":id_usuario" => $datos["id_usuario"],
+            ":nombre_obra" => $datos["nombre_obra"],
+            ":direccion" => $datos["direccion"],
+            ":descripcion" => $datos["descripcion"],
+            ":fecha_inicio" => $datos["fecha_inicio"],
+            ":fecha_fin" => $datos["fecha_fin"],
+            ":estado" => $datos["estado"],
+            ":id_obra" => $datos["id_obra"]
 
         ]);
     }
@@ -155,7 +156,7 @@ INNER JOIN usuario u
                 WHERE id_obra = :id";
 
         $consulta = $this->conexion->prepare($sql);
-        $consulta->bindParam(":id",$id);
+        $consulta->bindParam(":id", $id);
 
         return $consulta->execute();
     }
@@ -167,7 +168,7 @@ INNER JOIN usuario u
                 WHERE id_obra = :id";
 
         $consulta = $this->conexion->prepare($sql);
-        $consulta->bindParam(":id",$id);
+        $consulta->bindParam(":id", $id);
 
         return $consulta->execute();
     }

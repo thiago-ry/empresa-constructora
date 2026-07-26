@@ -238,7 +238,7 @@ require_once "../../layouts/sidebar.php";
         </div>
 
     </div>
-        <div class="toolbar">
+    <div class="toolbar">
 
         <h2>
             Módulos de la obra
@@ -294,13 +294,13 @@ require_once "../../layouts/sidebar.php";
                 Empleados
             </h3>
 
-<a
-href="../../controladores/EmpleadoObraController.php?accion=listar&id_obra=<?= $detalle["id_obra"] ?>"
-class="btn btn-primary">
+            <a
+                href="../../controladores/EmpleadoObraController.php?accion=listar&id_obra=<?= $detalle["id_obra"] ?>"
+                class="btn btn-primary">
 
-    Ingresar
+                Ingresar
 
-</a>
+            </a>
 
         </div>
 
@@ -333,10 +333,10 @@ class="btn btn-primary">
             </h3>
 
             <a
-                href="#"
-                class="btn btn-secondary">
+                href="herramientas/index.php?id_obra=<?= $detalle["id_obra"] ?>"
+                class="btn btn-primary">
 
-                Próximamente
+                Ingresar
 
             </a>
 

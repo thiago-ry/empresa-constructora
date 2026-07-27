@@ -129,16 +129,19 @@ require_once "../../layouts/sidebar.php";
 
                 </select>
             </div>
-            <div>
+            <div style="display: flex; flex-direction: column; margin: 20px;">
                 <button
                     onclick="window.print()"
-                    class="btn btn-primary">
+                    class="btn btn-primary"
+                    style="margin-bottom: 10px;">
                     <i class="fa-solid fa-print"></i>
+                    Imprimir
                 </button>
                 <a
                     href="agregar.php"
                     class="btn btn-primary">
                     <i class="fa-solid fa-plus"></i>
+                    Agregar
                 </a>
             </div>
         </div>
@@ -177,11 +180,11 @@ require_once "../../layouts/sidebar.php";
                         <td>
                             <?= $u["documento"]; ?>
                         </td>
- <td title="<?= $u["correo"]; ?>">
-    <?= strlen($u["correo"]) > 15
-        ? substr($u["correo"], 0, 15) . "..."
-        : $u["correo"]; ?>
-</td>
+                        <td title="<?= $u["correo"]; ?>">
+                            <?= strlen($u["correo"]) > 15
+                                ? substr($u["correo"], 0, 15) . "..."
+                                : $u["correo"]; ?>
+                        </td>
                         <td>
                             <?= $u["telefono"]; ?>
                         </td>
@@ -193,44 +196,45 @@ require_once "../../layouts/sidebar.php";
                                 <?= $u['estado'] == 1 ? 'Activo' : 'Inactivo' ?>
                             </span>
                         </td>
-                        <td class="no-print" style="display: flex; flex-direction: row; justify-content: space-between;">
+                        <td class="no-print">
+                            <div class="table-actions">
+                                <a href="editar.php?id=<?= $u['id_usuario']; ?>" class="btn btn-warning">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
 
-                            <a href="editar.php?id=<?= $u['id_usuario']; ?>" class="btn btn-warning">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
+                                <?php if ($u["estado"] == 1) { ?>
 
-                            <?php if ($u["estado"] == 1) { ?>
+                                    <?php if ($usuario->tieneObras($u["id_usuario"])) { ?>
 
-                                <?php if ($usuario->tieneObras($u["id_usuario"])) { ?>
+                                        <button
+                                            class="btn btn-secondary"
+                                            disabled
+                                            title="No se puede dar de baja porque tiene obras asociadas">
+                                            <i class="fa-solid fa-ban"></i>
+                                        </button>
 
-                                    <button
-                                        class="btn btn-secondary"
-                                        disabled
-                                        title="No se puede dar de baja porque tiene obras asociadas">
-                                        <i class="fa-solid fa-ban"></i>
-                                    </button>
+                                    <?php } else { ?>
+
+                                        <a
+                                            href="../../controladores/UsuarioController.php?accion=baja&id=<?= $u['id_usuario']; ?>"
+                                            class="btn btn-danger"
+                                            onclick="return confirm('¿Está seguro que desea desactivar a este usuario?');">
+                                            <i class="fa-solid fa-times"></i>
+                                        </a>
+
+                                    <?php } ?>
 
                                 <?php } else { ?>
 
                                     <a
-                                        href="../../controladores/UsuarioController.php?accion=baja&id=<?= $u['id_usuario']; ?>"
-                                        class="btn btn-danger"
-                                        onclick="return confirm('¿Está seguro que desea dar de baja este usuario?');">
-                                        <i class="fa-solid fa-times"></i>
+                                        href="../../controladores/UsuarioController.php?accion=activar&id=<?= $u['id_usuario']; ?>"
+                                        class="btn btn-success">
+                                        <i class="fa-solid fa-check"></i>
                                     </a>
 
                                 <?php } ?>
 
-                            <?php } else { ?>
-
-                                <a
-                                    href="../../controladores/UsuarioController.php?accion=activar&id=<?= $u['id_usuario']; ?>"
-                                    class="btn btn-success">
-                                    <i class="fa-solid fa-check"></i>
-                                </a>
-
-                            <?php } ?>
-
+                            </div>
                         </td>
                     </tr>
                 <?php } ?>

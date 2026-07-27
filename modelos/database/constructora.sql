@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-07-2026 a las 02:38:55
+-- Tiempo de generación: 27-07-2026 a las 04:15:58
 -- Versión del servidor: 10.4.11-MariaDB
 -- Versión de PHP: 7.4.2
 
@@ -35,6 +35,65 @@ CREATE TABLE `acceso_usuario` (
   `fecha_hora_salida` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Volcado de datos para la tabla `acceso_usuario`
+--
+
+INSERT INTO `acceso_usuario` (`id_acceso`, `id_usuario`, `fecha_hora_ingreso`, `fecha_hora_salida`) VALUES
+(1, 13, '2026-07-08 23:03:02', NULL),
+(2, 15, '2026-07-08 23:05:15', '2026-07-08 23:05:21'),
+(3, 15, '2026-07-08 23:06:00', '2026-07-08 23:06:06'),
+(4, 13, '2026-07-08 23:11:16', '2026-07-08 23:11:22'),
+(5, 8, '2026-07-09 00:38:29', '2026-07-09 00:38:52'),
+(6, 15, '2026-07-09 00:38:59', '2026-07-09 00:39:11'),
+(7, 24, '2026-07-09 00:39:30', '2026-07-09 00:39:37'),
+(8, 9, '2026-07-09 00:41:55', NULL),
+(10, 12, '2026-07-09 21:30:42', '2026-07-09 21:31:18'),
+(11, 8, '2026-07-09 21:37:39', '2026-07-09 23:25:51'),
+(13, 27, '2026-07-09 23:58:39', '2026-07-09 23:59:18'),
+(14, 27, '2026-07-09 23:59:31', '2026-07-10 00:00:54'),
+(15, 27, '2026-07-10 00:11:24', '2026-07-10 00:15:27'),
+(16, 10, '2026-07-10 00:15:49', '2026-07-10 00:20:46'),
+(17, 27, '2026-07-10 00:21:04', '2026-07-10 00:34:02'),
+(18, 27, '2026-07-10 00:34:08', NULL),
+(19, 27, '2026-07-10 15:39:57', '2026-07-10 15:47:32'),
+(20, 27, '2026-07-10 15:49:30', '2026-07-10 16:19:11'),
+(21, 27, '2026-07-10 16:19:15', '2026-07-10 19:03:53'),
+(22, 27, '2026-07-10 19:07:07', '2026-07-10 19:34:21'),
+(26, 27, '2026-07-10 19:46:30', '2026-07-10 19:47:01'),
+(27, 27, '2026-07-10 19:48:03', '2026-07-10 20:20:16'),
+(28, 27, '2026-07-10 20:20:28', NULL),
+(29, 27, '2026-07-11 09:25:56', NULL),
+(30, 27, '2026-07-13 11:58:06', '2026-07-13 13:14:28'),
+(31, 27, '2026-07-13 13:15:20', '2026-07-13 14:17:10'),
+(32, 27, '2026-07-13 14:18:14', '2026-07-13 16:20:24'),
+(33, 27, '2026-07-13 21:03:05', NULL),
+(34, 27, '2026-07-14 11:56:29', NULL),
+(35, 27, '2026-07-16 11:28:21', '2026-07-16 11:40:52'),
+(36, 28, '2026-07-16 11:41:06', '2026-07-16 13:44:47'),
+(37, 28, '2026-07-16 15:02:02', NULL),
+(38, 27, '2026-07-16 20:51:53', NULL),
+(39, 27, '2026-07-17 11:39:43', '2026-07-17 13:22:08'),
+(40, 27, '2026-07-17 21:08:07', NULL),
+(41, 27, '2026-07-18 19:41:13', NULL),
+(42, 27, '2026-07-18 19:43:14', '2026-07-19 12:36:08'),
+(43, 41, '2026-07-19 12:36:26', '2026-07-19 12:36:37'),
+(44, 27, '2026-07-19 12:36:43', NULL),
+(45, 27, '2026-07-20 22:10:08', NULL),
+(46, 27, '2026-07-21 11:22:43', '2026-07-21 18:04:32'),
+(47, 20, '2026-07-21 18:06:10', '2026-07-21 18:06:44'),
+(48, 16, '2026-07-21 20:25:47', NULL),
+(49, 27, '2026-07-22 14:14:11', NULL),
+(50, 27, '2026-07-22 16:06:04', NULL),
+(51, 27, '2026-07-22 18:27:17', NULL),
+(52, 27, '2026-07-22 18:36:49', NULL),
+(53, 27, '2026-07-24 11:55:24', NULL),
+(54, 27, '2026-07-26 20:07:00', '2026-07-26 20:38:33'),
+(55, 27, '2026-07-26 20:48:13', '2026-07-26 21:44:36'),
+(56, 27, '2026-07-26 21:44:48', '2026-07-26 21:51:49'),
+(57, 27, '2026-07-26 21:52:43', NULL),
+(58, 27, '2026-07-26 22:13:53', '2026-07-26 23:12:35');
+
 -- --------------------------------------------------------
 
 --
@@ -43,7 +102,7 @@ CREATE TABLE `acceso_usuario` (
 
 CREATE TABLE `asistencia` (
   `id_asistencia` int(11) NOT NULL,
-  `id_empleado` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
   `fecha` date NOT NULL,
   `hora_entrada` time DEFAULT NULL,
   `hora_salida` time DEFAULT NULL
@@ -60,9 +119,34 @@ CREATE TABLE `auditoria` (
   `id_usuario` int(11) NOT NULL,
   `accion` varchar(100) NOT NULL,
   `tabla_afectada` varchar(100) DEFAULT NULL,
+  `id_registro` int(11) DEFAULT NULL,
   `fecha` datetime DEFAULT current_timestamp(),
   `descripcion` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `auditoria`
+--
+
+INSERT INTO `auditoria` (`id_auditoria`, `id_usuario`, `accion`, `tabla_afectada`, `id_registro`, `fecha`, `descripcion`) VALUES
+(239, 27, 'INSERTAR', 'usuario', 44, '2026-07-26 20:10:18', 'Registró un nuevo usuario'),
+(240, 27, 'EDITAR', 'usuario', 44, '2026-07-26 20:10:51', 'Modificó el usuario'),
+(241, 27, 'BAJA', 'usuario', 44, '2026-07-26 20:11:13', 'Desactivó un usuario'),
+(242, 27, 'ACTIVAR', 'usuario', 44, '2026-07-26 20:11:31', 'Activó nuevamente un usuario'),
+(243, 27, 'INSERTAR', 'obra', 18, '2026-07-26 20:13:23', 'Registró la obra: Refacción de la E.P.E.S N° 5'),
+(244, 27, 'EDITAR', 'obra', 9, '2026-07-26 20:15:25', 'Modificó la obra Quincho Amyra'),
+(245, 27, 'INSERTAR', 'avance_diario', 28, '2026-07-26 20:17:06', 'Se registró un nuevo avance diario en la obra ID 9'),
+(246, 27, 'EDITAR', 'avance_diario', 28, '2026-07-26 20:17:26', 'Se modificó un avance diario de la obra ID 9'),
+(247, 27, 'INSERTAR', 'empleado_obra', 42, '2026-07-26 20:17:52', 'Asignó un empleado a una obra'),
+(248, 27, 'INSERTAR', 'herramienta_obra', 15, '2026-07-26 20:32:26', 'Asignación de herramienta a obra'),
+(249, 27, 'EDITAR', 'herramienta_obra', 23, '2026-07-26 20:33:06', 'Actualización de herramienta asignada'),
+(250, 27, 'INSERTAR', 'herramienta_obra', 9, '2026-07-26 21:48:06', 'Asignación de herramienta a obra'),
+(251, 27, 'EDITAR', 'herramienta_obra', 25, '2026-07-26 21:48:37', 'Actualización de herramienta asignada'),
+(252, 27, 'EDITAR', 'herramienta_obra', 24, '2026-07-26 21:49:07', 'Actualización de herramienta asignada'),
+(253, 27, 'INSERTAR', 'avance_diario', 29, '2026-07-26 21:50:05', 'Se registró un nuevo avance diario en la obra ID 9'),
+(254, 27, 'ELIMINAR', 'avance_diario', 24, '2026-07-26 21:50:20', 'Se eliminó un avance diario de la obra ID 9'),
+(255, 27, 'ELIMINAR', 'avance_diario', 28, '2026-07-26 21:50:23', 'Se eliminó un avance diario de la obra ID 9'),
+(256, 27, 'ELIMINAR', 'avance_diario', 29, '2026-07-26 21:50:26', 'Se eliminó un avance diario de la obra ID 9');
 
 -- --------------------------------------------------------
 
@@ -82,58 +166,9 @@ CREATE TABLE `avance_diario` (
 --
 
 INSERT INTO `avance_diario` (`id_avance_diario`, `id_obra`, `fecha`, `descripcion`) VALUES
-(1, 1, '2026-01-12', 'Se realizó excavación del terreno y preparación para la construcción de los cimientos.'),
-(2, 1, '2026-01-18', 'Se colocaron hierros estructurales y se preparó el hormigonado de la base.'),
-(3, 1, '2026-01-25', 'Finalización de cimientos y preparación para iniciar la estructura.'),
-(4, 1, '2026-02-10', 'Construcción de columnas y vigas principales de la vivienda.'),
-(5, 1, '2026-03-05', 'Avance en levantamiento de paredes interiores y exteriores.'),
-(6, 1, '2026-04-10', 'Instalación de cableado eléctrico y cañerías sanitarias.'),
-(7, 1, '2026-05-05', 'Trabajos de pintura, colocación de pisos y terminaciones finales.'),
-(8, 2, '2026-02-10', 'Inicio de demolición de sectores internos del local.'),
-(9, 2, '2026-02-18', 'Retiro de materiales antiguos y limpieza del área de trabajo.'),
-(10, 2, '2026-03-05', 'Modificación de espacios internos según el nuevo diseño.'),
-(11, 2, '2026-04-01', 'Instalación de sistema eléctrico y adecuación de iluminación.'),
-(12, 3, '2026-03-15', 'Preparación del terreno y nivelación del área de construcción.'),
-(13, 3, '2026-03-25', 'Finalización del movimiento de suelo e inicio de excavaciones.'),
-(14, 3, '2026-04-15', 'Construcción inicial de bases y cimientos del edificio.'),
-(15, 4, '2026-04-10', 'Revisión del espacio disponible y planificación de la ampliación.'),
-(16, 4, '2026-05-05', 'Preparación del terreno para comenzar la construcción.');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `avance_obra`
---
-
-CREATE TABLE `avance_obra` (
-  `id_avance` int(11) NOT NULL,
-  `id_obra` int(11) NOT NULL,
-  `fecha` date NOT NULL,
-  `porcentaje` decimal(5,2) NOT NULL,
-  `observaciones` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `avance_obra`
---
-
-INSERT INTO `avance_obra` (`id_avance`, `id_obra`, `fecha`, `porcentaje`, `observaciones`) VALUES
-(1, 1, '2026-01-08', '15.00', 'Finalización de planificación y comienzo de preparación del terreno.'),
-(2, 1, '2026-01-25', '30.00', 'Cimientos terminados correctamente.'),
-(3, 1, '2026-02-20', '50.00', 'Estructura principal finalizada.'),
-(4, 1, '2026-03-15', '65.00', 'Mampostería completada.'),
-(5, 1, '2026-03-30', '75.00', 'Techado finalizado.'),
-(6, 1, '2026-04-25', '90.00', 'Instalaciones terminadas.'),
-(7, 1, '2026-05-10', '95.00', 'Obra en etapa de terminaciones finales.'),
-(8, 2, '2026-02-07', '15.00', 'Planificación terminada.'),
-(9, 2, '2026-02-20', '35.00', 'Demolición completada.'),
-(10, 2, '2026-03-15', '60.00', 'Adecuaciones estructurales realizadas.'),
-(11, 2, '2026-04-05', '75.00', 'Instalaciones en proceso.'),
-(12, 3, '2026-03-10', '10.00', 'Planificación inicial completada.'),
-(13, 3, '2026-03-25', '25.00', 'Movimiento de suelo finalizado.'),
-(14, 3, '2026-04-20', '40.00', 'Construcción de cimientos en proceso.'),
-(15, 4, '2026-04-10', '10.00', 'Inicio de planificación de ampliación.'),
-(16, 4, '2026-05-01', '20.00', 'Preparación del área de construcción.');
+(22, 9, '2026-07-16', '4 m de contrapiso\r\n'),
+(23, 9, '2026-07-16', 'Revoque'),
+(27, 9, '2026-07-24', '5 m2 de contrapiso');
 
 -- --------------------------------------------------------
 
@@ -166,38 +201,12 @@ INSERT INTO `cargo` (`id_cargo`, `nombre_cargo`, `descripcion`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `cliente`
---
-
-CREATE TABLE `cliente` (
-  `id_cliente` int(11) NOT NULL,
-  `nombre` varchar(100) NOT NULL,
-  `apellido` varchar(100) DEFAULT NULL,
-  `telefono` varchar(20) DEFAULT NULL,
-  `direccion` varchar(255) DEFAULT NULL,
-  `correo` varchar(150) DEFAULT NULL,
-  `id_usuario` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `cliente`
---
-
-INSERT INTO `cliente` (`id_cliente`, `nombre`, `apellido`, `telefono`, `direccion`, `correo`, `id_usuario`) VALUES
-(1, 'Ana', 'López', '3704123456', 'Av. Italia 1250, Formosa', 'ana.lopez@gmail.com', 17),
-(2, 'Roberto', 'Suárez', '3704234567', 'B° San Martín 845, Formosa', 'roberto.suarez@gmail.com', 18),
-(3, 'Patricia', 'Morales', '3704345678', 'Av. González Lelong 542, Formosa', 'patricia.morales@gmail.com', 19),
-(4, 'Fernando', 'Almirón', '3704456789', 'B° Guadalupe 1130, Formosa', 'fernando.almiron@gmail.com', 20);
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `cobro`
 --
 
 CREATE TABLE `cobro` (
   `id_cobro` int(11) NOT NULL,
-  `id_cliente` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
   `id_obra` int(11) DEFAULT NULL,
   `fecha` date NOT NULL,
   `monto` decimal(15,2) NOT NULL,
@@ -212,7 +221,7 @@ CREATE TABLE `cobro` (
 
 CREATE TABLE `cuenta_cobrar` (
   `id_cuenta_cobrar` int(11) NOT NULL,
-  `id_cliente` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
   `monto` decimal(15,2) NOT NULL,
   `fecha_vencimiento` date NOT NULL,
   `estado` enum('Pendiente','Pagada','Vencida') DEFAULT 'Pendiente'
@@ -282,106 +291,54 @@ CREATE TABLE `documento_obra` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `empleado`
---
-
-CREATE TABLE `empleado` (
-  `id_empleado` int(11) NOT NULL,
-  `nombre` varchar(100) NOT NULL,
-  `apellido` varchar(100) NOT NULL,
-  `documento` varchar(20) NOT NULL,
-  `telefono` varchar(20) DEFAULT NULL,
-  `direccion` varchar(255) DEFAULT NULL,
-  `salario` decimal(12,2) DEFAULT NULL,
-  `estado` enum('Activo','Inactivo','Suspendido') DEFAULT 'Activo',
-  `id_usuario` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `empleado`
---
-
-INSERT INTO `empleado` (`id_empleado`, `nombre`, `apellido`, `documento`, `telefono`, `direccion`, `salario`, `estado`, `id_usuario`) VALUES
-(1, 'Juan', 'Pérez', '40123456', '3704123456', 'Barrio San Miguel, Formosa', '950000.00', 'Activo', 11),
-(2, 'Pedro', 'Sosa', '39234567', '3704234567', 'Barrio Eva Perón, Formosa', '850000.00', 'Activo', 12),
-(3, 'Lucas', 'Giménez', '41345678', '3704345678', 'Barrio Guadalupe, Formosa', '900000.00', 'Activo', 13),
-(4, 'Gabriel', 'Rojas', '38765432', '3704456789', 'Barrio San Francisco, Formosa', '920000.00', 'Activo', 14),
-(5, 'Matías', 'Silva', '39876543', '3704567890', 'Barrio Independencia, Formosa', '870000.00', 'Activo', 15),
-(6, 'José', 'Mendoza', '40567891', '3704678901', 'Barrio Liborsi, Formosa', '980000.00', 'Activo', 16),
-(7, 'Cristian', 'Benítez', '39654321', '3704789012', 'Barrio Colluccio, Formosa', '1100000.00', 'Activo', NULL),
-(8, 'Diego', 'Ramírez', '38987654', '3704890123', 'Barrio Obrero, Formosa', '1250000.00', 'Activo', NULL),
-(9, 'Ricardo', 'Fernández', '37654321', '3704901234', 'Barrio San Antonio, Formosa', '1400000.00', 'Activo', NULL),
-(10, 'Carlos', 'Acosta', '38543210', '3704012345', 'Barrio Don Bosco, Formosa', '1500000.00', 'Activo', NULL);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `empleado_cargo`
---
-
-CREATE TABLE `empleado_cargo` (
-  `id_empleado_cargo` int(11) NOT NULL,
-  `id_empleado` int(11) NOT NULL,
-  `id_cargo` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `empleado_cargo`
---
-
-INSERT INTO `empleado_cargo` (`id_empleado_cargo`, `id_empleado`, `id_cargo`) VALUES
-(1, 1, 1),
-(2, 1, 2),
-(3, 2, 2),
-(4, 2, 6),
-(5, 3, 3),
-(6, 3, 8),
-(7, 4, 4),
-(8, 5, 5),
-(9, 6, 6),
-(10, 6, 1),
-(11, 7, 7),
-(12, 7, 8),
-(13, 8, 8),
-(14, 8, 9),
-(15, 9, 9),
-(16, 9, 2),
-(17, 10, 10),
-(18, 10, 1);
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `empleado_obra`
 --
 
 CREATE TABLE `empleado_obra` (
   `id_empleado_obra` int(11) NOT NULL,
-  `id_empleado` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
   `id_obra` int(11) NOT NULL,
-  `fecha_asignacion` date NOT NULL
+  `fecha_ingreso` date NOT NULL,
+  `fecha_egreso` date DEFAULT NULL,
+  `motivo_egreso` varchar(255) DEFAULT NULL,
+  `observaciones` text DEFAULT NULL,
+  `estado` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `empleado_obra`
 --
 
-INSERT INTO `empleado_obra` (`id_empleado_obra`, `id_empleado`, `id_obra`, `fecha_asignacion`) VALUES
-(21, 1, 1, '2026-01-10'),
-(22, 2, 1, '2026-01-10'),
-(23, 10, 1, '2026-01-10'),
-(24, 3, 2, '2026-02-05'),
-(25, 4, 2, '2026-02-05'),
-(26, 5, 2, '2026-02-05'),
-(27, 10, 2, '2026-02-05'),
-(28, 1, 3, '2026-03-12'),
-(29, 6, 3, '2026-03-12'),
-(30, 7, 3, '2026-03-12'),
-(31, 10, 3, '2026-03-12'),
-(32, 2, 4, '2026-04-08'),
-(33, 8, 4, '2026-04-08'),
-(34, 9, 4, '2026-04-08'),
-(35, 10, 4, '2026-04-08');
+INSERT INTO `empleado_obra` (`id_empleado_obra`, `id_usuario`, `id_obra`, `fecha_ingreso`, `fecha_egreso`, `motivo_egreso`, `observaciones`, `estado`) VALUES
+(1, 27, 9, '2026-07-19', NULL, NULL, '', 1),
+(2, 27, 9, '2026-07-20', NULL, NULL, 'iuytrew', 1),
+(3, 27, 9, '2026-07-20', NULL, NULL, 'jhgfdgf', 1),
+(4, 29, 9, '2026-07-20', NULL, NULL, '', 1),
+(5, 21, 9, '2026-07-21', NULL, NULL, '', 1),
+(6, 43, 9, '2026-07-24', NULL, NULL, '', 1),
+(7, 42, 9, '2026-07-26', NULL, NULL, '', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `estado_herramienta`
+--
+
+CREATE TABLE `estado_herramienta` (
+  `id_estado_herramienta` int(11) NOT NULL,
+  `nombre` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `estado_herramienta`
+--
+
+INSERT INTO `estado_herramienta` (`id_estado_herramienta`, `nombre`) VALUES
+(2, 'Asignada'),
+(5, 'Devuelta'),
+(1, 'Disponible'),
+(3, 'En reparación'),
+(4, 'Fuera de servicio');
 
 -- --------------------------------------------------------
 
@@ -404,27 +361,14 @@ CREATE TABLE `etapa_obra` (
 --
 
 INSERT INTO `etapa_obra` (`id_etapa`, `id_obra`, `nombre_etapa`, `descripcion`, `fecha_inicio`, `fecha_fin`, `estado`) VALUES
-(1, 1, 'Planificación', 'Planificación y organización inicial del proyecto.', '2026-01-02', '2026-01-08', 'Finalizada'),
-(2, 1, 'Cimientos', 'Excavación y construcción de cimientos.', '2026-01-09', '2026-01-25', 'Finalizada'),
-(3, 1, 'Estructura', 'Construcción de columnas, vigas y losas.', '2026-01-26', '2026-02-20', 'Finalizada'),
-(4, 1, 'Mampostería', 'Levantamiento de paredes.', '2026-02-21', '2026-03-15', 'Finalizada'),
-(5, 1, 'Techado', 'Construcción y colocación del techo.', '2026-03-16', '2026-03-30', 'Finalizada'),
-(6, 1, 'Instalaciones', 'Instalaciones eléctricas y sanitarias.', '2026-04-01', '2026-04-25', 'Finalizada'),
-(7, 1, 'Terminaciones', 'Pintura, pisos y detalles finales.', '2026-04-26', NULL, 'En Proceso'),
-(8, 2, 'Planificación', 'Planificación de la remodelación.', '2026-02-01', '2026-02-07', 'Finalizada'),
-(9, 2, 'Demolición', 'Retiro de estructuras existentes.', '2026-02-08', '2026-02-20', 'Finalizada'),
-(10, 2, 'Estructura', 'Adecuación estructural del local.', '2026-02-21', '2026-03-15', 'Finalizada'),
-(11, 2, 'Instalaciones', 'Instalaciones eléctricas y sanitarias.', '2026-03-16', NULL, 'En Proceso'),
-(12, 2, 'Terminaciones', 'Pintura y acabados.', NULL, NULL, 'Pendiente'),
-(13, 3, 'Planificación', 'Planificación del edificio.', '2026-03-01', '2026-03-10', 'Finalizada'),
-(14, 3, 'Movimiento de Suelo', 'Preparación del terreno.', '2026-03-11', '2026-03-25', 'Finalizada'),
-(15, 3, 'Cimientos', 'Construcción de bases del edificio.', '2026-03-26', NULL, 'En Proceso'),
-(16, 3, 'Estructura', 'Construcción de la estructura principal.', NULL, NULL, 'Pendiente'),
-(17, 3, 'Mampostería', 'Construcción de paredes.', NULL, NULL, 'Pendiente'),
-(18, 4, 'Planificación', 'Planificación de la ampliación.', '2026-04-01', NULL, 'En Proceso'),
-(19, 4, 'Cimientos', 'Construcción de cimientos.', NULL, NULL, 'Pendiente'),
-(20, 4, 'Estructura', 'Construcción de estructura.', NULL, NULL, 'Pendiente'),
-(21, 4, 'Terminaciones', 'Acabados finales.', NULL, NULL, 'Pendiente');
+(25, 9, 'Preparación del terreno', 'Limpieza y nivelación del terreno', '2026-07-01', '2026-07-10', 'Finalizada'),
+(26, 9, 'Fundaciones', 'Construcción de bases', '2026-07-11', '2026-07-22', 'Pendiente'),
+(27, 9, 'Estructura', 'Levantamiento de estructura', '2026-07-17', '2026-07-31', 'Finalizada'),
+(28, 9, 'dfghjk', '6u5yrtg', '0000-00-00', '0000-00-00', 'Finalizada'),
+(29, 9, 'fggg', 'm', '0000-00-00', '0000-00-00', 'Finalizada'),
+(30, 9, 'Fundaciones', '', '0000-00-00', '0000-00-00', 'Finalizada'),
+(31, 15, 'rtthrth', '', '0000-00-00', '0000-00-00', 'Cancelada'),
+(32, 9, 'Estructura', '', '0000-00-00', '0000-00-00', 'En Proceso');
 
 -- --------------------------------------------------------
 
@@ -454,22 +398,6 @@ CREATE TABLE `foto_obra` (
   `fecha` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Volcado de datos para la tabla `foto_obra`
---
-
-INSERT INTO `foto_obra` (`id_foto`, `id_obra`, `ruta_imagen`, `descripcion`, `fecha`) VALUES
-(1, 1, 'assets/img/obras/obra1_planificacion.jpg', 'Inicio de planificación y preparación del terreno.', '2026-01-05'),
-(2, 1, 'assets/img/obras/obra1_cimientos.jpg', 'Construcción de los cimientos de la vivienda.', '2026-01-20'),
-(3, 1, 'assets/img/obras/obra1_estructura.jpg', 'Avance de columnas y estructura principal.', '2026-02-15'),
-(4, 1, 'assets/img/obras/obra1_terminaciones.jpg', 'Trabajos finales de pintura y acabados.', '2026-05-05'),
-(5, 2, 'assets/img/obras/obra2_inicio.jpg', 'Estado inicial del local antes de la remodelación.', '2026-02-05'),
-(6, 2, 'assets/img/obras/obra2_demolicion.jpg', 'Retiro de estructuras antiguas.', '2026-02-15'),
-(7, 2, 'assets/img/obras/obra2_instalaciones.jpg', 'Instalación eléctrica del nuevo espacio comercial.', '2026-04-01'),
-(8, 3, 'assets/img/obras/obra3_terreno.jpg', 'Preparación del terreno para construcción.', '2026-03-15'),
-(9, 3, 'assets/img/obras/obra3_cimientos.jpg', 'Construcción de bases del edificio.', '2026-04-15'),
-(10, 4, 'assets/img/obras/obra4_inicio.jpg', 'Inicio del proyecto de ampliación.', '2026-04-10');
-
 -- --------------------------------------------------------
 
 --
@@ -495,33 +423,18 @@ CREATE TABLE `herramienta` (
   `tipo` varchar(50) DEFAULT NULL,
   `marca` varchar(100) DEFAULT NULL,
   `modelo` varchar(100) DEFAULT NULL,
-  `numero_inventario` varchar(50) DEFAULT NULL,
   `cantidad_total` int(11) DEFAULT 1,
   `fecha_adquisicion` date DEFAULT NULL,
-  `costo` decimal(12,2) DEFAULT NULL,
-  `estado` enum('Disponible','Asignada','En reparación','Fuera de servicio') NOT NULL DEFAULT 'Disponible'
+  `costo` decimal(12,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `herramienta`
 --
 
-INSERT INTO `herramienta` (`id_herramienta`, `nombre`, `tipo`, `marca`, `modelo`, `numero_inventario`, `cantidad_total`, `fecha_adquisicion`, `costo`, `estado`) VALUES
-(16, 'Martillo de acero', 'Manual', NULL, NULL, NULL, 1, NULL, NULL, 'Disponible'),
-(17, 'Taladro eléctrico', 'Eléctrica', NULL, NULL, NULL, 1, NULL, NULL, 'Disponible'),
-(18, 'Amoladora angular', 'Eléctrica', NULL, NULL, NULL, 1, NULL, NULL, 'Disponible'),
-(19, 'Cinta métrica 5 metros', 'Medición', NULL, NULL, NULL, 1, NULL, NULL, 'Disponible'),
-(20, 'Nivel de burbuja', 'Medición', NULL, NULL, NULL, 1, NULL, NULL, 'Disponible'),
-(21, 'Pala de punta', 'Manual', NULL, NULL, NULL, 1, NULL, NULL, 'Disponible'),
-(22, 'Pico de construcción', 'Manual', NULL, NULL, NULL, 1, NULL, NULL, 'Asignada'),
-(23, 'Carretilla metálica', 'Transporte', NULL, NULL, NULL, 1, NULL, NULL, 'Asignada'),
-(24, 'Mezcladora de cemento', 'Maquinaria', NULL, NULL, NULL, 1, NULL, NULL, 'Asignada'),
-(25, 'Escalera extensible de aluminio', 'Altura', NULL, NULL, NULL, 1, NULL, NULL, 'Disponible'),
-(26, 'Juego de destornilladores', 'Manual', NULL, NULL, NULL, 1, NULL, NULL, 'Disponible'),
-(27, 'Llave inglesa ajustable', 'Manual', NULL, NULL, NULL, 1, NULL, NULL, 'Disponible'),
-(28, 'Soldadora eléctrica', 'Eléctrica', NULL, NULL, NULL, 1, NULL, NULL, 'En reparación'),
-(29, 'Compresor de aire', 'Maquinaria', NULL, NULL, NULL, 1, NULL, NULL, 'Disponible'),
-(30, 'Generador eléctrico portátil', 'Maquinaria', NULL, NULL, NULL, 1, NULL, NULL, 'Fuera de servicio');
+INSERT INTO `herramienta` (`id_herramienta`, `nombre`, `tipo`, `marca`, `modelo`, `cantidad_total`, `fecha_adquisicion`, `costo`) VALUES
+(35, 'Cinta', 'Medición', 'Hola', 'holaaa', 8, '2026-07-25', '30000.00'),
+(36, 'Martillo', 'Manual', 'Algo', '22ooj3', 6, '2026-07-18', '3000.00');
 
 -- --------------------------------------------------------
 
@@ -532,11 +445,28 @@ INSERT INTO `herramienta` (`id_herramienta`, `nombre`, `tipo`, `marca`, `modelo`
 CREATE TABLE `herramienta_obra` (
   `id_herramienta_obra` int(11) NOT NULL,
   `id_herramienta` int(11) NOT NULL,
-  `cantidad` int(11) DEFAULT 1,
   `id_obra` int(11) NOT NULL,
+  `cantidad` int(11) NOT NULL,
   `fecha_asignacion` date NOT NULL,
-  `fecha_devolucion` date DEFAULT NULL
+  `fecha_devolucion` date DEFAULT NULL,
+  `observaciones` text DEFAULT NULL,
+  `id_estado_herramienta` int(11) NOT NULL DEFAULT 2
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `herramienta_obra`
+--
+
+INSERT INTO `herramienta_obra` (`id_herramienta_obra`, `id_herramienta`, `id_obra`, `cantidad`, `fecha_asignacion`, `fecha_devolucion`, `observaciones`, `id_estado_herramienta`) VALUES
+(17, 35, 9, 3, '2026-07-24', '2026-07-30', '', 5),
+(18, 36, 9, 1, '2026-07-24', '2026-07-24', '', 5),
+(19, 35, 9, 3, '2026-07-24', '2026-07-25', '', 5),
+(20, 35, 9, 5, '2026-07-24', '2026-07-25', '', 5),
+(21, 35, 9, 6, '2026-07-24', '2026-07-18', '', 5),
+(22, 35, 9, 3, '2026-07-24', '2026-07-25', '', 5),
+(23, 35, 9, 6, '2026-07-24', '2026-07-26', '', 5),
+(24, 35, 15, 1, '2026-07-26', '2026-07-26', '', 5),
+(25, 35, 9, 3, '2026-07-26', '2026-07-28', '', 5);
 
 -- --------------------------------------------------------
 
@@ -561,7 +491,7 @@ CREATE TABLE `historial_estado_obra` (
 
 CREATE TABLE `horas_trabajadas` (
   `id_hora` int(11) NOT NULL,
-  `id_empleado` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
   `id_obra` int(11) NOT NULL,
   `cantidad_horas` decimal(5,2) NOT NULL,
   `fecha` date NOT NULL
@@ -583,22 +513,6 @@ CREATE TABLE `incidencia` (
   `solucion` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Volcado de datos para la tabla `incidencia`
---
-
-INSERT INTO `incidencia` (`id_incidencia`, `id_obra`, `fecha`, `tipo_incidencia`, `descripcion`, `estado`, `solucion`) VALUES
-(1, 1, '2026-02-03', 'Clima', 'Las lluvias intensas impidieron continuar con los trabajos exteriores de la obra.', 'Resuelta', 'Se reprogramaron las actividades y se retomaron los trabajos una vez mejoradas las condiciones climáticas.'),
-(2, 1, '2026-04-12', 'Material', 'Se detectó falta de materiales eléctricos necesarios para finalizar las instalaciones.', 'Resuelta', 'Se realizó la compra de materiales faltantes al proveedor correspondiente.'),
-(3, 1, '2026-05-02', 'Personal', 'Un empleado no pudo asistir durante varios días afectando el cronograma de terminaciones.', 'Resuelta', 'Se reorganizaron las tareas asignando personal disponible de la obra.'),
-(4, 2, '2026-02-14', 'Diseño/Planos', 'Durante la demolición se encontraron diferencias entre los planos y la estructura existente.', 'Resuelta', 'Se actualizaron los planos y se adaptó el diseño según las condiciones encontradas.'),
-(5, 2, '2026-03-25', 'Retraso', 'Los trabajos internos tuvieron una demora debido a problemas con la entrega de materiales.', 'Resuelta', 'Se coordinó una nueva fecha de entrega con el proveedor.'),
-(6, 2, '2026-04-08', 'Herramientas', 'Una herramienta utilizada para trabajos eléctricos presentó fallas.', 'Resuelta', 'Se realizó mantenimiento y reemplazo temporal de la herramienta.'),
-(7, 3, '2026-03-28', 'Clima', 'Las condiciones climáticas retrasaron la preparación inicial del terreno.', 'Resuelta', 'Se modificó el cronograma de trabajo para compensar los días perdidos.'),
-(8, 3, '2026-04-18', 'Herramientas', 'La maquinaria necesaria para excavación no estuvo disponible en la fecha prevista.', 'En revisión', 'Se está coordinando disponibilidad de maquinaria con proveedores.'),
-(9, 4, '2026-05-08', 'Cliente', 'El cliente solicitó modificaciones en la distribución del espacio construido.', 'En revisión', 'Pendiente de aprobación del nuevo diseño de ampliación.'),
-(10, 4, '2026-05-15', 'Diseño/Planos', 'Se requirió modificar parte de los planos originales por cambios solicitados.', 'Pendiente', NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -607,7 +521,7 @@ INSERT INTO `incidencia` (`id_incidencia`, `id_obra`, `fecha`, `tipo_incidencia`
 
 CREATE TABLE `ingreso` (
   `id_ingreso` int(11) NOT NULL,
-  `id_cliente` int(11) DEFAULT NULL,
+  `id_usuario` int(11) NOT NULL,
   `id_obra` int(11) DEFAULT NULL,
   `id_cobro` int(11) DEFAULT NULL COMMENT 'Si el ingreso viene de un cobro registrado',
   `descripcion` varchar(255) NOT NULL,
@@ -667,36 +581,39 @@ CREATE TABLE `material` (
 --
 
 INSERT INTO `material` (`id_material`, `nombre_material`, `descripcion`, `stock`, `stock_minimo`, `unidad_medida`, `estado`) VALUES
-(1, 'Cemento Portland 50 kg', 'Bolsa de cemento Portland de 50 kg.', '250.00', '0.00', 'Bolsa', 1),
-(2, 'Arena fina', 'Arena fina para revoques y terminaciones.', '80.00', '0.00', 'm³', 1),
-(3, 'Arena gruesa', 'Arena gruesa para hormigón.', '120.00', '0.00', 'm³', 1),
+(1, 'Cemento Portland 50 kg', 'Bolsa de cemento Portland de 50 kg.', '250.00', '300.00', 'Bolsa', 1),
+(2, 'Arena fina', 'Arena fina para revoques y terminaciones.', '80.00', '0.00', 'm³', 0),
+(3, 'Arena gruesa', 'Arena gruesa para hormigón.', '120.00', '0.00', 'm³', 0),
 (4, 'Piedra partida', 'Piedra para elaboración de hormigón.', '90.00', '0.00', 'm³', 1),
-(5, 'Cal hidratada', 'Cal para mezclas de albañilería.', '120.00', '0.00', 'Bolsa', 1),
+(5, 'Cal hidratada', 'Cal para mezclas de albañilería.', '120.00', '200.00', 'Bolsa', 1),
 (6, 'Ladrillo común', 'Ladrillo macizo de arcilla.', '8000.00', '0.00', 'Unidad', 1),
-(7, 'Ladrillo hueco 18x18x33', 'Ladrillo cerámico hueco.', '4500.00', '0.00', 'Unidad', 1),
-(8, 'Hierro Ø6 mm', 'Varilla de acero de 6 mm.', '350.00', '0.00', 'Unidad', 1),
-(9, 'Hierro Ø8 mm', 'Varilla de acero de 8 mm.', '300.00', '0.00', 'Unidad', 1),
-(10, 'Hierro Ø10 mm', 'Varilla de acero de 10 mm.', '250.00', '0.00', 'Unidad', 1),
-(11, 'Hierro Ø12 mm', 'Varilla de acero de 12 mm.', '180.00', '0.00', 'Unidad', 1),
+(7, 'Ladrillo hueco 18x18x33', 'Ladrillo cerámico hueco.', '4500.00', '0.00', 'Unidad', 0),
+(8, 'Hierro 6 mm', 'Varilla de acero de 6 mm.', '350.00', '300.00', 'Unidad', 1),
+(9, 'Hierro 8 mm', 'Varilla de acero de 8 mm.', '300.00', '340.00', 'Unidad', 1),
+(10, 'Hierro 10 mm', 'Varilla de acero de 10 mm.', '250.00', '0.00', 'Unidad', 1),
+(11, 'Hierro 12 mm', 'Varilla de acero de 12 mm.', '180.00', '150.00', 'Unidad', 0),
 (12, 'Malla electrosoldada', 'Malla para refuerzo de losas.', '70.00', '0.00', 'Unidad', 1),
-(13, 'Alambre recocido', 'Alambre para atado de armaduras.', '100.00', '0.00', 'Rollo', 1),
+(13, 'Alambre recocido', 'Alambre para atado de armaduras.', '100.00', '50.00', 'Rollo', 0),
 (14, 'Clavo 2\"', 'Clavo de acero de 2 pulgadas.', '50.00', '0.00', 'Kg', 1),
-(15, 'Clavo 3\"', 'Clavo de acero de 3 pulgadas.', '40.00', '0.00', 'Kg', 1),
+(15, 'Clavo 3\"', 'Clavo de acero de 3 pulgadas.', '40.00', '0.00', 'Kg', 0),
 (16, 'Tornillo autoperforante', 'Tornillo para chapa galvanizada.', '5000.00', '0.00', 'Unidad', 1),
-(17, 'Caño PVC 50 mm', 'Caño sanitario de PVC.', '120.00', '0.00', 'Unidad', 1),
-(18, 'Caño PVC 110 mm', 'Caño sanitario de PVC.', '80.00', '0.00', 'Unidad', 1),
+(17, 'Caño PVC 50 mm', 'Caño sanitario de PVC.', '120.00', '0.00', 'Unidad', 0),
+(18, 'Caño PVC 110 MM', 'Caño sanitario de PVC.', '80.00', '100.00', 'Unidad', 1),
 (19, 'Codo PVC 90°', 'Accesorio para instalaciones sanitarias.', '150.00', '0.00', 'Unidad', 1),
-(20, 'Cable unipolar 2,5 mm²', 'Cable para instalación eléctrica.', '1000.00', '0.00', 'Metro', 1),
-(21, 'Cable unipolar 4 mm²', 'Cable eléctrico de mayor sección.', '700.00', '0.00', 'Metro', 1),
+(20, 'Cable unipolar 2,5 mm²', 'Cable para instalación eléctrica.', '1000.00', '0.00', 'Metro', 0),
+(21, 'Cable unipolar 4 mm²', 'Cable eléctrico de mayor sección.', '700.00', '0.00', 'Metro', 0),
 (22, 'Interruptor térmico', 'Protección para circuitos eléctricos.', '45.00', '0.00', 'Unidad', 1),
-(23, 'Llave de luz', 'Interruptor simple de embutir.', '120.00', '0.00', 'Unidad', 1),
+(23, 'Llave de luz', 'Interruptor simple de embutir.', '120.00', '0.00', 'Unidad', 0),
 (24, 'Pintura látex interior', 'Pintura para interiores.', '80.00', '0.00', 'Balde', 1),
-(25, 'Pintura látex exterior', 'Pintura para exteriores.', '60.00', '0.00', 'Balde', 1),
+(25, 'Pintura látex exterior', 'Pintura para exteriores.', '60.00', '80.00', 'Balde', 1),
 (26, 'Membrana asfáltica', 'Membrana impermeabilizante.', '45.00', '0.00', 'Rollo', 1),
 (27, 'Cerámica 45x45 cm', 'Piso cerámico.', '900.00', '0.00', 'm²', 1),
-(28, 'Adhesivo para cerámicos', 'Pegamento para revestimientos.', '120.00', '0.00', 'Bolsa', 1),
+(28, 'Adhesivo para cerámicos', 'Pegamento para revestimientos.', '160.00', '200.00', 'Bolsa', 1),
 (29, 'Pastina', 'Material para juntas de cerámicos.', '90.00', '0.00', 'Bolsa', 1),
-(30, 'Chapa galvanizada', 'Chapa para cubiertas.', '130.00', '0.00', 'Unidad', 1);
+(30, 'Chapa galvanizada', 'Chapa para cubiertas.', '130.00', '0.00', 'Unidad', 1),
+(31, 'Cinta aislante', 'Cinta aislante', '300.00', '100.00', 'Unidad', 1),
+(33, 'Hierro torcionado 8 mm', 'Hierro para armar cimientos', '200.00', '100.00', 'Metro', 1),
+(34, 'fghj', 'jhgf', '440.00', '300.00', 'Unidad', 0);
 
 -- --------------------------------------------------------
 
@@ -759,30 +676,56 @@ CREATE TABLE `movimiento_inventario` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `movimiento_material`
+--
+
+CREATE TABLE `movimiento_material` (
+  `id_movimiento` int(11) NOT NULL,
+  `id_material` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `tipo` enum('INGRESO','EGRESO') NOT NULL,
+  `cantidad` decimal(10,2) NOT NULL,
+  `fecha` datetime NOT NULL DEFAULT current_timestamp(),
+  `observacion` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `movimiento_material`
+--
+
+INSERT INTO `movimiento_material` (`id_movimiento`, `id_material`, `id_usuario`, `tipo`, `cantidad`, `fecha`, `observacion`) VALUES
+(1, 28, 27, 'INGRESO', '40.00', '2026-07-21 17:10:03', ''),
+(2, 28, 27, 'INGRESO', '100.00', '2026-07-21 17:11:00', ''),
+(3, 28, 27, 'EGRESO', '100.00', '2026-07-21 17:11:31', '');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `obra`
 --
 
 CREATE TABLE `obra` (
   `id_obra` int(11) NOT NULL,
-  `id_cliente` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
   `nombre_obra` varchar(150) NOT NULL,
   `direccion` varchar(255) NOT NULL,
   `descripcion` text DEFAULT NULL,
   `fecha_inicio` date DEFAULT NULL,
   `fecha_fin` date DEFAULT NULL,
-  `porcentaje_avance` decimal(5,2) DEFAULT 0.00,
-  `estado` enum('Planificacion','En Proceso','Finalizada','Cancelada','Suspendida') DEFAULT 'Planificacion'
+  `estado` enum('Planificacion','En Proceso','Finalizada','Cancelada','Suspendida') DEFAULT 'Planificacion',
+  `activo` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `obra`
 --
 
-INSERT INTO `obra` (`id_obra`, `id_cliente`, `nombre_obra`, `direccion`, `descripcion`, `fecha_inicio`, `fecha_fin`, `porcentaje_avance`, `estado`) VALUES
-(1, 1, 'Construcción Vivienda Familiar López', 'Av. Italia 1250, Formosa', 'Construcción de una vivienda unifamiliar de dos plantas.', '2026-01-15', '2026-10-30', '95.00', 'En Proceso'),
-(2, 2, 'Remodelación Local Comercial Suárez', 'B° San Martín 845, Formosa', 'Remodelación completa de un local comercial, incluyendo instalaciones eléctricas y sanitarias.', '2026-02-10', '2026-06-20', '70.00', 'Finalizada'),
-(3, 3, 'Edificio Residencial Morales', 'Av. González Lelong 542, Formosa', 'Construcción de un edificio residencial de cuatro departamentos.', '2026-03-05', '2027-02-28', '30.00', 'En Proceso'),
-(4, 4, 'Ampliación Vivienda Almirón', 'B° Guadalupe 1130, Formosa', 'Ampliación de vivienda con construcción de cochera y dos habitaciones.', '2026-04-01', '2026-08-15', '10.00', 'En Proceso');
+INSERT INTO `obra` (`id_obra`, `id_usuario`, `nombre_obra`, `direccion`, `descripcion`, `fecha_inicio`, `fecha_fin`, `estado`, `activo`) VALUES
+(9, 34, 'Quincho Amyra', 'Senador Emilio Tomás Barrio Eva Perón', 'Casa tipo quinta ', '2026-07-24', '0000-00-00', 'En Proceso', 1),
+(15, 26, 'rtgeggr', 'wgwwg', 'erwer', '0000-00-00', '0000-00-00', 'Planificacion', 1),
+(16, 26, 'Casa de Dylan', 'Barrio 8 de octubre', '', '0000-00-00', '0000-00-00', 'Planificacion', 1),
+(17, 40, 'iliukyjhre', 'iuytgfred', 'kjhgfds', '0000-00-00', '0000-00-00', 'Planificacion', 1),
+(18, 17, 'Refacción de la E.P.E.S N° 5', 'Senador Emilio Tomas', 'Refacción de las instalaciones.', '2026-07-27', '0000-00-00', 'En Proceso', 1);
 
 -- --------------------------------------------------------
 
@@ -811,6 +754,45 @@ CREATE TABLE `pago` (
   `monto` decimal(15,2) NOT NULL,
   `id_metodo_pago` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `permisos`
+--
+
+CREATE TABLE `permisos` (
+  `id_permiso` int(11) NOT NULL,
+  `nombre_permiso` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `permisos`
+--
+
+INSERT INTO `permisos` (`id_permiso`, `nombre_permiso`) VALUES
+(10, 'usuarios'),
+(11, 'roles'),
+(12, 'obras'),
+(13, 'clientes'),
+(14, 'empleados'),
+(15, 'materiales'),
+(16, 'herramientas'),
+(17, 'inventario'),
+(18, 'presupuestos'),
+(19, 'costos'),
+(20, 'documentos'),
+(21, 'avances'),
+(22, 'tareas'),
+(23, 'asistencia'),
+(24, 'incidencias'),
+(25, 'reportes'),
+(26, 'caja'),
+(27, 'cuentas cobrar'),
+(28, 'cuentas pagar'),
+(29, 'proveedores'),
+(30, 'pagos'),
+(31, 'perfil');
 
 -- --------------------------------------------------------
 
@@ -988,8 +970,87 @@ INSERT INTO `roles` (`id_rol`, `nombre_rol`, `descripcion`) VALUES
 (2, 'Gerente', 'Administra obras, clientes, empleados, presupuestos y reportes.'),
 (3, 'Administrativo', 'Gestiona clientes, documentos, presupuestos, cobros y pagos.'),
 (4, 'Jefe de Obra', 'Supervisa el avance de las obras y coordina empleados.'),
-(5, 'Depósito', 'Administra materiales, herramientas e inventario.'),
+(5, 'Encargado de Depósito', 'Administra materiales, herramientas e inventario.'),
 (6, 'Cliente', 'Consulta el estado de sus obras, documentos y presupuestos.');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `rol_permiso`
+--
+
+CREATE TABLE `rol_permiso` (
+  `id_rol` int(11) NOT NULL,
+  `id_permiso` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `rol_permiso`
+--
+
+INSERT INTO `rol_permiso` (`id_rol`, `id_permiso`) VALUES
+(1, 22),
+(1, 23),
+(1, 24),
+(1, 31),
+(2, 10),
+(2, 11),
+(2, 12),
+(2, 13),
+(2, 14),
+(2, 15),
+(2, 16),
+(2, 17),
+(2, 18),
+(2, 19),
+(2, 20),
+(2, 21),
+(2, 22),
+(2, 23),
+(2, 24),
+(2, 25),
+(2, 26),
+(2, 27),
+(2, 28),
+(2, 29),
+(2, 30),
+(2, 31),
+(3, 10),
+(3, 13),
+(3, 14),
+(3, 18),
+(3, 19),
+(3, 20),
+(3, 25),
+(3, 26),
+(3, 27),
+(3, 28),
+(3, 29),
+(3, 30),
+(3, 31),
+(4, 12),
+(4, 14),
+(4, 15),
+(4, 16),
+(4, 17),
+(4, 20),
+(4, 21),
+(4, 22),
+(4, 23),
+(4, 24),
+(4, 25),
+(4, 31),
+(5, 15),
+(5, 16),
+(5, 17),
+(5, 29),
+(5, 31),
+(6, 12),
+(6, 18),
+(6, 20),
+(6, 21),
+(6, 25),
+(6, 31);
 
 -- --------------------------------------------------------
 
@@ -1012,11 +1073,39 @@ CREATE TABLE `solicitud_material` (
 
 CREATE TABLE `tarea` (
   `id_tarea` int(11) NOT NULL,
-  `id_empleado` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
   `id_obra` int(11) NOT NULL,
   `descripcion` text NOT NULL,
   `fecha` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `unidad_herramienta`
+--
+
+CREATE TABLE `unidad_herramienta` (
+  `id_unidad` int(11) NOT NULL,
+  `id_herramienta` int(11) NOT NULL,
+  `numero_unidad` int(11) NOT NULL,
+  `id_estado_herramienta` int(11) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `unidad_herramienta`
+--
+
+INSERT INTO `unidad_herramienta` (`id_unidad`, `id_herramienta`, `numero_unidad`, `id_estado_herramienta`) VALUES
+(5, 35, 1, 1),
+(6, 35, 2, 1),
+(7, 35, 3, 1),
+(8, 36, 1, 1),
+(9, 36, 2, 1),
+(10, 36, 3, 1),
+(11, 36, 4, 1),
+(12, 36, 5, 1),
+(13, 36, 6, 1);
 
 -- --------------------------------------------------------
 
@@ -1029,8 +1118,13 @@ CREATE TABLE `usuario` (
   `id_rol` int(11) NOT NULL,
   `nombre` varchar(100) NOT NULL,
   `apellido` varchar(100) NOT NULL,
+  `documento` varchar(20) DEFAULT NULL,
   `correo` varchar(150) NOT NULL,
   `contraseña` varchar(255) NOT NULL,
+  `telefono` varchar(20) DEFAULT NULL,
+  `direccion` varchar(255) DEFAULT NULL,
+  `salario` decimal(12,2) DEFAULT NULL,
+  `id_cargo` int(11) DEFAULT NULL,
   `fecha_registro` datetime DEFAULT current_timestamp(),
   `estado` tinyint(1) DEFAULT 1 COMMENT '1=Activo, 0=Inactivo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -1039,27 +1133,41 @@ CREATE TABLE `usuario` (
 -- Volcado de datos para la tabla `usuario`
 --
 
-INSERT INTO `usuario` (`id_usuario`, `id_rol`, `nombre`, `apellido`, `correo`, `contraseña`, `fecha_registro`, `estado`) VALUES
-(7, 2, 'Carlos', 'Martínez', 'carlos.martinez@constructora.com', 'gerente123', '2026-07-01 08:00:00', 1),
-(8, 2, 'Mariana', 'López', 'mariana.lopez@constructora.com', 'gerente123', '2026-07-01 08:10:00', 1),
-(9, 3, 'Laura', 'Gómez', 'laura.gomez@constructora.com', 'admin123', '2026-07-01 08:20:00', 1),
-(10, 3, 'Diego', 'Benítez', 'diego.benitez@constructora.com', 'admin123', '2026-07-01 08:30:00', 1),
-(11, 3, 'Valeria', 'Romero', 'valeria.romero@constructora.com', 'admin123', '2026-07-01 08:40:00', 1),
-(12, 4, 'Miguel', 'Fernández', 'miguel.fernandez@constructora.com', 'jefe123', '2026-07-01 08:50:00', 1),
-(13, 4, 'Ricardo', 'Acosta', 'ricardo.acosta@constructora.com', 'jefe123', '2026-07-01 09:00:00', 1),
-(14, 4, 'Sergio', 'Vera', 'sergio.vera@constructora.com', 'jefe123', '2026-07-01 09:10:00', 1),
-(15, 5, 'Jorge', 'Ramírez', 'jorge.ramirez@constructora.com', 'deposito123', '2026-07-01 09:20:00', 1),
-(16, 5, 'Ramón', 'Ortiz', 'ramon.ortiz@constructora.com', 'deposito123', '2026-07-01 09:30:00', 1),
-(17, 1, 'Juan', 'Pérez', 'juan.perez@constructora.com', 'empleado123', '2026-07-01 09:40:00', 1),
-(18, 1, 'Pedro', 'Sosa', 'pedro.sosa@constructora.com', 'empleado123', '2026-07-01 09:50:00', 1),
-(19, 1, 'Lucas', 'Giménez', 'lucas.gimenez@constructora.com', 'empleado123', '2026-07-01 10:00:00', 1),
-(20, 1, 'Gabriel', 'Rojas', 'gabriel.rojas@constructora.com', 'empleado123', '2026-07-01 10:10:00', 1),
-(21, 1, 'Matías', 'Silva', 'matias.silva@constructora.com', 'empleado123', '2026-07-01 10:20:00', 1),
-(22, 1, 'José', 'Mendoza', 'jose.mendoza@constructora.com', 'empleado123', '2026-07-01 10:30:00', 1),
-(23, 6, 'Ana', 'López', 'ana.lopez@gmail.com', 'cliente123', '2026-07-01 10:40:00', 1),
-(24, 6, 'Roberto', 'Suárez', 'roberto.suarez@gmail.com', 'cliente123', '2026-07-01 10:50:00', 1),
-(25, 6, 'Patricia', 'Morales', 'patricia.morales@gmail.com', 'cliente123', '2026-07-01 11:00:00', 1),
-(26, 6, 'Fernando', 'Almirón', 'fernando.almiron@gmail.com', 'cliente123', '2026-07-01 11:10:00', 1);
+INSERT INTO `usuario` (`id_usuario`, `id_rol`, `nombre`, `apellido`, `documento`, `correo`, `contraseña`, `telefono`, `direccion`, `salario`, `id_cargo`, `fecha_registro`, `estado`) VALUES
+(8, 2, 'Mariana', 'López', NULL, 'mariana.lopez@constructora.com', 'gerente123', NULL, NULL, NULL, NULL, '2026-07-01 08:10:00', 0),
+(9, 3, 'Laura', 'Gómez', NULL, 'laura.gomez@constructora.com', 'admin123', NULL, NULL, NULL, NULL, '2026-07-01 08:20:00', 0),
+(10, 6, 'Diego', 'Benitez', '12345673', 'diego.benitez@constructora.com', 'admin123', '3705009988', 'hgfds', NULL, NULL, '2026-07-01 08:30:00', 1),
+(11, 3, 'Valeria', 'Romero', NULL, 'valeria.romero@constructora.com', 'admin123', NULL, NULL, NULL, NULL, '2026-07-01 08:40:00', 1),
+(12, 4, 'Miguel', 'Fernández', NULL, 'miguel.fernandez@constructora.com', 'jefe123', NULL, NULL, NULL, NULL, '2026-07-01 08:50:00', 1),
+(13, 4, 'Ricardo', 'Acosta', NULL, 'ricardo.acosta@constructora.com', 'jefe123', NULL, NULL, NULL, NULL, '2026-07-01 09:00:00', 0),
+(14, 4, 'Sergio', 'Vera', NULL, 'sergio.vera@constructora.com', 'jefe123', NULL, NULL, NULL, NULL, '2026-07-01 09:10:00', 0),
+(15, 1, 'Jorge', 'Ramirez', '32859437', 'jorge.ramirez@constructora.com', 'deposito123', '3704560091', '', NULL, NULL, '2026-07-01 09:20:00', 1),
+(16, 5, 'Ramón', 'Ortiz', NULL, 'ramon.ortiz@constructora.com', 'deposito123', NULL, NULL, NULL, NULL, '2026-07-01 09:30:00', 1),
+(17, 6, 'Juan', 'Pérez', NULL, 'juan.perez@constructora.com', 'empleado123', NULL, NULL, NULL, NULL, '2026-07-01 09:40:00', 1),
+(18, 1, 'Pedro', 'Sosa', NULL, 'pedro.sosa@constructora.com', 'empleado123', NULL, NULL, NULL, NULL, '2026-07-01 09:50:00', 1),
+(19, 6, 'Lucas', 'Giménez', NULL, 'lucas.gimenez@constructora.com', 'empleado123', NULL, NULL, NULL, NULL, '2026-07-01 10:00:00', 1),
+(20, 5, 'Gabriel', 'Rojas', NULL, 'gabriel.rojas@constructora.com', 'empleado123', NULL, NULL, NULL, NULL, '2026-07-01 10:10:00', 1),
+(21, 1, 'Mat??as', 'Silva', '23499879', 'matias.silva@constructora.com', 'empleado123', '3704012988', 'Barrio Antenor Gauna Mz 10 Cs 21', '250000.00', NULL, '2026-07-01 10:20:00', 1),
+(22, 4, 'Joel', 'Mendoza', NULL, 'jose.mendoza@constructora.com', 'empleado123', NULL, NULL, NULL, NULL, '2026-07-01 10:30:00', 1),
+(24, 1, 'Roberto', 'Suárez', NULL, 'roberto.suarez@gmail.com', 'cliente123', NULL, NULL, NULL, NULL, '2026-07-01 10:50:00', 1),
+(25, 1, 'Patricia', 'Morales', NULL, 'patricia.morales@gmail.com', 'cliente123', NULL, NULL, NULL, NULL, '2026-07-01 11:00:00', 0),
+(26, 6, 'Fernando', 'Almiron', '37287390', 'fernando.almiron@gmail.com', 'cliente123', '3705778822', NULL, NULL, NULL, '2026-07-01 11:10:00', 1),
+(27, 2, 'Thiago', 'Rohaly', NULL, 'rohaly1310thiago@gmail.com', '1234', NULL, NULL, NULL, NULL, '2026-07-09 23:58:12', 1),
+(28, 2, 'Tatiana', 'Aguirre', NULL, 'aguirreTatiana@gmail.com', 'tati123', NULL, NULL, NULL, NULL, '2026-07-10 00:12:08', 1),
+(29, 1, 'Karina', 'Coronel', '48576489', 'karinaCoronel@gmail.com', 'hola12', '87654', '', '23456789.00', NULL, '2026-07-10 17:10:44', 1),
+(30, 6, 'Mateo', 'Guerra', NULL, 'mateo@gmail.com', '12345', NULL, NULL, NULL, NULL, '2026-07-10 17:48:10', 0),
+(33, 5, 'Lucas', 'Gomez', NULL, 'gomez@gmail', '123', NULL, NULL, NULL, NULL, '2026-07-10 19:51:16', 0),
+(34, 6, 'Amyra', 'Rohaly', '37456783', 'amy@gmail', 'amy', '3704576879', 'Barrio República Argentina', NULL, NULL, '2026-07-10 21:44:39', 1),
+(35, 6, 'Marlene ', 'Fernandez', NULL, 'marfer@gmail.com', 'Mar123', NULL, NULL, NULL, NULL, '2026-07-13 12:43:29', 0),
+(36, 5, 'Mariano', 'Altamirano', NULL, 'altamirano20Roberto@gmail.com', 'roberto', NULL, NULL, NULL, NULL, '2026-07-16 21:08:31', 1),
+(37, 6, 'Ricardo', 'Perez', '', 'ricardo@gmail.com', '12345', NULL, NULL, NULL, NULL, '2026-07-16 23:33:15', 1),
+(38, 6, 'Pedro', ' Benitez', NULL, 'pedrobenitez@gmail.com', 'Pedro1234', NULL, NULL, NULL, NULL, '2026-07-17 11:41:41', 1),
+(39, 1, 'Pablo', 'Gutierres', '12345678', 'pedrogutierres@gmail.com', '1234', '3704564738', 'ugfuyhf', '3333.00', NULL, '2026-07-17 12:05:07', 1),
+(40, 6, 'Cristian', 'Dure', '76543', 'crisdure@gmail.com', '12345', '76543', 'hgfdgf', NULL, NULL, '2026-07-18 19:48:30', 1),
+(41, 3, 'Paola', 'Gutierres', '', 'pao@gmail.com', '12345', NULL, NULL, NULL, NULL, '2026-07-19 12:36:04', 1),
+(42, 1, 'Ricardo', 'Lopez', '23345567', 'lopezricardo@gmail.com', 'ricardo', NULL, NULL, '60000.00', NULL, '2026-07-20 23:59:45', 1),
+(43, 1, 'Dylan', 'Rohaly', '29388488', 'dylanRohalyy@gmail.com', 'Dylan123', '3704576879', 'Barrio República Argentina', '40000.00', NULL, '2026-07-24 13:23:51', 1),
+(44, 5, 'Manuel', 'Aguirre', '27888999', 'manuAguirr@gmail.com', 'Manu12', '3705670092', '', NULL, NULL, '2026-07-26 20:10:18', 1);
 
 --
 -- Índices para tablas volcadas
@@ -1077,7 +1185,7 @@ ALTER TABLE `acceso_usuario`
 --
 ALTER TABLE `asistencia`
   ADD PRIMARY KEY (`id_asistencia`),
-  ADD KEY `idx_asistencia_empleado` (`id_empleado`),
+  ADD KEY `idx_asistencia_empleado` (`id_usuario`),
   ADD KEY `idx_asistencia_fecha` (`fecha`);
 
 --
@@ -1095,31 +1203,17 @@ ALTER TABLE `avance_diario`
   ADD KEY `idx_avancediario_obra` (`id_obra`);
 
 --
--- Indices de la tabla `avance_obra`
---
-ALTER TABLE `avance_obra`
-  ADD PRIMARY KEY (`id_avance`),
-  ADD KEY `idx_avance_obra` (`id_obra`);
-
---
 -- Indices de la tabla `cargo`
 --
 ALTER TABLE `cargo`
   ADD PRIMARY KEY (`id_cargo`);
 
 --
--- Indices de la tabla `cliente`
---
-ALTER TABLE `cliente`
-  ADD PRIMARY KEY (`id_cliente`),
-  ADD KEY `fk_cliente_usuario` (`id_usuario`);
-
---
 -- Indices de la tabla `cobro`
 --
 ALTER TABLE `cobro`
   ADD PRIMARY KEY (`id_cobro`),
-  ADD KEY `idx_cobro_cliente` (`id_cliente`),
+  ADD KEY `idx_cobro_cliente` (`id_usuario`),
   ADD KEY `idx_cobro_obra` (`id_obra`),
   ADD KEY `fk_cobro_metodo` (`id_metodo_pago`);
 
@@ -1128,7 +1222,7 @@ ALTER TABLE `cobro`
 --
 ALTER TABLE `cuenta_cobrar`
   ADD PRIMARY KEY (`id_cuenta_cobrar`),
-  ADD KEY `idx_cuentacobrar_cliente` (`id_cliente`);
+  ADD KEY `idx_cuentacobrar_cliente` (`id_usuario`);
 
 --
 -- Indices de la tabla `cuenta_pagar`
@@ -1161,29 +1255,19 @@ ALTER TABLE `documento_obra`
   ADD KEY `idx_documento_obra` (`id_obra`);
 
 --
--- Indices de la tabla `empleado`
---
-ALTER TABLE `empleado`
-  ADD PRIMARY KEY (`id_empleado`),
-  ADD UNIQUE KEY `documento` (`documento`),
-  ADD KEY `idx_empleado_documento` (`documento`),
-  ADD KEY `fk_empleado_usuario` (`id_usuario`);
-
---
--- Indices de la tabla `empleado_cargo`
---
-ALTER TABLE `empleado_cargo`
-  ADD PRIMARY KEY (`id_empleado_cargo`),
-  ADD KEY `idx_empcargo_empleado` (`id_empleado`),
-  ADD KEY `idx_empcargo_cargo` (`id_cargo`);
-
---
 -- Indices de la tabla `empleado_obra`
 --
 ALTER TABLE `empleado_obra`
   ADD PRIMARY KEY (`id_empleado_obra`),
-  ADD KEY `idx_empobra_empleado` (`id_empleado`),
-  ADD KEY `idx_empobra_obra` (`id_obra`);
+  ADD KEY `id_usuario` (`id_usuario`),
+  ADD KEY `id_obra` (`id_obra`);
+
+--
+-- Indices de la tabla `estado_herramienta`
+--
+ALTER TABLE `estado_herramienta`
+  ADD PRIMARY KEY (`id_estado_herramienta`),
+  ADD UNIQUE KEY `nombre` (`nombre`);
 
 --
 -- Indices de la tabla `etapa_obra`
@@ -1224,8 +1308,9 @@ ALTER TABLE `herramienta`
 --
 ALTER TABLE `herramienta_obra`
   ADD PRIMARY KEY (`id_herramienta_obra`),
-  ADD KEY `idx_herrobra_herramienta` (`id_herramienta`),
-  ADD KEY `idx_herrobra_obra` (`id_obra`);
+  ADD KEY `fk_herramienta_obra_herramienta` (`id_herramienta`),
+  ADD KEY `fk_herramienta_obra_obra` (`id_obra`),
+  ADD KEY `fk_herramienta_obra_estado` (`id_estado_herramienta`);
 
 --
 -- Indices de la tabla `historial_estado_obra`
@@ -1240,7 +1325,7 @@ ALTER TABLE `historial_estado_obra`
 --
 ALTER TABLE `horas_trabajadas`
   ADD PRIMARY KEY (`id_hora`),
-  ADD KEY `idx_horas_empleado` (`id_empleado`),
+  ADD KEY `idx_horas_empleado` (`id_usuario`),
   ADD KEY `idx_horas_obra` (`id_obra`);
 
 --
@@ -1255,7 +1340,7 @@ ALTER TABLE `incidencia`
 --
 ALTER TABLE `ingreso`
   ADD PRIMARY KEY (`id_ingreso`),
-  ADD KEY `idx_ingreso_cliente` (`id_cliente`),
+  ADD KEY `idx_ingreso_cliente` (`id_usuario`),
   ADD KEY `idx_ingreso_obra` (`id_obra`),
   ADD KEY `idx_ingreso_cobro` (`id_cobro`);
 
@@ -1312,11 +1397,19 @@ ALTER TABLE `movimiento_inventario`
   ADD KEY `fk_movinventario_usuario` (`id_usuario`);
 
 --
+-- Indices de la tabla `movimiento_material`
+--
+ALTER TABLE `movimiento_material`
+  ADD PRIMARY KEY (`id_movimiento`),
+  ADD KEY `id_material` (`id_material`),
+  ADD KEY `id_usuario` (`id_usuario`);
+
+--
 -- Indices de la tabla `obra`
 --
 ALTER TABLE `obra`
   ADD PRIMARY KEY (`id_obra`),
-  ADD KEY `idx_obra_cliente` (`id_cliente`);
+  ADD KEY `idx_obra_cliente` (`id_usuario`);
 
 --
 -- Indices de la tabla `orden_compra`
@@ -1332,6 +1425,12 @@ ALTER TABLE `pago`
   ADD PRIMARY KEY (`id_pago`),
   ADD KEY `idx_pago_obra` (`id_obra`),
   ADD KEY `fk_pago_metodo` (`id_metodo_pago`);
+
+--
+-- Indices de la tabla `permisos`
+--
+ALTER TABLE `permisos`
+  ADD PRIMARY KEY (`id_permiso`);
 
 --
 -- Indices de la tabla `precio_material`
@@ -1378,6 +1477,13 @@ ALTER TABLE `roles`
   ADD PRIMARY KEY (`id_rol`);
 
 --
+-- Indices de la tabla `rol_permiso`
+--
+ALTER TABLE `rol_permiso`
+  ADD PRIMARY KEY (`id_rol`,`id_permiso`),
+  ADD KEY `id_permiso` (`id_permiso`);
+
+--
 -- Indices de la tabla `solicitud_material`
 --
 ALTER TABLE `solicitud_material`
@@ -1389,8 +1495,16 @@ ALTER TABLE `solicitud_material`
 --
 ALTER TABLE `tarea`
   ADD PRIMARY KEY (`id_tarea`),
-  ADD KEY `idx_tarea_empleado` (`id_empleado`),
+  ADD KEY `idx_tarea_empleado` (`id_usuario`),
   ADD KEY `idx_tarea_obra` (`id_obra`);
+
+--
+-- Indices de la tabla `unidad_herramienta`
+--
+ALTER TABLE `unidad_herramienta`
+  ADD PRIMARY KEY (`id_unidad`),
+  ADD KEY `id_herramienta` (`id_herramienta`),
+  ADD KEY `id_estado_herramienta` (`id_estado_herramienta`);
 
 --
 -- Indices de la tabla `usuario`
@@ -1398,7 +1512,8 @@ ALTER TABLE `tarea`
 ALTER TABLE `usuario`
   ADD PRIMARY KEY (`id_usuario`),
   ADD UNIQUE KEY `correo` (`correo`),
-  ADD KEY `idx_usuario_rol` (`id_rol`);
+  ADD KEY `idx_usuario_rol` (`id_rol`),
+  ADD KEY `fk_usuario_cargo` (`id_cargo`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -1408,7 +1523,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `acceso_usuario`
 --
 ALTER TABLE `acceso_usuario`
-  MODIFY `id_acceso` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_acceso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
 -- AUTO_INCREMENT de la tabla `asistencia`
@@ -1420,31 +1535,19 @@ ALTER TABLE `asistencia`
 -- AUTO_INCREMENT de la tabla `auditoria`
 --
 ALTER TABLE `auditoria`
-  MODIFY `id_auditoria` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_auditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=257;
 
 --
 -- AUTO_INCREMENT de la tabla `avance_diario`
 --
 ALTER TABLE `avance_diario`
-  MODIFY `id_avance_diario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
-
---
--- AUTO_INCREMENT de la tabla `avance_obra`
---
-ALTER TABLE `avance_obra`
-  MODIFY `id_avance` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id_avance_diario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de la tabla `cargo`
 --
 ALTER TABLE `cargo`
   MODIFY `id_cargo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT de la tabla `cliente`
---
-ALTER TABLE `cliente`
-  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `cobro`
@@ -1483,28 +1586,22 @@ ALTER TABLE `documento_obra`
   MODIFY `id_documento` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `empleado`
---
-ALTER TABLE `empleado`
-  MODIFY `id_empleado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT de la tabla `empleado_cargo`
---
-ALTER TABLE `empleado_cargo`
-  MODIFY `id_empleado_cargo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
-
---
 -- AUTO_INCREMENT de la tabla `empleado_obra`
 --
 ALTER TABLE `empleado_obra`
-  MODIFY `id_empleado_obra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id_empleado_obra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT de la tabla `estado_herramienta`
+--
+ALTER TABLE `estado_herramienta`
+  MODIFY `id_estado_herramienta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `etapa_obra`
 --
 ALTER TABLE `etapa_obra`
-  MODIFY `id_etapa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id_etapa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT de la tabla `factura`
@@ -1528,13 +1625,13 @@ ALTER TABLE `gasto_general`
 -- AUTO_INCREMENT de la tabla `herramienta`
 --
 ALTER TABLE `herramienta`
-  MODIFY `id_herramienta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id_herramienta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT de la tabla `herramienta_obra`
 --
 ALTER TABLE `herramienta_obra`
-  MODIFY `id_herramienta_obra` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_herramienta_obra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_estado_obra`
@@ -1576,7 +1673,7 @@ ALTER TABLE `mantenimiento`
 -- AUTO_INCREMENT de la tabla `material`
 --
 ALTER TABLE `material`
-  MODIFY `id_material` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id_material` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT de la tabla `material_obra`
@@ -1603,10 +1700,16 @@ ALTER TABLE `movimiento_inventario`
   MODIFY `id_movimiento` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `movimiento_material`
+--
+ALTER TABLE `movimiento_material`
+  MODIFY `id_movimiento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT de la tabla `obra`
 --
 ALTER TABLE `obra`
-  MODIFY `id_obra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_obra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `orden_compra`
@@ -1619,6 +1722,12 @@ ALTER TABLE `orden_compra`
 --
 ALTER TABLE `pago`
   MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `permisos`
+--
+ALTER TABLE `permisos`
+  MODIFY `id_permiso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT de la tabla `precio_material`
@@ -1669,10 +1778,16 @@ ALTER TABLE `tarea`
   MODIFY `id_tarea` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `unidad_herramienta`
+--
+ALTER TABLE `unidad_herramienta`
+  MODIFY `id_unidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- Restricciones para tablas volcadas
@@ -1688,7 +1803,7 @@ ALTER TABLE `acceso_usuario`
 -- Filtros para la tabla `asistencia`
 --
 ALTER TABLE `asistencia`
-  ADD CONSTRAINT `fk_asistencia_empleado` FOREIGN KEY (`id_empleado`) REFERENCES `empleado` (`id_empleado`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_asistencia_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
 
 --
 -- Filtros para la tabla `auditoria`
@@ -1703,30 +1818,18 @@ ALTER TABLE `avance_diario`
   ADD CONSTRAINT `fk_avancediario_obra` FOREIGN KEY (`id_obra`) REFERENCES `obra` (`id_obra`) ON DELETE CASCADE;
 
 --
--- Filtros para la tabla `avance_obra`
---
-ALTER TABLE `avance_obra`
-  ADD CONSTRAINT `fk_avance_obra` FOREIGN KEY (`id_obra`) REFERENCES `obra` (`id_obra`) ON DELETE CASCADE;
-
---
--- Filtros para la tabla `cliente`
---
-ALTER TABLE `cliente`
-  ADD CONSTRAINT `fk_cliente_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
-
---
 -- Filtros para la tabla `cobro`
 --
 ALTER TABLE `cobro`
-  ADD CONSTRAINT `fk_cobro_cliente` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`),
   ADD CONSTRAINT `fk_cobro_metodo` FOREIGN KEY (`id_metodo_pago`) REFERENCES `metodo_pago` (`id_metodo_pago`),
-  ADD CONSTRAINT `fk_cobro_obra` FOREIGN KEY (`id_obra`) REFERENCES `obra` (`id_obra`) ON DELETE SET NULL;
+  ADD CONSTRAINT `fk_cobro_obra` FOREIGN KEY (`id_obra`) REFERENCES `obra` (`id_obra`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_cobro_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
 
 --
 -- Filtros para la tabla `cuenta_cobrar`
 --
 ALTER TABLE `cuenta_cobrar`
-  ADD CONSTRAINT `fk_cuentacobrar_cliente` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`);
+  ADD CONSTRAINT `fk_cuentacobrar_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
 
 --
 -- Filtros para la tabla `cuenta_pagar`
@@ -1755,24 +1858,11 @@ ALTER TABLE `documento_obra`
   ADD CONSTRAINT `fk_documento_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
 
 --
--- Filtros para la tabla `empleado`
---
-ALTER TABLE `empleado`
-  ADD CONSTRAINT `fk_empleado_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
-
---
--- Filtros para la tabla `empleado_cargo`
---
-ALTER TABLE `empleado_cargo`
-  ADD CONSTRAINT `fk_empcargo_cargo` FOREIGN KEY (`id_cargo`) REFERENCES `cargo` (`id_cargo`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_empcargo_empleado` FOREIGN KEY (`id_empleado`) REFERENCES `empleado` (`id_empleado`) ON DELETE CASCADE;
-
---
 -- Filtros para la tabla `empleado_obra`
 --
 ALTER TABLE `empleado_obra`
-  ADD CONSTRAINT `fk_empobra_empleado` FOREIGN KEY (`id_empleado`) REFERENCES `empleado` (`id_empleado`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_empobra_obra` FOREIGN KEY (`id_obra`) REFERENCES `obra` (`id_obra`) ON DELETE CASCADE;
+  ADD CONSTRAINT `empleado_obra_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`),
+  ADD CONSTRAINT `empleado_obra_ibfk_2` FOREIGN KEY (`id_obra`) REFERENCES `obra` (`id_obra`);
 
 --
 -- Filtros para la tabla `etapa_obra`
@@ -1802,8 +1892,9 @@ ALTER TABLE `gasto_general`
 -- Filtros para la tabla `herramienta_obra`
 --
 ALTER TABLE `herramienta_obra`
-  ADD CONSTRAINT `fk_herrobra_herramienta` FOREIGN KEY (`id_herramienta`) REFERENCES `herramienta` (`id_herramienta`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_herrobra_obra` FOREIGN KEY (`id_obra`) REFERENCES `obra` (`id_obra`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_herramienta_obra_estado` FOREIGN KEY (`id_estado_herramienta`) REFERENCES `estado_herramienta` (`id_estado_herramienta`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_herramienta_obra_herramienta` FOREIGN KEY (`id_herramienta`) REFERENCES `herramienta` (`id_herramienta`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_herramienta_obra_obra` FOREIGN KEY (`id_obra`) REFERENCES `obra` (`id_obra`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `historial_estado_obra`
@@ -1816,8 +1907,8 @@ ALTER TABLE `historial_estado_obra`
 -- Filtros para la tabla `horas_trabajadas`
 --
 ALTER TABLE `horas_trabajadas`
-  ADD CONSTRAINT `fk_horas_empleado` FOREIGN KEY (`id_empleado`) REFERENCES `empleado` (`id_empleado`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_horas_obra` FOREIGN KEY (`id_obra`) REFERENCES `obra` (`id_obra`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_horas_obra` FOREIGN KEY (`id_obra`) REFERENCES `obra` (`id_obra`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_horas_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
 
 --
 -- Filtros para la tabla `incidencia`
@@ -1829,9 +1920,9 @@ ALTER TABLE `incidencia`
 -- Filtros para la tabla `ingreso`
 --
 ALTER TABLE `ingreso`
-  ADD CONSTRAINT `fk_ingreso_cliente` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`) ON DELETE SET NULL,
   ADD CONSTRAINT `fk_ingreso_cobro` FOREIGN KEY (`id_cobro`) REFERENCES `cobro` (`id_cobro`) ON DELETE SET NULL,
-  ADD CONSTRAINT `fk_ingreso_obra` FOREIGN KEY (`id_obra`) REFERENCES `obra` (`id_obra`) ON DELETE SET NULL;
+  ADD CONSTRAINT `fk_ingreso_obra` FOREIGN KEY (`id_obra`) REFERENCES `obra` (`id_obra`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_ingreso_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
 
 --
 -- Filtros para la tabla `mano_obra_presupuesto`
@@ -1868,10 +1959,17 @@ ALTER TABLE `movimiento_inventario`
   ADD CONSTRAINT `fk_movinventario_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
 
 --
+-- Filtros para la tabla `movimiento_material`
+--
+ALTER TABLE `movimiento_material`
+  ADD CONSTRAINT `movimiento_material_ibfk_1` FOREIGN KEY (`id_material`) REFERENCES `material` (`id_material`),
+  ADD CONSTRAINT `movimiento_material_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
+
+--
 -- Filtros para la tabla `obra`
 --
 ALTER TABLE `obra`
-  ADD CONSTRAINT `fk_obra_cliente` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`);
+  ADD CONSTRAINT `fk_obra_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
 
 --
 -- Filtros para la tabla `orden_compra`
@@ -1915,6 +2013,13 @@ ALTER TABLE `reporte`
   ADD CONSTRAINT `fk_reporte_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
 
 --
+-- Filtros para la tabla `rol_permiso`
+--
+ALTER TABLE `rol_permiso`
+  ADD CONSTRAINT `rol_permiso_ibfk_1` FOREIGN KEY (`id_rol`) REFERENCES `roles` (`id_rol`),
+  ADD CONSTRAINT `rol_permiso_ibfk_2` FOREIGN KEY (`id_permiso`) REFERENCES `permisos` (`id_permiso`);
+
+--
 -- Filtros para la tabla `solicitud_material`
 --
 ALTER TABLE `solicitud_material`
@@ -1924,64 +2029,23 @@ ALTER TABLE `solicitud_material`
 -- Filtros para la tabla `tarea`
 --
 ALTER TABLE `tarea`
-  ADD CONSTRAINT `fk_tarea_empleado` FOREIGN KEY (`id_empleado`) REFERENCES `empleado` (`id_empleado`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_tarea_obra` FOREIGN KEY (`id_obra`) REFERENCES `obra` (`id_obra`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_tarea_obra` FOREIGN KEY (`id_obra`) REFERENCES `obra` (`id_obra`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_tarea_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
+
+--
+-- Filtros para la tabla `unidad_herramienta`
+--
+ALTER TABLE `unidad_herramienta`
+  ADD CONSTRAINT `unidad_herramienta_ibfk_1` FOREIGN KEY (`id_herramienta`) REFERENCES `herramienta` (`id_herramienta`),
+  ADD CONSTRAINT `unidad_herramienta_ibfk_2` FOREIGN KEY (`id_estado_herramienta`) REFERENCES `estado_herramienta` (`id_estado_herramienta`);
 
 --
 -- Filtros para la tabla `usuario`
 --
 ALTER TABLE `usuario`
+  ADD CONSTRAINT `fk_usuario_cargo` FOREIGN KEY (`id_cargo`) REFERENCES `cargo` (`id_cargo`),
   ADD CONSTRAINT `fk_usuario_rol` FOREIGN KEY (`id_rol`) REFERENCES `roles` (`id_rol`);
 COMMIT;
-
-CREATE TABLE permisos (
-    id_permiso INT AUTO_INCREMENT PRIMARY KEY,
-    nombre_permiso VARCHAR(100) NOT NULL
-);
-
-INSERT INTO permisos (nombre_permiso) VALUES
-('usuarios'),
-('roles'),
-('obras'),
-('clientes'),
-('empleados'),
-('materiales'),
-('herramientas'),
-('inventario'),
-('presupuestos'),
-('costos'),
-('documentos'),
-('avances'),
-('tareas'),
-('asistencia'),
-('incidencias'),
-('reportes'),
-('caja'),
-('cuentas cobrar'),
-('cuentas pagar'),
-('proveedores'),
-('pagos'),
-('perfil');
-
-CREATE TABLE rol_permiso (
-    id_rol INT NOT NULL,
-    id_permiso INT NOT NULL,
-    PRIMARY KEY (id_rol, id_permiso),
-    FOREIGN KEY (id_rol) REFERENCES roles(id_rol),
-    FOREIGN KEY (id_permiso) REFERENCES permisos(id_permiso)
-);
-
-ALTER TABLE auditoria
-ADD COLUMN id_registro INT NULL AFTER tabla_afectada;
-
-ALTER TABLE obra
-ADD COLUMN activo TINYINT(1) NOT NULL DEFAULT 1
-AFTER estado;
-
-ALTER TABLE avance_obra
-ADD COLUMN id_etapa INT NOT NULL AFTER id_obra;
-
-
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

@@ -1,165 +1,701 @@
+/*==================================================
+=                 BUILDPRO LAYOUT v3
+==================================================*/
+
 :root{
---bg:#070d14;
---surface:#111e2b;
---surface-hover:#182838;
---accent:#ffb703;
---accent-hover:#fb8500;
---text:#ffffff;
---muted:#94a3b8;
---border:rgba(255,255,255,.08);
+
+    --bg:#070d14;
+    --surface:#111e2b;
+    --surface-light:#182838;
+    --surface-hover:#223448;
+
+    --primary:#ffb703;
+    --primary-hover:#fb8500;
+
+    --text:#ffffff;
+    --text-secondary:#94a3b8;
+
+    --border:rgba(255,255,255,.08);
+
+    --sidebar-width:250px;
+    --navbar-height:70px;
+
+    --radius:14px;
+
+    --shadow:
+    0 8px 30px rgba(0,0,0,.25);
+
 }
 
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:"Segoe UI",sans-serif;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",sans-serif;
+}
+
+html,
+body{
+
+    width:100%;
+    min-height:100%;
+    overflow-x:hidden;
+
 }
 
 body{
-background:var(--bg);
-color:var(--text);
+
+    background:var(--bg);
+    color:var(--text);
+
 }
 
+/*==================================================
+=                   NAVBAR
+==================================================*/
+
 .navbar{
-height:70px;
-background:#0d1722;
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:0 30px;
-border-bottom:1px solid var(--border);
-position:fixed;
-top:0;
-left:0;
-right:0;
-z-index:1000;
+
+    position:fixed;
+
+    top:0;
+    left:0;
+    right:0;
+
+    height:var(--navbar-height);
+
+    background:#0d1722;
+
+    border-bottom:1px solid var(--border);
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:0 28px;
+
+    z-index:1100;
+
 }
 
 .logo{
-font-size:24px;
-font-weight:800;
-letter-spacing:2px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    font-size:24px;
+
+    font-weight:800;
+
+    letter-spacing:2px;
+
 }
 
 .logo span{
-color:var(--accent);
+
+    color:var(--primary);
+
 }
 
 .navbar-right{
-display:flex;
-align-items:center;
-gap:20px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
 }
 
 .user{
-display:flex;
-align-items:center;
-gap:12px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
 }
 
 .avatar{
-width:42px;
-height:42px;
-border-radius:50%;
-background:var(--accent);
-display:flex;
-justify-content:center;
-align-items:center;
-font-weight:700;
-color:#111;
+
+    width:42px;
+    height:42px;
+
+    border-radius:50%;
+
+    background:var(--primary);
+
+    color:#111;
+
+    font-weight:700;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
 }
 
 .user-info h4{
-font-size:14px;
-font-weight:600;
+
+    font-size:14px;
+
 }
 
 .user-info p{
-font-size:12px;
-color:var(--muted);
+
+    font-size:12px;
+
+    color:var(--text-secondary);
+
 }
 
 .logout{
-color:white;
-font-size:18px;
-text-decoration:none;
-transition:.3s;
+
+    color:white;
+
+    font-size:18px;
+
+    transition:.25s;
+
 }
 
 .logout:hover{
-color:var(--accent);
+
+    color:var(--primary);
+
 }
 
-.container{
-display:flex;
-margin-top:70px;
-min-height:calc(100vh - 70px);
-}
+/*==================================================
+=                  SIDEBAR
+==================================================*/
 
-.sidebar {
-    position: fixed;
-    top: 70px; /* debajo de la navbar */
-    left: 0;
-    bottom: 0;
-    width: 250px;
-    background: #111e2b;
-    padding: 20px 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    border-right: 1px solid var(--border);
-    overflow-y: auto; /* scroll interno si el menú es largo */
-}
+.sidebar{
 
+    position:fixed;
+
+    top:var(--navbar-height);
+
+    left:0;
+
+    bottom:0;
+
+    width:var(--sidebar-width);
+
+    background:var(--surface);
+
+    border-right:1px solid var(--border);
+
+    padding:18px 14px;
+
+    overflow-y:auto;
+
+    transition:.3s;
+
+    z-index:1050;
+
+}
 
 .sidebar a{
-color:white;
-text-decoration:none;
-padding:13px 15px;
-border-radius:10px;
-transition:.3s;
-font-size:15px;
-font-weight:500;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:13px 15px;
+
+    border-radius:12px;
+
+    transition:.25s;
+
+    margin-bottom:4px;
+
 }
 
 .sidebar a:hover{
-background:var(--surface-hover);
-color:var(--accent);
-}
 
-.content {
-    flex: 1;
-    padding: 35px;
-    margin-left: 125px; /* espacio para el sidebar fijo */
-    background: var(--bg);
-}
+    background:var(--surface-hover);
 
+    color:var(--primary);
 
-.page-title h1{
-font-size:30px;
-font-weight:700;
-}
-
-.page-title p{
-margin-top:8px;
-color:var(--muted);
-font-size:15px;
-}
-.sidebar a{
-display:flex;
-align-items:center;
-gap:12px;
-}
-
-.sidebar a i{
-width:20px;
-text-align:center;
-font-size:15px;
 }
 
 .sidebar a.active{
-background:#ffb703;
-color:#070d14;
-font-weight:600;
+
+    background:var(--primary);
+
+    color:#111;
+
+    font-weight:600;
+
+}
+
+.sidebar a i{
+
+    width:22px;
+
+    text-align:center;
+
+}
+
+/*==================================================
+=                 CONTENIDO
+==================================================*/
+
+.content{
+
+    margin-left:var(--sidebar-width);
+
+    margin-top:var(--navbar-height);
+
+    min-height:calc(100vh - var(--navbar-height));
+
+    padding:30px;
+
+    background:var(--bg);
+
+}
+
+.page-title{
+
+    margin-bottom:25px;
+
+}
+
+.page-title h1{
+
+    font-size:30px;
+
+    font-weight:700;
+
+    margin-bottom:8px;
+
+}
+
+.page-title p{
+
+    color:var(--text-secondary);
+
+    font-size:15px;
+
+}
+
+/*==================================================
+=             BOTÓN HAMBURGUESA
+==================================================*/
+
+.menu-toggle{
+
+    display:none;
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:var(--surface);
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:20px;
+
+}
+
+.menu-toggle:hover{
+
+    background:var(--surface-hover);
+
+}
+
+/*==================================================
+=                 OVERLAY
+==================================================*/
+
+.sidebar-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.45);
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition:.3s;
+
+    z-index:1040;
+
+}
+
+.sidebar-overlay.active{
+
+    opacity:1;
+
+    visibility:visible;
+
+}
+
+/*==================================================
+=                 TABLET
+==================================================*/
+
+@media(max-width:992px){
+
+    .navbar{
+
+        padding:0 20px;
+
+    }
+
+    .content{
+
+        padding:25px;
+
+    }
+
+}
+
+/*==================================================
+=               BUILDPRO LAYOUT v3
+=               RESPONSIVE MÓVIL
+==================================================*/
+
+.sidebar::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+.sidebar::-webkit-scrollbar-track{
+
+    background:transparent;
+
+}
+
+.sidebar::-webkit-scrollbar-thumb{
+
+    background:#2b3f55;
+
+    border-radius:20px;
+
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover{
+
+    background:var(--primary);
+
+}
+
+/*==================================================
+=                 NOTEBOOK
+==================================================*/
+
+@media(max-width:1200px){
+
+    .content{
+
+        padding:25px;
+
+    }
+
+}
+
+/*==================================================
+=                 TABLET
+==================================================*/
+
+@media(max-width:992px){
+
+    .navbar{
+
+        padding:0 18px;
+
+    }
+
+    .logo{
+
+        font-size:20px;
+
+    }
+
+    .content{
+
+        margin-left:220px;
+
+        width:calc(100% - 220px);
+
+        padding:22px;
+
+    }
+
+    .sidebar{
+
+        width:220px;
+
+    }
+
+}
+
+/*==================================================
+=                  MÓVIL
+==================================================*/
+
+@media(max-width:768px){
+
+    .navbar{
+
+        height:65px;
+
+        padding:0 15px;
+
+    }
+
+    .logo{
+
+        font-size:20px;
+
+        margin-left:10px;
+
+    }
+
+    .menu-toggle{
+
+        display:flex;
+
+        justify-content:center;
+
+        align-items:center;
+
+    }
+
+    .user-info{
+
+        display:none;
+
+    }
+
+    .avatar{
+
+        width:38px;
+
+        height:38px;
+
+        font-size:14px;
+
+    }
+
+    .sidebar{
+
+        top:65px;
+
+        left:-260px;
+
+        width:250px;
+
+        height:calc(100vh - 65px);
+
+        transition:left .30s ease;
+
+        box-shadow:0 0 25px rgba(0,0,0,.45);
+
+    }
+
+    .sidebar.active{
+
+        left:0;
+
+    }
+
+    .content{
+
+        margin-left:0;
+
+        margin-top:65px;
+
+        width:100%;
+
+        padding:18px;
+
+    }
+
+    .page-title{
+
+        margin-bottom:20px;
+
+    }
+
+    .page-title h1{
+
+        font-size:24px;
+
+    }
+
+    .page-title p{
+
+        font-size:14px;
+
+    }
+
+}
+
+/*==================================================
+=            CELULARES PEQUEÑOS
+==================================================*/
+
+@media(max-width:480px){
+
+    .navbar{
+
+        padding:0 12px;
+
+    }
+
+    .logo{
+
+        font-size:18px;
+
+        letter-spacing:1px;
+
+    }
+
+    .content{
+
+        padding:15px;
+
+    }
+
+    .sidebar{
+
+        width:230px;
+
+    }
+
+}
+
+/*==================================================
+=                ANIMACIONES
+==================================================*/
+
+.sidebar{
+
+    transition:
+    left .30s ease,
+    width .30s ease;
+
+}
+
+.content{
+
+    transition:
+    margin-left .30s ease,
+    width .30s ease,
+    padding .30s ease;
+
+}
+
+.sidebar a{
+
+    transition:
+    background .25s,
+    color .25s,
+    transform .20s;
+
+}
+
+.sidebar a:hover{
+
+    transform:translateX(4px);
+
+}
+
+.menu-toggle{
+
+    transition:.25s;
+
+}
+
+.menu-toggle:hover{
+
+    transform:scale(1.05);
+
+}
+
+/*==================================================
+=                UTILIDADES
+==================================================*/
+
+img{
+
+    max-width:100%;
+
+    height:auto;
+
+}
+
+table{
+
+    width:100%;
+
+}
+
+button,
+input,
+select,
+textarea{
+
+    font:inherit;
+
+}
+
+a{
+
+    color:inherit;
+
+}
+
+/*==================================================
+=             IMPRESIÓN
+==================================================*/
+
+@media print{
+
+    .navbar,
+    .sidebar,
+    .menu-toggle,
+    .sidebar-overlay{
+
+        display:none !important;
+
+    }
+
+    .content{
+
+        margin:0;
+
+        width:100%;
+
+        padding:0;
+
+    }
+
 }

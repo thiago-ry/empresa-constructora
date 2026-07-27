@@ -105,6 +105,7 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
                     class="btn btn-primary">
 
                     <i class="fa-solid fa-print"></i>
+                    Imprimir
 
                 </button>
 
@@ -113,6 +114,7 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
                     class="btn btn-primary">
 
                     <i class="fa-solid fa-plus"></i>
+                    Agregar
 
                 </a>
 
@@ -160,6 +162,7 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
                             </td>
 
                             <td class="no-print">
+                                <div class="table-actions">
 
                                 <a
                                     href="/empresa_constructora/controladores/AvanceController.php?accion=editar&id=<?= $avance["id_avance_diario"] ?>&id_obra=<?= $_GET["id_obra"] ?>" class="btn btn-warning">
@@ -176,7 +179,7 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
                                     <i class="fa-solid fa-trash"></i>
 
                                 </a>
-
+                                </div>
                             </td>
 
                         </tr>

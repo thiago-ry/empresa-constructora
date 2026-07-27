@@ -127,7 +127,7 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
                     <i class="fa-solid fa-print"></i>
 
-
+                    Imprimir
                 </button>
 
 
@@ -139,6 +139,7 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
                     <i class="fa-solid fa-plus"></i>
 
+                    Agregar
 
                 </a>
 

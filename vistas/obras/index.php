@@ -57,12 +57,20 @@ require_once "../../layouts/sidebar.php";
                     <?php } ?>
                 </select>
             </div>
-            <div>
+            <div style="display: flex; flex-direction: column; margin: 20px;">
                 <button
-                    onclick="window.print()" class="btn btn-primary">
+                    onclick="window.print()"
+                    class="btn btn-primary"
+                    style="margin-bottom: 10px;">
                     <i class="fa-solid fa-print"></i>
+                    Imprimir
                 </button>
-                <a href="agregar.php" class="btn btn-primary"> <i class="fa-solid fa-plus"></i></a>
+                <a
+                    href="agregar.php"
+                    class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i>
+                    Agregar
+                </a>
             </div>
         </div>
         <table
@@ -109,13 +117,15 @@ require_once "../../layouts/sidebar.php";
                             <?= $o["estado"] ?>
                         </td>
 
-                        <td class="no-print" style="display: flex;">
+                        <td class="no-print">
+                            <div class="table-actions">
                             <a href="editar.php?id=<?= $o["id_obra"] ?>" class="btn btn-warning">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
                             <a href="ver.php?id=<?= $o["id_obra"] ?>" class="btn btn-secondary">
                                 <i class="fa-solid fa-eye"></i>
                             </a>
+                            </div>
                         </td>
                     </tr>
                 <?php } ?>

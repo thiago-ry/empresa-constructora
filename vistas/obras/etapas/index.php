@@ -43,9 +43,11 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
                     onclick="window.print()"
                     class="btn btn-primary">
                     <i class="fa-solid fa-print"></i>
+                    Imprimir
                 </button>
             <a href="../vistas/obras/etapas/crear.php?id_obra=<?= $_GET["id_obra"] ?>" class="btn btn-primary">
                 <i class="fa-solid fa-plus"></i>
+                Agregar
             </a>
             </div>
         </div>
@@ -78,10 +80,12 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
                             <?= $etapa["fecha_fin"] ?>
                         </td>
                         <td>
+                            <div class="table-actions">
                             <a href="/empresa_constructora/controladores/EtapaController.php?accion=editar&id=<?= $etapa["id_etapa"] ?>"
                                 class="btn btn-warning">
                                 <i class="fa-solid fa-pen"></i>
                             </a>
+                            </div>
                         </td>
                     </tr>
                 <?php endforeach; ?>

@@ -95,6 +95,7 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
 
                     <i class="fa-solid fa-print"></i>
+                    Imprimir
 
 
                 </button>
@@ -102,17 +103,18 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
 
 
- <a
+                <a
 
-href="/empresa_constructora/controladores/EmpleadoObraController.php?accion=crear&id_obra=<?= $_GET["id_obra"] ?>"
+                    href="/empresa_constructora/controladores/EmpleadoObraController.php?accion=crear&id_obra=<?= $_GET["id_obra"] ?>"
 
-class="btn btn-primary">
-
-
-<i class="fa-solid fa-plus"></i>
+                    class="btn btn-primary">
 
 
-</a>
+                    <i class="fa-solid fa-plus"></i>
+                    Agregar
+
+
+                </a>
 
 
             </div>
@@ -241,43 +243,43 @@ class="btn btn-primary">
 
 
                             <td>
-
-
-                                <a
-
-                                    href="editar.php?id=<?= $empleado["id_empleado_obra"] ?>"
-
-                                    class="btn btn-warning">
-
-
-                                    <i class="fa-solid fa-pen"></i>
-
-
-                                </a>
-
-
-
-
-                                <?php if ($empleado["estado"] == "Activo") { ?>
-
+                                <div class="table-actions">
 
                                     <a
 
-                                        href="retirar.php?id=<?= $empleado["id_empleado_obra"] ?>"
+                                        href="editar.php?id=<?= $empleado["id_empleado_obra"] ?>"
 
-                                        class="btn btn-danger">
+                                        class="btn btn-warning">
 
 
-                                        <i class="fa-solid fa-user-minus"></i>
+                                        <i class="fa-solid fa-pen"></i>
 
 
                                     </a>
 
 
 
-                                <?php } ?>
+
+                                    <?php if ($empleado["estado"] == "Activo") { ?>
 
 
+                                        <a
+
+                                            href="retirar.php?id=<?= $empleado["id_empleado_obra"] ?>"
+
+                                            class="btn btn-danger">
+
+
+                                            <i class="fa-solid fa-user-minus"></i>
+
+
+                                        </a>
+
+
+
+                                    <?php } ?>
+
+                                </div>
 
                             </td>
 

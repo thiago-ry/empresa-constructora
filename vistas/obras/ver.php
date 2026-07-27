@@ -52,7 +52,7 @@ require_once "../../layouts/sidebar.php";
     </div>
 
 
-    <div class="card">
+    <div class="card" style="margin-bottom: 20px;">
 
         <div class="card-header">
 
@@ -238,7 +238,7 @@ require_once "../../layouts/sidebar.php";
         </div>
 
     </div>
-    <div class="toolbar">
+    <div class="toolbar" style="margin-top: 20px;">
 
         <h2>
             Módulos de la obra
@@ -332,13 +332,13 @@ require_once "../../layouts/sidebar.php";
                 Herramientas
             </h3>
 
-            <a
-                href="herramientas/index.php?id_obra=<?= $detalle["id_obra"] ?>"
-                class="btn btn-primary">
+<a
+href="herramientas/index.php?id_obra=<?= $detalle["id_obra"] ?>"
+class="btn btn-primary">
 
-                Ingresar
+Ingresar
 
-            </a>
+</a>
 
         </div>
 

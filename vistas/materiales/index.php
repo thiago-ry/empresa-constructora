@@ -147,18 +147,21 @@ require_once "../../layouts/sidebar.php";
                 </select>
 
             </div>
-            <div>
+            <div style="display: flex; flex-direction: column; margin: 20px;">
 
                 <button
                     onclick="window.print()"
-                    class="btn btn-primary">
+                    class="btn btn-primary"
+                    style="margin-bottom: 10px;">
                     <i class="fa-solid fa-print"></i>
+                    Imprimir
                 </button>
                 <a
                     href="agregar.php"
                     class="btn btn-primary">
 
                     <i class="fa-solid fa-plus"></i>
+                    Agregar
 
                 </a>
 
@@ -242,7 +245,8 @@ require_once "../../layouts/sidebar.php";
                             </span>
                         </td>
 
-                        <td class="no-print btn-container">
+                        <td class="no-print">
+                            <div class="table-actions">
 
                             <a
                                 href="../movimientos/index.php?id=<?= $m['id_material']; ?>"
@@ -270,6 +274,7 @@ require_once "../../layouts/sidebar.php";
                                     <i class="fa-solid fa-check"></i>
                                 </a>
                             <?php } ?>
+                            </div>
                         </td>
 
                     </tr>

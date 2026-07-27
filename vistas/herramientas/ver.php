@@ -106,7 +106,7 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
 
 
-    <div class="card">
+    <div class="card" style="margin-top: 20px;">
 
         <h2 style="margin-bottom:25px;">
 
@@ -222,7 +222,7 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
 
 
-    <div class="card">
+    <div class="card" style="margin-top: 20px;">
 
         <h2 style="margin-bottom:25px;">
 

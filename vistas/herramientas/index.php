@@ -79,13 +79,15 @@ require_once "../../layouts/sidebar.php";
 
             </div>
 
-            <div class="toolbar-right">
+            <div style="display: flex; flex-direction: column; margin: 20px;">
 
                 <button
                     onclick="window.print()"
-                    class="btn btn-primary">
+                    class="btn btn-primary"
+                    style="margin-bottom: 10px;">
 
                     <i class="fa-solid fa-print"></i>
+                    Imprimir
 
                 </button>
 
@@ -94,6 +96,7 @@ require_once "../../layouts/sidebar.php";
                     class="btn btn-primary">
 
                     <i class="fa-solid fa-plus"></i>
+                    Agregar
 
                 </a>
 
@@ -205,20 +208,20 @@ require_once "../../layouts/sidebar.php";
 
                         <td class="no-print">
 
-                            <div class="action-buttons">
+                            <div class="table-actions">
 
                                 <a href="/empresa_constructora/controladores/HerramientaController.php?accion=editar&id=<?= $h['id_herramienta'] ?>"
                                     class="btn btn-warning">
-                                    Editar
+                                    <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
 
-                       <a
-href="/empresa_constructora/controladores/HerramientaController.php?accion=ver&id=<?= $h["id_herramienta"] ?>"
-class="btn btn-info">
+                                <a
+                                    href="/empresa_constructora/controladores/HerramientaController.php?accion=ver&id=<?= $h["id_herramienta"] ?>"
+                                    class="btn btn-secondary">
 
-    <i class="fa-solid fa-eye"></i>
+                                    <i class="fa-solid fa-eye"></i>
 
-</a>
+                                </a>
 
                             </div>
 

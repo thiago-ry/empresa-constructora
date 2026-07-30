@@ -699,3 +699,21 @@ a{
     }
 
 }
+
+.sidebar a.active{
+
+    background:var(--surface-hover);
+
+    color:var(--primary);
+
+    font-weight:600;
+
+    border-left:3px solid var(--primary);
+
+}
+
+.sidebar a.active i{
+
+    color:var(--primary);
+
+}

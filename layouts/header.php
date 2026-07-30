@@ -54,9 +54,9 @@ date_default_timezone_set("America/Argentina/Buenos_Aires");
 
 
 
-    <div class="logo">
+    <div class="logo" style=" width: 250px;">
 
-        BUILD<span>PRO</span>
+        <span><img src="../../assets/img/logo.png" width="85px" style="margin-left: 60%;"></span>
 
     </div>
 

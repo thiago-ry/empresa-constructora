@@ -183,6 +183,66 @@ class ClienteController
 
         exit();
     }
+
+    public function editar()
+    {
+
+        session_start();
+
+        $datos = [
+            "id_usuario" => $_POST["id_usuario"],
+            "nombre" => $_POST["nombre"],
+            "apellido" => $_POST["apellido"],
+            "documento"=>$_POST["documento"],
+            "telefono" => $_POST["telefono"],
+            "correo" => $_POST["correo"]
+        ];
+
+        $usuarioActual = $this->cliente->buscarPorId($datos["id_usuario"]);
+
+        if (
+
+            $usuarioActual["correo"] != $datos["correo"]
+
+            &&
+
+            $this->cliente->existeCorreo($datos["correo"])
+
+        ) {
+            echo "<script>
+            alert('El correo ya se encuentra registrado.');
+            window.location.href='../vistas/clientes/index.php';
+        </script>";
+
+            exit();
+        }
+
+        $this->cliente->editar($datos);
+
+        /*
+    ==========================
+        AUDITORÍA
+    ==========================
+    */
+
+        $this->auditoria->registrar([
+
+            "id_usuario" => $_SESSION["usuario"]["id"],
+
+            "accion" => "EDITAR",
+
+            "tabla_afectada" => "usuario",
+
+            "id_registro" => $datos["id_usuario"],
+
+            "descripcion" => "Modificó el usuario"
+
+        ]);
+
+        header("Location: ../vistas/clientes/index.php");
+
+        exit();
+    }
 }
 
 $controlador = new ClienteController();
@@ -195,7 +255,10 @@ if (isset($_POST["accion"])) {
         case "agregar":
 
             $controlador->agregar();
+            break;
 
+        case "editar";
+            $controlador->editar();
             break;
     }
 }

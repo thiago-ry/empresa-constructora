@@ -280,7 +280,6 @@ class Cliente
                 )";
 
         $consulta = $this->conexion->prepare($sql);
-
         $consulta->execute([
             ":nombre"      => ucwords(strtolower($datos["nombre"])),
             ":apellido"    => ucwords(strtolower($datos["apellido"])),
@@ -292,4 +291,48 @@ class Cliente
 
         return $this->conexion->lastInsertId();
     }
+
+        public function buscarPorId($id)
+    {
+
+        $sql = "SELECT
+                u.*,
+                r.nombre_rol
+            FROM usuario u
+            INNER JOIN roles r
+                ON u.id_rol = r.id_rol
+            WHERE u.id_usuario = :id";
+
+        $consulta = $this->conexion->prepare($sql);
+
+        $consulta->execute([
+            ":id" => $id
+        ]);
+
+        return $consulta->fetch(PDO::FETCH_ASSOC);
+    }
+
+        public function editar($datos)
+    {
+        $sql = "UPDATE usuario
+
+                SET
+                    nombre = :nombre,
+                    apellido = :apellido,
+                    documento = :documento,
+                    telefono = :telefono,
+                    correo = :correo
+                WHERE id_usuario = :id_usuario";
+
+        $consulta = $this->conexion->prepare($sql);
+        return $consulta->execute([
+            ":nombre"      => ucwords(strtolower($datos["nombre"])),
+            ":apellido"    => ucwords(strtolower($datos["apellido"])),
+            ":documento"   => $datos["documento"],
+            ":telefono"    => $datos["telefono"],
+            ":correo"      => $datos["correo"],
+            ":id_usuario"  => $datos["id_usuario"]
+        ]);
+    }
+
 }

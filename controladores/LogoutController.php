@@ -13,6 +13,6 @@ if(isset($_SESSION['usuario'])){
 
 session_destroy();
 
-header("Location: ../vistas/login.php");
+header("Location: ../index.php");
 exit();
 ?>

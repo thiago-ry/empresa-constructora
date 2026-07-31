@@ -39,9 +39,7 @@ if (isset($_SESSION['usuario'])) {
 
             <a href="#" class="logo">
 
-                <i class="fa-solid fa-building"></i>
-
-                <span>BUILDPRO</span>
+                <img src="assets/img/logo.png" width="20px">
 
             </a>
 
@@ -77,17 +75,27 @@ if (isset($_SESSION['usuario'])) {
 
         <div class="overlay"></div>
 
-        <div class="container hero-content">
+        <div class="hero-machine">
 
-            <span class="subtitle">
+            <img
+                src="https://static.vecteezy.com/system/resources/thumbnails/050/594/564/small_2x/excavator-truck-side-view-full-length-isolate-on-transparency-background-png.png"
+                alt="Excavadora"
+                id="excavadora"
+                class="excavadora">
 
-                EMPRESA CONSTRUCTORA
+        </div>
 
-            </span>
+        <div class="container hero-grid"">
+
+            <div class=" hero-content">
+            <br>
 
             <h1>
 
-                Construimos el futuro con calidad, innovación y compromiso.
+                Construimos el futuro
+                con calidad,
+                innovación y
+                compromiso.
 
             </h1>
 
@@ -95,13 +103,13 @@ if (isset($_SESSION['usuario'])) {
 
                 BuildPro integra tecnología y experiencia para gestionar
                 obras, materiales, herramientas y personal desde una
-                única plataforma moderna.
+                única plataforma moderna, segura y eficiente.
 
             </p>
 
             <div class="hero-buttons">
 
-                <a href="login.php" class="btn-primary">
+                <a href="vistas/login.php" class="btn-primary">
 
                     Iniciar sesión
 
@@ -114,6 +122,8 @@ if (isset($_SESSION['usuario'])) {
                 </a>
 
             </div>
+
+        </div>
 
         </div>
 
@@ -280,7 +290,7 @@ if (isset($_SESSION['usuario'])) {
 
     </section>
 
-        <!--================ ESTADÍSTICAS ================-->
+    <!--================ ESTADÍSTICAS ================-->
 
     <section class="stats" id="estadisticas">
 
@@ -551,7 +561,7 @@ if (isset($_SESSION['usuario'])) {
         </div>
 
     </section>
-        <!--================ FOOTER ================-->
+    <!--================ FOOTER ================-->
 
     <footer class="footer">
 

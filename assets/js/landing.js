@@ -102,3 +102,64 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
     });
 
 });
+
+//==============================
+// Excavadora Hero
+//==============================
+
+const excavadora = document.getElementById("excavadora");
+
+function animarExcavadora(){
+
+    if(!excavadora) return;
+
+    const hero = document.querySelector(".hero");
+
+    const heroHeight = hero.offsetHeight;
+
+    const scroll = Math.min(window.scrollY, heroHeight);
+
+    const progreso = scroll / heroHeight;
+
+    const anchoExcavadora = excavadora.offsetWidth;
+
+    // Comienza visible a la derecha
+
+    const inicio =
+        window.innerWidth -
+        anchoExcavadora -
+        30;
+
+    // Sale completamente por la izquierda
+
+    const fin =
+        -anchoExcavadora;
+
+    const posicion =
+        inicio +
+        ((fin - inicio) * progreso);
+
+    excavadora.style.left =
+        posicion + "px";
+
+    excavadora.style.transform =
+        `scaleX(-1) translateY(${Math.sin(scroll * 0.01) * 5}px)`;
+
+    excavadora.style.opacity =
+        0.25 - (progreso * 0.15);
+
+}
+
+window.addEventListener(
+    "scroll",
+    animarExcavadora
+);
+
+window.addEventListener(
+    "resize",
+    animarExcavadora
+);
+
+// Ejecutar al cargar para evitar el salto
+
+animarExcavadora();

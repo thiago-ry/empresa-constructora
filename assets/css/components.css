@@ -1781,6 +1781,15 @@ select:focus{
 
     }
 
+        .no-print,
+    .alert-container,
+    .toolbar,
+    .btn,
+    .sidebar,
+    .page-header {
+        display: none !important;
+    }
+    
     .content{
 
         margin:0;

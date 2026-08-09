@@ -34,21 +34,21 @@ require_once "../../layouts/sidebar.php";
 
     <div class="alert-container no-print">
 
-        <div class="alert alert-info">
+        <div class="alert alert-info no-print">
             <p>
                 Total
             </p>
             <h3><?= $estadisticas['total_clientes']; ?> clientes</h3>
         </div>
 
-        <div class="alert alert-success">
+        <div class="alert alert-success no-print">
             <p>
                 Activos
             </p>
             <h3><?= $estadisticas['activos']; ?> clientes activos</h3>
         </div>
 
-        <div class="alert alert-danger">
+        <div class="alert alert-danger no-print">
             <p>
                 Inactivos
             </p>

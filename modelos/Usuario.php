@@ -677,27 +677,78 @@ public function empleadoEnObra($id_usuario){
         return $consulta->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function obtenerEmpleadosDisponiblesPorObra($id_obra)
-    {
-
-        $sql = "SELECT u.id_usuario, u.nombre, u.apellido, u.documento
+public function obtenerEmpleadosDisponiblesPorObra($id_obra, $busqueda = "")
+{
+    $sql = "SELECT
+                u.id_usuario,
+                u.nombre,
+                u.apellido,
+                u.documento,
+                u.telefono
             FROM usuario u
+
             INNER JOIN roles r
                 ON u.id_rol = r.id_rol
-            WHERE r.nombre_rol = 'Empleado'
-            AND u.estado = 1
-            AND u.id_usuario NOT IN (
-                SELECT eo.id_usuario
-                FROM empleado_obra eo
-                WHERE eo.id_obra = :id_obra
-                AND eo.estado = 1
-            )
-            ORDER BY u.apellido, u.nombre";
 
-        $consulta = $this->conexion->prepare($sql);
-        $consulta->execute([
-            ":id_obra" => $id_obra
-        ]);
-        return $consulta->fetchAll(PDO::FETCH_ASSOC);
+            WHERE r.nombre_rol = 'Empleado'
+
+            AND u.estado = 1
+
+            AND NOT EXISTS (
+                SELECT 1
+                FROM empleado_obra eo
+                WHERE eo.id_usuario = u.id_usuario
+                AND eo.id_obra = :id_obra
+                AND eo.estado = 1
+            )";
+
+    /*
+    ==========================================
+        BUSCADOR
+    ==========================================
+    */
+
+    if (!empty(trim($busqueda))) {
+
+        $sql .= " AND (
+                    u.nombre LIKE :busqueda
+                    OR u.apellido LIKE :busqueda
+                    OR u.documento LIKE :busqueda
+                    OR CONCAT(u.apellido, ' ', u.nombre) LIKE :busqueda_completo
+                    OR CONCAT(u.nombre, ' ', u.apellido) LIKE :busqueda_completo2
+                )";
     }
+
+    $sql .= " ORDER BY u.apellido ASC, u.nombre ASC";
+
+    /*
+    ==========================================
+        LIMITAR RESULTADOS
+    ==========================================
+        
+        Evitamos mostrar cientos de registros
+        de una sola vez.
+    */
+
+    $sql .= " LIMIT 50";
+
+    $consulta = $this->conexion->prepare($sql);
+
+    $parametros = [
+        ":id_obra" => $id_obra
+    ];
+
+    if (!empty(trim($busqueda))) {
+
+        $texto = "%" . trim($busqueda) . "%";
+
+        $parametros[":busqueda"] = $texto;
+        $parametros[":busqueda_completo"] = $texto;
+        $parametros[":busqueda_completo2"] = $texto;
+    }
+
+    $consulta->execute($parametros);
+
+    return $consulta->fetchAll(PDO::FETCH_ASSOC);
+}
 }

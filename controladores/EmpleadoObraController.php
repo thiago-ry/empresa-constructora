@@ -16,10 +16,10 @@ class EmpleadoObraController
     }
 
     /*
-==========================
-    LISTAR
-==========================
-*/
+    ==========================
+        LISTAR
+    ==========================
+    */
 
     public function listar()
     {
@@ -27,28 +27,82 @@ class EmpleadoObraController
 
         $id_obra = $_GET["id_obra"] ?? 0;
 
-
         $empleados = $this->empleadoObra->obtenerPorObra($id_obra);
-
 
         require "../vistas/obras/empleados/index.php";
     }
+
+
     /*
-==========================
-    CREAR
-==========================
-*/
+    ==========================
+        CREAR
+    ==========================
+    */
 
-public function crear()
-{
-    session_start();
+    public function crear()
+    {
+        session_start();
 
-    $usuario = new Usuario();
+        $id_obra = $_GET["id_obra"] ?? 0;
 
-    $empleadosDisponibles = $usuario->obtenerEmpleadosDisponiblesPorObra($_GET["id_obra"]);
+        require "../vistas/obras/empleados/crear.php";
+    }
 
-    require "../vistas/obras/empleados/crear.php";
-}
+
+    /*
+    ==========================
+        BUSCAR EMPLEADOS
+        AJAX
+    ==========================
+    */
+
+    public function buscarEmpleados()
+    {
+        session_start();
+
+        header("Content-Type: application/json; charset=UTF-8");
+
+        $id_obra = $_GET["id_obra"] ?? 0;
+        $busqueda = $_GET["busqueda"] ?? "";
+
+        /*
+        ==========================================
+            VALIDAR OBRA
+        ==========================================
+        */
+
+        if (empty($id_obra)) {
+
+            echo json_encode([
+                "success" => false,
+                "mensaje" => "No se especificó la obra."
+            ]);
+
+            exit();
+        }
+
+        /*
+        ==========================================
+            BUSCAR EMPLEADOS
+        ==========================================
+        */
+
+        $usuario = new Usuario();
+
+        $empleados = $usuario->obtenerEmpleadosDisponiblesPorObra(
+            $id_obra,
+            $busqueda
+        );
+
+        echo json_encode([
+            "success" => true,
+            "empleados" => $empleados
+        ]);
+
+        exit();
+    }
+
+
     /*
     ==========================
         AGREGAR
@@ -59,22 +113,85 @@ public function crear()
     {
         session_start();
 
-        if ($this->empleadoObra->existeEmpleadoActivo($_POST["id_usuario"], $_POST["id_obra"])) {
+        /*
+        ==========================================
+            VALIDACIONES BÁSICAS
+        ==========================================
+        */
 
-            header("Location: ../vistas/obras/empleados/index.php?id_obra=" . $_POST["id_obra"] . "&error=duplicado");
+        $id_usuario = $_POST["id_usuario"] ?? 0;
+        $id_obra = $_POST["id_obra"] ?? 0;
+        $fecha_ingreso = $_POST["fecha_ingreso"] ?? "";
+        $observaciones = $_POST["observaciones"] ?? "";
+
+        if (
+            empty($id_usuario) ||
+            empty($id_obra) ||
+            empty($fecha_ingreso)
+        ) {
+
+            header(
+                "Location: ../vistas/obras/empleados/index.php?id_obra="
+                . $id_obra
+                . "&error=datos"
+            );
+
             exit();
         }
 
+        /*
+        ==========================================
+            EVITAR DUPLICADOS
+        ==========================================
+        */
+
+        if (
+            $this->empleadoObra->existeEmpleadoActivo(
+                $id_usuario,
+                $id_obra
+            )
+        ) {
+
+            header(
+                "Location: ../vistas/obras/empleados/index.php?id_obra="
+                . $id_obra
+                . "&error=duplicado"
+            );
+
+            exit();
+        }
+
+        /*
+        ==========================================
+            DATOS
+        ==========================================
+        */
+
         $datos = [
 
-            "id_usuario" => $_POST["id_usuario"],
-            "id_obra" => $_POST["id_obra"],
-            "fecha_ingreso" => $_POST["fecha_ingreso"],
-            "observaciones" => $_POST["observaciones"],
+            "id_usuario" => $id_usuario,
+
+            "id_obra" => $id_obra,
+
+            "fecha_ingreso" => $fecha_ingreso,
+
+            "observaciones" => $observaciones
 
         ];
 
+        /*
+        ==========================================
+            ASIGNAR
+        ==========================================
+        */
+
         $this->empleadoObra->asignar($datos);
+
+        /*
+        ==========================================
+            AUDITORÍA
+        ==========================================
+        */
 
         $this->auditoria->registrar([
 
@@ -84,15 +201,26 @@ public function crear()
 
             "tabla_afectada" => "empleado_obra",
 
-            "id_registro" => $_POST["id_usuario"],
+            "id_registro" => $id_usuario,
 
             "descripcion" => "Asignó un empleado a una obra"
 
         ]);
 
-        header("Location: ../vistas/obras/empleados/index.php?id_obra=" . $_POST["id_obra"]);
+        /*
+        ==========================================
+            REDIRECCIÓN
+        ==========================================
+        */
+
+        header(
+            "Location: ../vistas/obras/empleados/index.php?id_obra="
+            . $id_obra
+        );
+
         exit();
     }
+
 
     /*
     ==========================
@@ -107,12 +235,20 @@ public function crear()
         $datos = [
 
             "id_empleado_obra" => $_POST["id_empleado_obra"],
+
             "fecha_ingreso" => $_POST["fecha_ingreso"],
+
             "observaciones" => $_POST["observaciones"]
 
         ];
 
         $this->empleadoObra->editar($datos);
+
+        /*
+        ==========================================
+            AUDITORÍA
+        ==========================================
+        */
 
         $this->auditoria->registrar([
 
@@ -128,9 +264,14 @@ public function crear()
 
         ]);
 
-        header("Location: ../vistas/obras/empleados/index.php?id_obra=" . $_POST["id_obra"]);
+        header(
+            "Location: ../vistas/obras/empleados/index.php?id_obra="
+            . $_POST["id_obra"]
+        );
+
         exit();
     }
+
 
     /*
     ==========================
@@ -145,13 +286,22 @@ public function crear()
         $datos = [
 
             "id_empleado_obra" => $_POST["id_empleado_obra"],
+
             "fecha_egreso" => $_POST["fecha_egreso"],
+
             "motivo_egreso" => $_POST["motivo_egreso"],
+
             "observaciones" => $_POST["observaciones"]
 
         ];
 
         $this->empleadoObra->retirar($datos);
+
+        /*
+        ==========================================
+            AUDITORÍA
+        ==========================================
+        */
 
         $this->auditoria->registrar([
 
@@ -167,20 +317,34 @@ public function crear()
 
         ]);
 
-        header("Location: ../vistas/obras/empleados/index.php?id_obra=" . $_POST["id_obra"]);
+        header(
+            "Location: ../vistas/obras/empleados/index.php?id_obra="
+            . $_POST["id_obra"]
+        );
+
         exit();
     }
 }
 
+
+/*
+==================================================
+    INSTANCIA
+==================================================
+*/
+
 $controlador = new EmpleadoObraController();
 
 
+/*
+==================================================
+    ACCIONES GET
+==================================================
+*/
 
 if (isset($_GET["accion"])) {
 
-
     switch ($_GET["accion"]) {
-
 
         case "listar":
 
@@ -188,23 +352,32 @@ if (isset($_GET["accion"])) {
 
             break;
 
+
         case "crear":
 
             $controlador->crear();
+
+            break;
+
+
+        case "buscarEmpleados":
+
+            $controlador->buscarEmpleados();
 
             break;
     }
 }
 
 
-
-
+/*
+==================================================
+    ACCIONES POST
+==================================================
+*/
 
 if (isset($_POST["accion"])) {
 
-
     switch ($_POST["accion"]) {
-
 
         case "agregar":
 
@@ -213,13 +386,11 @@ if (isset($_POST["accion"])) {
             break;
 
 
-
         case "editar":
 
             $controlador->editar();
 
             break;
-
 
 
         case "retirar":

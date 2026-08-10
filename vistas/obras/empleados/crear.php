@@ -83,9 +83,7 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
 
             <small style="display:block;margin-top:8px;">
-
-                Ingrese al menos una parte del nombre, apellido o documento.
-
+                Utilice el buscador para filtrar empleados disponibles.
             </small>
 
         </div>
@@ -434,113 +432,81 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 </main>
 
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+
+
+        /*
+        ==================================================
+            VARIABLES
+        ==================================================
+        */
+
+        const inputBusqueda =
+            document.getElementById("buscarEmpleado");
+
+        const tabla =
+            document.getElementById("tablaEmpleados");
+
+        const contador =
+            document.getElementById("contadorEmpleados");
+
+        const indicador =
+            document.getElementById("indicadorBusqueda");
+
+        const idUsuario =
+            document.getElementById("id_usuario");
+
+        const btnAsignar =
+            document.getElementById("btnAsignar");
+
+        const empleadoSeleccionado =
+            document.getElementById("empleadoSeleccionado");
+
+        const nombreSeleccionado =
+            document.getElementById("nombreEmpleadoSeleccionado");
+
+        const documentoSeleccionado =
+            document.getElementById("documentoEmpleadoSeleccionado");
+
+        const quitarEmpleado =
+            document.getElementById("quitarEmpleado");
+
+        const btnLimpiar =
+            document.getElementById("btnLimpiar");
+
+
+        const idObra =
+            <?= json_encode($id_obra) ?>;
+
+
+        let temporizador = null;
+
+
+        /*
+        ==================================================
+            BUSCAR EMPLEADOS
+        ==================================================
+        */
+
+        function buscarEmpleados() {
+
+
+            const busqueda =
+                inputBusqueda.value.trim();
+
 
 
             /*
-            ==================================================
-                VARIABLES
-            ==================================================
+            ==============================================
+                INDICADOR
+            ==============================================
             */
 
-            const inputBusqueda =
-                document.getElementById("buscarEmpleado");
-
-            const tabla =
-                document.getElementById("tablaEmpleados");
-
-            const contador =
-                document.getElementById("contadorEmpleados");
-
-            const indicador =
-                document.getElementById("indicadorBusqueda");
-
-            const idUsuario =
-                document.getElementById("id_usuario");
-
-            const btnAsignar =
-                document.getElementById("btnAsignar");
-
-            const empleadoSeleccionado =
-                document.getElementById("empleadoSeleccionado");
-
-            const nombreSeleccionado =
-                document.getElementById("nombreEmpleadoSeleccionado");
-
-            const documentoSeleccionado =
-                document.getElementById("documentoEmpleadoSeleccionado");
-
-            const quitarEmpleado =
-                document.getElementById("quitarEmpleado");
-
-            const btnLimpiar =
-                document.getElementById("btnLimpiar");
+            indicador.style.display = "block";
 
 
-            const idObra =
-                <?= json_encode($id_obra) ?>;
-
-
-            let temporizador = null;
-
-
-            /*
-            ==================================================
-                BUSCAR EMPLEADOS
-            ==================================================
-            */
-
-            function buscarEmpleados() {
-
-
-                const busqueda =
-                    inputBusqueda.value.trim();
-
-
-                /*
-                ==============================================
-                    SI ESTÁ VACÍO
-                ==============================================
-                */
-
-                if (busqueda.length === 0) {
-
-                    tabla.innerHTML = `
-
-                <tr>
-
-                    <td colspan="4"
-                        style="text-align:center;padding:40px;">
-
-                        <i class="fa-solid fa-magnifying-glass fa-2x"></i>
-
-                        <br><br>
-
-                        Escriba en el buscador para encontrar un empleado.
-
-                    </td>
-
-                </tr>
-
-            `;
-
-                    contador.textContent = "0 empleados";
-
-                    return;
-                }
-
-
-                /*
-                ==============================================
-                    INDICADOR
-                ==============================================
-                */
-
-                indicador.style.display = "block";
-
-
-                tabla.innerHTML = `
+            tabla.innerHTML = `
 
             <tr>
 
@@ -560,99 +526,99 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
         `;
 
 
-                /*
-                ==============================================
-                    AJAX
-                ==============================================
-                */
-
-                fetch(
-                        "/empresa_constructora/controladores/EmpleadoObraController.php" +
-                        "?accion=buscarEmpleados" +
-                        "&id_obra=" +
-                        encodeURIComponent(idObra) +
-                        "&busqueda=" +
-                        encodeURIComponent(busqueda)
-                    )
-
-
-                    .then(response => {
-
-
-                        if (!response.ok) {
-
-                            throw new Error(
-                                "Error en la respuesta del servidor."
-                            );
-
-                        }
-
-
-                        return response.json();
-
-                    })
-
-
-                    .then(data => {
-
-
-                        indicador.style.display = "none";
-
-
-                        if (!data.success) {
-
-                            mostrarMensaje(
-                                "fa-circle-exclamation",
-                                data.mensaje || "No se pudo realizar la búsqueda."
-                            );
-
-                            return;
-                        }
-
-
-                        mostrarEmpleados(data.empleados);
-
-                    })
-
-
-                    .catch(error => {
-
-
-                        indicador.style.display = "none";
-
-
-                        console.error(error);
-
-
-                        mostrarMensaje(
-                            "fa-triangle-exclamation",
-                            "Ocurrió un error al buscar empleados."
-                        );
-
-                    });
-
-            }
-
-
             /*
-            ==================================================
-                MOSTRAR EMPLEADOS
-            ==================================================
+            ==============================================
+                AJAX
+            ==============================================
             */
 
-            function mostrarEmpleados(empleados) {
+            fetch(
+                    "/empresa_constructora/controladores/EmpleadoObraController.php" +
+                    "?accion=buscarEmpleados" +
+                    "&id_obra=" +
+                    encodeURIComponent(idObra) +
+                    "&busqueda=" +
+                    encodeURIComponent(busqueda)
+                )
 
 
-                contador.textContent =
-                    empleados.length +
-                    (empleados.length === 1 ?
-                        " empleado" :
-                        " empleados");
+                .then(response => {
 
 
-                if (empleados.length === 0) {
+                    if (!response.ok) {
 
-                    tabla.innerHTML = `
+                        throw new Error(
+                            "Error en la respuesta del servidor."
+                        );
+
+                    }
+
+
+                    return response.json();
+
+                })
+
+
+                .then(data => {
+
+
+                    indicador.style.display = "none";
+
+
+                    if (!data.success) {
+
+                        mostrarMensaje(
+                            "fa-circle-exclamation",
+                            data.mensaje || "No se pudo realizar la búsqueda."
+                        );
+
+                        return;
+                    }
+
+
+                    mostrarEmpleados(data.empleados);
+
+                })
+
+
+                .catch(error => {
+
+
+                    indicador.style.display = "none";
+
+
+                    console.error(error);
+
+
+                    mostrarMensaje(
+                        "fa-triangle-exclamation",
+                        "Ocurrió un error al buscar empleados."
+                    );
+
+                });
+
+        }
+
+
+        /*
+        ==================================================
+            MOSTRAR EMPLEADOS
+        ==================================================
+        */
+
+        function mostrarEmpleados(empleados) {
+
+
+            contador.textContent =
+                empleados.length +
+                (empleados.length === 1 ?
+                    " empleado" :
+                    " empleados");
+
+
+            if (empleados.length === 0) {
+
+                tabla.innerHTML = `
 
                 <tr>
 
@@ -679,21 +645,21 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
             `;
 
-                    return;
-                }
+                return;
+            }
 
 
-                tabla.innerHTML = "";
+            tabla.innerHTML = "";
 
 
-                empleados.forEach(empleado => {
+            empleados.forEach(empleado => {
 
 
-                    const fila =
-                        document.createElement("tr");
+                const fila =
+                    document.createElement("tr");
 
 
-                    fila.innerHTML = `
+                fila.innerHTML = `
 
                 <td>
 
@@ -748,200 +714,200 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
             `;
 
 
-                    tabla.appendChild(fila);
+                tabla.appendChild(fila);
+
+            });
+
+
+            /*
+            ==============================================
+                BOTONES SELECCIONAR
+            ==============================================
+            */
+
+            document
+                .querySelectorAll(".btn-seleccionar")
+                .forEach(boton => {
+
+
+                    boton.addEventListener(
+                        "click",
+                        function() {
+
+
+                            seleccionarEmpleado({
+
+                                id: this.dataset.id,
+
+                                nombre: this.dataset.nombre,
+
+                                apellido: this.dataset.apellido,
+
+                                documento: this.dataset.documento
+
+                            });
+
+                        }
+                    );
 
                 });
 
-
-                /*
-                ==============================================
-                    BOTONES SELECCIONAR
-                ==============================================
-                */
-
-                document
-                    .querySelectorAll(".btn-seleccionar")
-                    .forEach(boton => {
+        }
 
 
-                        boton.addEventListener(
-                            "click",
-                            function() {
+        /*
+        ==================================================
+            SELECCIONAR EMPLEADO
+        ==================================================
+        */
+
+        function seleccionarEmpleado(empleado) {
 
 
-                                seleccionarEmpleado({
+            idUsuario.value =
+                empleado.id;
 
-                                    id: this.dataset.id,
 
-                                    nombre: this.dataset.nombre,
+            nombreSeleccionado.textContent =
+                empleado.apellido +
+                ", " +
+                empleado.nombre;
 
-                                    apellido: this.dataset.apellido,
 
-                                    documento: this.dataset.documento
+            documentoSeleccionado.textContent =
+                "DNI: " +
+                empleado.documento;
 
-                                });
 
-                            }
-                        );
+            empleadoSeleccionado.style.display =
+                "block";
 
-                    });
 
-            }
+            btnAsignar.disabled =
+                false;
 
 
             /*
-            ==================================================
-                SELECCIONAR EMPLEADO
-            ==================================================
+            ==============================================
+                DESHABILITAR BUSCADOR
+            ==============================================
             */
 
-            function seleccionarEmpleado(empleado) {
+            inputBusqueda.disabled =
+                true;
 
 
-                idUsuario.value =
-                    empleado.id;
+            /*
+            ==============================================
+                MARCAR TABLA
+            ==============================================
+            */
+
+            document
+                .querySelectorAll(".btn-seleccionar")
+                .forEach(boton => {
+
+                    boton.disabled = true;
+
+                });
+
+        }
 
 
-                nombreSeleccionado.textContent =
-                    empleado.apellido +
-                    ", " +
-                    empleado.nombre;
+        /*
+        ==================================================
+            QUITAR EMPLEADO
+        ==================================================
+        */
 
+        quitarEmpleado.addEventListener(
+            "click",
+            function() {
 
-                documentoSeleccionado.textContent =
-                    "DNI: " +
-                    empleado.documento;
+                idUsuario.value = "";
 
+                nombreSeleccionado.textContent = "";
+
+                documentoSeleccionado.textContent = "";
 
                 empleadoSeleccionado.style.display =
-                    "block";
-
+                    "none";
 
                 btnAsignar.disabled =
-                    false;
-
-
-                /*
-                ==============================================
-                    DESHABILITAR BUSCADOR
-                ==============================================
-                */
-
-                inputBusqueda.disabled =
                     true;
 
+                inputBusqueda.disabled =
+                    false;
 
-                /*
-                ==============================================
-                    MARCAR TABLA
-                ==============================================
-                */
-
-                document
-                    .querySelectorAll(".btn-seleccionar")
-                    .forEach(boton => {
-
-                        boton.disabled = true;
-
-                    });
+                inputBusqueda.focus();
 
             }
+        );
 
 
-            /*
-            ==================================================
-                QUITAR EMPLEADO
-            ==================================================
-            */
+        /*
+        ==================================================
+            BUSCADOR CON DELAY
+        ==================================================
+        */
 
-            quitarEmpleado.addEventListener(
-                "click",
-                function() {
+        inputBusqueda.addEventListener(
+            "input",
+            function() {
+
+
+                clearTimeout(temporizador);
+
+
+                temporizador = setTimeout(
+                    buscarEmpleados,
+                    350
+                );
+
+            }
+        );
+
+
+        /*
+        ==================================================
+            LIMPIAR FORMULARIO
+        ==================================================
+        */
+
+        btnLimpiar.addEventListener(
+            "click",
+            function() {
+
+
+                setTimeout(function() {
+
+
+                    inputBusqueda.value = "";
+
+                    inputBusqueda.disabled = false;
+
 
                     idUsuario.value = "";
+
+
+                    empleadoSeleccionado.style.display =
+                        "none";
+
 
                     nombreSeleccionado.textContent = "";
 
                     documentoSeleccionado.textContent = "";
 
-                    empleadoSeleccionado.style.display =
-                        "none";
 
                     btnAsignar.disabled =
                         true;
 
-                    inputBusqueda.disabled =
-                        false;
 
-                    inputBusqueda.focus();
-
-                }
-            );
+                    contador.textContent =
+                        "0 empleados";
 
 
-            /*
-            ==================================================
-                BUSCADOR CON DELAY
-            ==================================================
-            */
-
-            inputBusqueda.addEventListener(
-                "input",
-                function() {
-
-
-                    clearTimeout(temporizador);
-
-
-                    temporizador = setTimeout(
-                        buscarEmpleados,
-                        350
-                    );
-
-                }
-            );
-
-
-            /*
-            ==================================================
-                LIMPIAR FORMULARIO
-            ==================================================
-            */
-
-            btnLimpiar.addEventListener(
-                "click",
-                function() {
-
-
-                    setTimeout(function() {
-
-
-                        inputBusqueda.value = "";
-
-                        inputBusqueda.disabled = false;
-
-
-                        idUsuario.value = "";
-
-
-                        empleadoSeleccionado.style.display =
-                            "none";
-
-
-                        nombreSeleccionado.textContent = "";
-
-                        documentoSeleccionado.textContent = "";
-
-
-                        btnAsignar.disabled =
-                            true;
-
-
-                        contador.textContent =
-                            "0 empleados";
-
-
-                        tabla.innerHTML = `
+                    tabla.innerHTML = `
 
                     <tr>
 
@@ -961,84 +927,84 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
                 `;
 
 
-                    }, 50);
+                }, 50);
+
+            }
+        );
+
+
+        /*
+        ==================================================
+            PROTEGER ENVÍO
+        ==================================================
+        */
+
+        document
+            .querySelector("form")
+            .addEventListener(
+                "submit",
+                function(evento) {
+
+
+                    if (!idUsuario.value) {
+
+                        evento.preventDefault();
+
+
+                        alert(
+                            "Debe seleccionar un empleado antes de asignarlo."
+                        );
+
+
+                        inputBusqueda.focus();
+
+                    }
 
                 }
             );
 
 
-            /*
-            ==================================================
-                PROTEGER ENVÍO
-            ==================================================
-            */
+        /*
+        ==================================================
+            ESCAPAR HTML
+        ==================================================
+        */
 
-            document
-                .querySelector("form")
-                .addEventListener(
-                    "submit",
-                    function(evento) {
+        function escapeHtml(valor) {
 
 
-                        if (!idUsuario.value) {
+            if (valor === null || valor === undefined) {
 
-                            evento.preventDefault();
-
-
-                            alert(
-                                "Debe seleccionar un empleado antes de asignarlo."
-                            );
-
-
-                            inputBusqueda.focus();
-
-                        }
-
-                    }
-                );
-
-
-            /*
-            ==================================================
-                ESCAPAR HTML
-            ==================================================
-            */
-
-            function escapeHtml(valor) {
-
-
-                if (valor === null || valor === undefined) {
-
-                    return "";
-
-                }
-
-
-                return String(valor)
-
-                    .replace(/&/g, "&amp;")
-
-                    .replace(/</g, "&lt;")
-
-                    .replace(/>/g, "&gt;")
-
-                    .replace(/"/g, "&quot;")
-
-                    .replace(/'/g, "&#039;");
+                return "";
 
             }
 
 
-            /*
-            ==================================================
-                MENSAJE
-            ==================================================
-            */
+            return String(valor)
 
-            function mostrarMensaje(icono, mensaje) {
+                .replace(/&/g, "&amp;")
+
+                .replace(/</g, "&lt;")
+
+                .replace(/>/g, "&gt;")
+
+                .replace(/"/g, "&quot;")
+
+                .replace(/'/g, "&#039;");
+
+        }
 
 
-                tabla.innerHTML = `
+        /*
+        ==================================================
+            MENSAJE
+        ==================================================
+        */
+
+        function mostrarMensaje(icono, mensaje) {
+
+
+            tabla.innerHTML = `
 
             <tr>
 
@@ -1058,10 +1024,18 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
         `;
 
 
-                contador.textContent =
-                    "0 empleados";
+            contador.textContent =
+                "0 empleados";
 
-            }
+        }
 
-        });
-    </script>
+        /*
+==================================================
+    CARGAR EMPLEADOS AL INICIAR
+==================================================
+*/
+
+        buscarEmpleados();
+
+    });
+</script>

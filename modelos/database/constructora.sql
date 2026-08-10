@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-07-2026 a las 04:15:58
+-- Tiempo de generación: 10-08-2026 a las 03:21:56
 -- Versión del servidor: 10.4.11-MariaDB
 -- Versión de PHP: 7.4.2
 
@@ -21,6 +21,87 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `constructora`
 --
+
+DELIMITER $$
+--
+-- Procedimientos
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `registrar_devolucion_herramienta` (IN `p_id_herramienta_obra` INT, IN `p_cantidad` INT, IN `p_id_usuario` INT, IN `p_observaciones` TEXT)  BEGIN
+
+    DECLARE v_cantidad_asignada INT DEFAULT 0;
+    DECLARE v_cantidad_devuelta INT DEFAULT 0;
+    DECLARE v_pendiente INT DEFAULT 0;
+
+    -- Buscar la asignación
+    SELECT
+        cantidad_asignada,
+        cantidad_devuelta
+    INTO
+        v_cantidad_asignada,
+        v_cantidad_devuelta
+    FROM herramienta_obra
+    WHERE id_herramienta_obra = p_id_herramienta_obra
+    LIMIT 1;
+
+    -- Verificar existencia
+    IF v_cantidad_asignada = 0 THEN
+
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'La asignación de herramienta no existe.';
+
+    END IF;
+
+
+    -- Calcular cantidad pendiente
+    SET v_pendiente =
+        v_cantidad_asignada - v_cantidad_devuelta;
+
+
+    -- Validar cantidad
+    IF p_cantidad IS NULL OR p_cantidad <= 0 THEN
+
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'La cantidad a devolver debe ser mayor a cero.';
+
+    END IF;
+
+
+    -- Evitar devolver más herramientas de las asignadas
+    IF p_cantidad > v_pendiente THEN
+
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT =
+            'La cantidad devuelta supera la cantidad pendiente.';
+
+    END IF;
+
+
+    -- Registrar devolución
+    INSERT INTO devolucion_herramienta (
+        id_herramienta_obra,
+        cantidad,
+        fecha_devolucion,
+        observaciones,
+        id_usuario
+    )
+    VALUES (
+        p_id_herramienta_obra,
+        p_cantidad,
+        CURRENT_TIMESTAMP,
+        p_observaciones,
+        p_id_usuario
+    );
+
+
+    -- Actualizar cantidad acumulada
+    UPDATE herramienta_obra
+    SET cantidad_devuelta =
+        cantidad_devuelta + p_cantidad
+    WHERE id_herramienta_obra = p_id_herramienta_obra;
+
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -92,7 +173,35 @@ INSERT INTO `acceso_usuario` (`id_acceso`, `id_usuario`, `fecha_hora_ingreso`, `
 (55, 27, '2026-07-26 20:48:13', '2026-07-26 21:44:36'),
 (56, 27, '2026-07-26 21:44:48', '2026-07-26 21:51:49'),
 (57, 27, '2026-07-26 21:52:43', NULL),
-(58, 27, '2026-07-26 22:13:53', '2026-07-26 23:12:35');
+(58, 27, '2026-07-26 22:13:53', '2026-07-26 23:12:35'),
+(59, 27, '2026-07-27 07:53:48', '2026-07-27 08:06:22'),
+(60, 16, '2026-07-27 08:08:13', '2026-07-27 08:14:01'),
+(61, 27, '2026-07-27 08:12:10', '2026-07-27 08:13:41'),
+(62, 27, '2026-07-27 08:34:36', NULL),
+(63, 27, '2026-07-27 08:50:52', '2026-07-27 08:51:03'),
+(64, 17, '2026-07-27 08:52:23', '2026-07-27 09:01:09'),
+(65, 27, '2026-07-27 08:53:56', '2026-07-27 08:55:40'),
+(66, 27, '2026-07-27 10:31:35', '2026-07-27 10:57:39'),
+(67, 27, '2026-07-28 12:42:12', NULL),
+(68, 27, '2026-07-28 18:37:33', '2026-07-28 23:13:42'),
+(69, 41, '2026-07-28 23:13:46', '2026-07-28 23:14:18'),
+(70, 27, '2026-07-28 23:14:22', '2026-07-28 23:35:05'),
+(71, 27, '2026-07-29 08:03:08', NULL),
+(72, 27, '2026-07-29 10:17:19', NULL),
+(73, 27, '2026-07-29 13:55:06', '2026-07-29 14:05:09'),
+(74, 27, '2026-07-30 10:22:38', '2026-07-30 12:06:10'),
+(75, 27, '2026-07-30 12:06:21', '2026-07-30 12:06:39'),
+(76, 27, '2026-07-30 20:58:35', '2026-07-30 20:59:15'),
+(77, 27, '2026-07-31 07:51:35', '2026-07-31 07:55:17'),
+(78, 27, '2026-07-31 07:58:51', '2026-07-31 08:12:27'),
+(79, 27, '2026-07-31 08:16:52', '2026-07-31 08:16:55'),
+(80, 27, '2026-07-31 08:30:50', '2026-07-31 08:59:20'),
+(81, 27, '2026-07-31 08:59:42', '2026-07-31 09:04:20'),
+(82, 27, '2026-07-31 09:05:55', '2026-07-31 09:06:29'),
+(83, 27, '2026-07-31 09:08:56', '2026-07-31 09:19:10'),
+(84, 27, '2026-07-31 10:01:59', '2026-07-31 10:02:32'),
+(85, 27, '2026-07-31 10:05:32', '2026-07-31 10:16:39'),
+(86, 27, '2026-08-09 20:22:23', NULL);
 
 -- --------------------------------------------------------
 
@@ -146,7 +255,59 @@ INSERT INTO `auditoria` (`id_auditoria`, `id_usuario`, `accion`, `tabla_afectada
 (253, 27, 'INSERTAR', 'avance_diario', 29, '2026-07-26 21:50:05', 'Se registró un nuevo avance diario en la obra ID 9'),
 (254, 27, 'ELIMINAR', 'avance_diario', 24, '2026-07-26 21:50:20', 'Se eliminó un avance diario de la obra ID 9'),
 (255, 27, 'ELIMINAR', 'avance_diario', 28, '2026-07-26 21:50:23', 'Se eliminó un avance diario de la obra ID 9'),
-(256, 27, 'ELIMINAR', 'avance_diario', 29, '2026-07-26 21:50:26', 'Se eliminó un avance diario de la obra ID 9');
+(256, 27, 'ELIMINAR', 'avance_diario', 29, '2026-07-26 21:50:26', 'Se eliminó un avance diario de la obra ID 9'),
+(257, 27, 'BAJA', 'usuario', 10, '2026-07-27 07:58:10', 'Desactivó un usuario'),
+(258, 27, 'BAJA', 'usuario', 18, '2026-07-27 07:58:33', 'Desactivó un usuario'),
+(259, 27, 'INSERTAR', 'herramienta_obra', 9, '2026-07-27 08:05:27', 'Asignación de herramienta a obra'),
+(260, 27, 'INSERTAR', 'avance_diario', 30, '2026-07-27 08:13:09', 'Se registró un nuevo avance diario en la obra ID 9'),
+(261, 27, 'INSERTAR', 'avance_diario', 31, '2026-07-27 08:44:08', 'Se registró un nuevo avance diario en la obra ID 9'),
+(262, 27, 'INSERTAR', 'empleado_obra', 15, '2026-07-27 08:44:30', 'Asignó un empleado a una obra'),
+(263, 27, 'INSERTAR', 'herramienta', 37, '2026-07-27 08:45:26', 'Se registró la herramienta MARTILLO con 10 unidades.'),
+(264, 27, 'INSERTAR', 'herramienta_obra', 9, '2026-07-27 08:48:13', 'Asignación de herramienta a obra'),
+(265, 27, 'EDITAR', 'herramienta_obra', 27, '2026-07-27 08:48:45', 'Actualización de herramienta asignada'),
+(266, 27, 'EDITAR', 'herramienta_obra', 27, '2026-07-27 08:48:48', 'Actualización de herramienta asignada'),
+(267, 27, 'INSERTAR', 'usuario', 45, '2026-07-27 08:54:52', 'Registró un nuevo usuario'),
+(268, 27, 'ACTIVAR', 'usuario', 10, '2026-07-28 12:43:33', 'Activó nuevamente un usuario'),
+(269, 27, 'INSERTAR', 'empleado_obra', 39, '2026-07-28 12:45:05', 'Asignó un empleado a una obra'),
+(270, 27, 'INSERTAR', 'herramienta_obra', 9, '2026-07-28 12:45:22', 'Asignación de herramienta a obra'),
+(271, 27, 'EDITAR', 'herramienta_obra', 28, '2026-07-28 12:45:31', 'Actualización de herramienta asignada'),
+(272, 27, 'BAJA', 'MATERIAL', 28, '2026-07-28 12:46:12', 'Se dio de baja el material ID: 28'),
+(273, 27, 'EDITAR', 'usuario', 20, '2026-07-28 18:44:58', 'Modificó el usuario'),
+(274, 27, 'BAJA', 'usuario', 37, '2026-07-28 20:16:32', 'Desactivó un usuario'),
+(275, 27, 'ACTIVAR', 'usuario', 19, '2026-07-28 22:21:08', 'Activó nuevamente un usuario'),
+(276, 27, 'BAJA', 'usuario', 19, '2026-07-28 22:21:17', 'Desactivó un usuario'),
+(277, 27, 'ACTIVAR', 'usuario', 35, '2026-07-28 23:09:31', 'Activó nuevamente un usuario'),
+(278, 27, 'ACTIVAR', 'usuario', 19, '2026-07-28 23:09:33', 'Activó nuevamente un usuario'),
+(279, 27, 'ACTIVAR', 'usuario', 30, '2026-07-28 23:09:35', 'Activó nuevamente un usuario'),
+(280, 27, 'BAJA', 'usuario', 19, '2026-07-28 23:09:39', 'Desactivó un usuario'),
+(281, 27, 'EDITAR', 'usuario', 41, '2026-07-28 23:12:22', 'Modificó el usuario'),
+(282, 41, 'BAJA', 'usuario', 35, '2026-07-28 23:14:03', 'Desactivó un usuario'),
+(283, 27, 'BAJA', 'usuario', 10, '2026-07-28 23:30:06', 'Desactivó un usuario'),
+(284, 27, 'BAJA', 'usuario', 30, '2026-07-28 23:30:16', 'Desactivó un usuario'),
+(285, 27, 'ACTIVAR', 'usuario', 19, '2026-07-29 08:03:23', 'Activó nuevamente un usuario'),
+(286, 27, 'INSERTAR', 'usuario', 46, '2026-07-30 10:23:03', 'Registró un nuevo usuario'),
+(287, 27, 'EDITAR', 'usuario', 26, '2026-07-30 11:59:43', 'Modificó el usuario'),
+(288, 27, 'EDITAR', 'usuario', 26, '2026-07-30 11:59:57', 'Modificó el usuario'),
+(289, 27, 'EDITAR', 'usuario', 26, '2026-07-30 12:00:46', 'Modificó el usuario'),
+(290, 27, 'BAJA', 'usuario', 45, '2026-07-31 08:32:03', 'Desactivó un usuario'),
+(291, 27, 'ACTIVAR', 'usuario', 35, '2026-07-31 08:34:29', 'Activó nuevamente un usuario'),
+(292, 27, 'ACTIVAR', 'usuario', 18, '2026-07-31 08:41:49', 'Activó nuevamente un usuario'),
+(293, 27, 'BAJA', 'usuario', 24, '2026-07-31 08:42:57', 'Desactivó un usuario'),
+(294, 27, 'BAJA', 'usuario', 18, '2026-07-31 08:43:06', 'Desactivó un usuario'),
+(295, 27, 'ACTIVAR', 'usuario', 25, '2026-07-31 08:46:55', 'Activó nuevamente un usuario'),
+(296, 27, 'INSERTAR', 'herramienta_obra', 9, '2026-07-31 08:48:25', 'Asignación de herramienta a obra'),
+(297, 27, 'EDITAR', 'herramienta_obra', 29, '2026-07-31 08:49:20', 'Actualización de herramienta asignada'),
+(298, 27, 'ACTIVAR', 'MATERIAL', 28, '2026-07-31 08:57:22', 'Se activó el material ID: 28'),
+(299, 27, 'INSERTAR', 'avance_diario', 32, '2026-07-31 09:03:52', 'Se registró un nuevo avance diario en la obra ID 9'),
+(300, 27, 'EDITAR', 'usuario', 29, '2026-08-09 21:08:23', 'Modificó el usuario'),
+(301, 27, 'INSERTAR', 'empleado_obra', 29, '2026-08-09 21:11:40', 'Asignó un empleado a una obra'),
+(302, 27, 'INSERTAR', 'empleado_obra', 29, '2026-08-09 21:12:12', 'Asignó un empleado a una obra'),
+(303, 27, 'EDITAR', 'usuario', 25, '2026-08-09 21:13:01', 'Modificó el usuario'),
+(304, 27, 'INSERTAR', 'usuario', 47, '2026-08-09 21:15:03', 'Registró un nuevo usuario'),
+(305, 27, 'BAJA', 'usuario', 47, '2026-08-09 21:26:05', 'Desactivó un usuario'),
+(306, 27, 'BAJA', 'usuario', 35, '2026-08-09 21:26:16', 'Desactivó un usuario'),
+(307, 27, 'EDITAR', 'obra', 9, '2026-08-09 21:27:23', 'Modificó la obra Quincho Amyra'),
+(308, 27, 'INSERTAR', 'empleado_obra', 25, '2026-08-09 21:27:58', 'Asignó un empleado a una obra');
 
 -- --------------------------------------------------------
 
@@ -168,7 +329,10 @@ CREATE TABLE `avance_diario` (
 INSERT INTO `avance_diario` (`id_avance_diario`, `id_obra`, `fecha`, `descripcion`) VALUES
 (22, 9, '2026-07-16', '4 m de contrapiso\r\n'),
 (23, 9, '2026-07-16', 'Revoque'),
-(27, 9, '2026-07-24', '5 m2 de contrapiso');
+(27, 9, '2026-07-24', '5 m2 de contrapiso'),
+(30, 9, '2026-07-27', 'Contrapiso'),
+(31, 9, '2026-07-27', '3m2 de pared'),
+(32, 9, '2026-07-31', '3m de contrapiso');
 
 -- --------------------------------------------------------
 
@@ -274,6 +438,79 @@ CREATE TABLE `detalle_presupuesto` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `devolucion_herramienta`
+--
+
+CREATE TABLE `devolucion_herramienta` (
+  `id_devolucion` int(11) NOT NULL,
+  `id_herramienta_obra` int(11) NOT NULL,
+  `cantidad` int(11) NOT NULL,
+  `fecha_devolucion` datetime NOT NULL DEFAULT current_timestamp(),
+  `observaciones` text DEFAULT NULL,
+  `id_usuario` int(11) DEFAULT NULL
+) ;
+
+--
+-- Disparadores `devolucion_herramienta`
+--
+DELIMITER $$
+CREATE TRIGGER `after_insert_devolucion_herramienta` AFTER INSERT ON `devolucion_herramienta` FOR EACH ROW BEGIN
+
+    UPDATE herramienta_obra
+    SET cantidad_devuelta =
+        cantidad_devuelta + NEW.cantidad
+    WHERE id_herramienta_obra = NEW.id_herramienta_obra;
+
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `before_insert_devolucion_herramienta` BEFORE INSERT ON `devolucion_herramienta` FOR EACH ROW BEGIN
+
+    DECLARE v_asignada INT DEFAULT 0;
+    DECLARE v_devuelta INT DEFAULT 0;
+
+    SELECT
+        cantidad_asignada,
+        cantidad_devuelta
+    INTO
+        v_asignada,
+        v_devuelta
+    FROM herramienta_obra
+    WHERE id_herramienta_obra = NEW.id_herramienta_obra
+    LIMIT 1;
+
+    IF v_asignada = 0 THEN
+
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT =
+            'La asignación de herramienta no existe.';
+
+    END IF;
+
+    IF NEW.cantidad <= 0 THEN
+
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT =
+            'La cantidad devuelta debe ser mayor a cero.';
+
+    END IF;
+
+    IF NEW.cantidad > (v_asignada - v_devuelta) THEN
+
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT =
+            'La devolución supera la cantidad pendiente.';
+
+    END IF;
+
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `documento_obra`
 --
 
@@ -310,13 +547,9 @@ CREATE TABLE `empleado_obra` (
 --
 
 INSERT INTO `empleado_obra` (`id_empleado_obra`, `id_usuario`, `id_obra`, `fecha_ingreso`, `fecha_egreso`, `motivo_egreso`, `observaciones`, `estado`) VALUES
-(1, 27, 9, '2026-07-19', NULL, NULL, '', 1),
-(2, 27, 9, '2026-07-20', NULL, NULL, 'iuytrew', 1),
-(3, 27, 9, '2026-07-20', NULL, NULL, 'jhgfdgf', 1),
-(4, 29, 9, '2026-07-20', NULL, NULL, '', 1),
-(5, 21, 9, '2026-07-21', NULL, NULL, '', 1),
-(6, 43, 9, '2026-07-24', NULL, NULL, '', 1),
-(7, 42, 9, '2026-07-26', NULL, NULL, '', 1);
+(10, 29, 9, '2026-08-09', NULL, NULL, '', 1),
+(11, 29, 15, '2026-08-09', NULL, NULL, '', 1),
+(12, 25, 9, '2026-08-09', NULL, NULL, '', 1);
 
 -- --------------------------------------------------------
 
@@ -362,13 +595,15 @@ CREATE TABLE `etapa_obra` (
 
 INSERT INTO `etapa_obra` (`id_etapa`, `id_obra`, `nombre_etapa`, `descripcion`, `fecha_inicio`, `fecha_fin`, `estado`) VALUES
 (25, 9, 'Preparación del terreno', 'Limpieza y nivelación del terreno', '2026-07-01', '2026-07-10', 'Finalizada'),
-(26, 9, 'Fundaciones', 'Construcción de bases', '2026-07-11', '2026-07-22', 'Pendiente'),
+(26, 9, 'Fundaciones', 'Construcción de bases', '2026-07-11', '2026-07-22', 'Finalizada'),
 (27, 9, 'Estructura', 'Levantamiento de estructura', '2026-07-17', '2026-07-31', 'Finalizada'),
 (28, 9, 'dfghjk', '6u5yrtg', '0000-00-00', '0000-00-00', 'Finalizada'),
 (29, 9, 'fggg', 'm', '0000-00-00', '0000-00-00', 'Finalizada'),
 (30, 9, 'Fundaciones', '', '0000-00-00', '0000-00-00', 'Finalizada'),
 (31, 15, 'rtthrth', '', '0000-00-00', '0000-00-00', 'Cancelada'),
-(32, 9, 'Estructura', '', '0000-00-00', '0000-00-00', 'En Proceso');
+(32, 9, 'Estructura', '', '0000-00-00', '2026-07-31', 'Finalizada'),
+(33, 9, 'Contrapisos', '', '2026-07-27', '2026-07-31', 'Finalizada'),
+(34, 9, 'ttt', '', '2026-07-31', '0000-00-00', 'Pendiente');
 
 -- --------------------------------------------------------
 
@@ -434,7 +669,8 @@ CREATE TABLE `herramienta` (
 
 INSERT INTO `herramienta` (`id_herramienta`, `nombre`, `tipo`, `marca`, `modelo`, `cantidad_total`, `fecha_adquisicion`, `costo`) VALUES
 (35, 'Cinta', 'Medición', 'Hola', 'holaaa', 8, '2026-07-25', '30000.00'),
-(36, 'Martillo', 'Manual', 'Algo', '22ooj3', 6, '2026-07-18', '3000.00');
+(36, 'Martillo', 'Manual', 'Algo', '22ooj3', 6, '2026-07-18', '3000.00'),
+(37, 'Martillo', 'Manual', 'Stanley', 'm13', 10, '2026-07-27', '20000.00');
 
 -- --------------------------------------------------------
 
@@ -445,6 +681,8 @@ INSERT INTO `herramienta` (`id_herramienta`, `nombre`, `tipo`, `marca`, `modelo`
 CREATE TABLE `herramienta_obra` (
   `id_herramienta_obra` int(11) NOT NULL,
   `id_herramienta` int(11) NOT NULL,
+  `cantidad_asignada` int(11) NOT NULL DEFAULT 1,
+  `cantidad_devuelta` int(11) NOT NULL DEFAULT 0,
   `id_obra` int(11) NOT NULL,
   `cantidad` int(11) NOT NULL,
   `fecha_asignacion` date NOT NULL,
@@ -457,16 +695,20 @@ CREATE TABLE `herramienta_obra` (
 -- Volcado de datos para la tabla `herramienta_obra`
 --
 
-INSERT INTO `herramienta_obra` (`id_herramienta_obra`, `id_herramienta`, `id_obra`, `cantidad`, `fecha_asignacion`, `fecha_devolucion`, `observaciones`, `id_estado_herramienta`) VALUES
-(17, 35, 9, 3, '2026-07-24', '2026-07-30', '', 5),
-(18, 36, 9, 1, '2026-07-24', '2026-07-24', '', 5),
-(19, 35, 9, 3, '2026-07-24', '2026-07-25', '', 5),
-(20, 35, 9, 5, '2026-07-24', '2026-07-25', '', 5),
-(21, 35, 9, 6, '2026-07-24', '2026-07-18', '', 5),
-(22, 35, 9, 3, '2026-07-24', '2026-07-25', '', 5),
-(23, 35, 9, 6, '2026-07-24', '2026-07-26', '', 5),
-(24, 35, 15, 1, '2026-07-26', '2026-07-26', '', 5),
-(25, 35, 9, 3, '2026-07-26', '2026-07-28', '', 5);
+INSERT INTO `herramienta_obra` (`id_herramienta_obra`, `id_herramienta`, `cantidad_asignada`, `cantidad_devuelta`, `id_obra`, `cantidad`, `fecha_asignacion`, `fecha_devolucion`, `observaciones`, `id_estado_herramienta`) VALUES
+(17, 35, 3, 3, 9, 3, '2026-07-24', '2026-07-30', '', 5),
+(18, 36, 1, 1, 9, 1, '2026-07-24', '2026-07-24', '', 5),
+(19, 35, 3, 3, 9, 3, '2026-07-24', '2026-07-25', '', 5),
+(20, 35, 5, 5, 9, 5, '2026-07-24', '2026-07-25', '', 5),
+(21, 35, 6, 6, 9, 6, '2026-07-24', '2026-07-18', '', 5),
+(22, 35, 3, 3, 9, 3, '2026-07-24', '2026-07-25', '', 5),
+(23, 35, 6, 6, 9, 6, '2026-07-24', '2026-07-26', '', 5),
+(24, 35, 1, 1, 15, 1, '2026-07-26', '2026-07-26', '', 5),
+(25, 35, 3, 3, 9, 3, '2026-07-26', '2026-07-28', '', 5),
+(26, 35, 6, 0, 9, 6, '2026-07-27', NULL, '', 2),
+(27, 37, 10, 10, 9, 10, '2026-07-27', '2026-07-27', '', 5),
+(28, 36, 1, 1, 9, 1, '2026-07-28', '2026-07-30', '', 5),
+(29, 36, 4, 4, 9, 4, '2026-07-31', '0000-00-00', '', 2);
 
 -- --------------------------------------------------------
 
@@ -721,7 +963,7 @@ CREATE TABLE `obra` (
 --
 
 INSERT INTO `obra` (`id_obra`, `id_usuario`, `nombre_obra`, `direccion`, `descripcion`, `fecha_inicio`, `fecha_fin`, `estado`, `activo`) VALUES
-(9, 34, 'Quincho Amyra', 'Senador Emilio Tomás Barrio Eva Perón', 'Casa tipo quinta ', '2026-07-24', '0000-00-00', 'En Proceso', 1),
+(9, 34, 'Quincho Amyra', 'Senador Emilio Tomás Barrio Eva Perón', 'Casa tipo quinta.', '2026-07-24', '0000-00-00', 'En Proceso', 1),
 (15, 26, 'rtgeggr', 'wgwwg', 'erwer', '0000-00-00', '0000-00-00', 'Planificacion', 1),
 (16, 26, 'Casa de Dylan', 'Barrio 8 de octubre', '', '0000-00-00', '0000-00-00', 'Planificacion', 1),
 (17, 40, 'iliukyjhre', 'iuytgfred', 'kjhgfds', '0000-00-00', '0000-00-00', 'Planificacion', 1),
@@ -1105,7 +1347,17 @@ INSERT INTO `unidad_herramienta` (`id_unidad`, `id_herramienta`, `numero_unidad`
 (10, 36, 3, 1),
 (11, 36, 4, 1),
 (12, 36, 5, 1),
-(13, 36, 6, 1);
+(13, 36, 6, 1),
+(14, 37, 1, 1),
+(15, 37, 2, 1),
+(16, 37, 3, 1),
+(17, 37, 4, 1),
+(18, 37, 5, 1),
+(19, 37, 6, 1),
+(20, 37, 7, 1),
+(21, 37, 8, 1),
+(22, 37, 9, 1),
+(23, 37, 10, 1);
 
 -- --------------------------------------------------------
 
@@ -1136,38 +1388,66 @@ CREATE TABLE `usuario` (
 INSERT INTO `usuario` (`id_usuario`, `id_rol`, `nombre`, `apellido`, `documento`, `correo`, `contraseña`, `telefono`, `direccion`, `salario`, `id_cargo`, `fecha_registro`, `estado`) VALUES
 (8, 2, 'Mariana', 'López', NULL, 'mariana.lopez@constructora.com', 'gerente123', NULL, NULL, NULL, NULL, '2026-07-01 08:10:00', 0),
 (9, 3, 'Laura', 'Gómez', NULL, 'laura.gomez@constructora.com', 'admin123', NULL, NULL, NULL, NULL, '2026-07-01 08:20:00', 0),
-(10, 6, 'Diego', 'Benitez', '12345673', 'diego.benitez@constructora.com', 'admin123', '3705009988', 'hgfds', NULL, NULL, '2026-07-01 08:30:00', 1),
+(10, 6, 'Diego', 'Benitez', '12345673', 'diego.benitez@constructora.com', 'admin123', '3705009988', 'hgfds', NULL, NULL, '2026-07-01 08:30:00', 0),
 (11, 3, 'Valeria', 'Romero', NULL, 'valeria.romero@constructora.com', 'admin123', NULL, NULL, NULL, NULL, '2026-07-01 08:40:00', 1),
 (12, 4, 'Miguel', 'Fernández', NULL, 'miguel.fernandez@constructora.com', 'jefe123', NULL, NULL, NULL, NULL, '2026-07-01 08:50:00', 1),
 (13, 4, 'Ricardo', 'Acosta', NULL, 'ricardo.acosta@constructora.com', 'jefe123', NULL, NULL, NULL, NULL, '2026-07-01 09:00:00', 0),
 (14, 4, 'Sergio', 'Vera', NULL, 'sergio.vera@constructora.com', 'jefe123', NULL, NULL, NULL, NULL, '2026-07-01 09:10:00', 0),
-(15, 1, 'Jorge', 'Ramirez', '32859437', 'jorge.ramirez@constructora.com', 'deposito123', '3704560091', '', NULL, NULL, '2026-07-01 09:20:00', 1),
+(15, 2, 'Jorge', 'Ramirez', '32859437', 'jorge.ramirez@constructora.com', 'deposito123', '3704560091', '', NULL, NULL, '2026-07-01 09:20:00', 1),
 (16, 5, 'Ramón', 'Ortiz', NULL, 'ramon.ortiz@constructora.com', 'deposito123', NULL, NULL, NULL, NULL, '2026-07-01 09:30:00', 1),
 (17, 6, 'Juan', 'Pérez', NULL, 'juan.perez@constructora.com', 'empleado123', NULL, NULL, NULL, NULL, '2026-07-01 09:40:00', 1),
-(18, 1, 'Pedro', 'Sosa', NULL, 'pedro.sosa@constructora.com', 'empleado123', NULL, NULL, NULL, NULL, '2026-07-01 09:50:00', 1),
+(18, 2, 'Pedro', 'Sosa', NULL, 'pedro.sosa@constructora.com', 'empleado123', NULL, NULL, NULL, NULL, '2026-07-01 09:50:00', 0),
 (19, 6, 'Lucas', 'Giménez', NULL, 'lucas.gimenez@constructora.com', 'empleado123', NULL, NULL, NULL, NULL, '2026-07-01 10:00:00', 1),
-(20, 5, 'Gabriel', 'Rojas', NULL, 'gabriel.rojas@constructora.com', 'empleado123', NULL, NULL, NULL, NULL, '2026-07-01 10:10:00', 1),
-(21, 1, 'Mat??as', 'Silva', '23499879', 'matias.silva@constructora.com', 'empleado123', '3704012988', 'Barrio Antenor Gauna Mz 10 Cs 21', '250000.00', NULL, '2026-07-01 10:20:00', 1),
+(20, 5, 'Gabriel', 'Rojas', '27987654', 'gabriel.rojas@constructora.com', 'empleado123', '3704525167', '', NULL, NULL, '2026-07-01 10:10:00', 1),
+(21, 2, 'Mat??as', 'Silva', '23499879', 'matias.silva@constructora.com', 'empleado123', '3704012988', 'Barrio Antenor Gauna Mz 10 Cs 21', '250000.00', NULL, '2026-07-01 10:20:00', 1),
 (22, 4, 'Joel', 'Mendoza', NULL, 'jose.mendoza@constructora.com', 'empleado123', NULL, NULL, NULL, NULL, '2026-07-01 10:30:00', 1),
-(24, 1, 'Roberto', 'Suárez', NULL, 'roberto.suarez@gmail.com', 'cliente123', NULL, NULL, NULL, NULL, '2026-07-01 10:50:00', 1),
-(25, 1, 'Patricia', 'Morales', NULL, 'patricia.morales@gmail.com', 'cliente123', NULL, NULL, NULL, NULL, '2026-07-01 11:00:00', 0),
-(26, 6, 'Fernando', 'Almiron', '37287390', 'fernando.almiron@gmail.com', 'cliente123', '3705778822', NULL, NULL, NULL, '2026-07-01 11:10:00', 1),
+(24, 2, 'Roberto', 'Suárez', NULL, 'roberto.suarez@gmail.com', 'cliente123', NULL, NULL, NULL, NULL, '2026-07-01 10:50:00', 0),
+(25, 1, 'Patricia', 'Morales', '', 'patricia.morales@gmail.com', 'cliente123', '', 'gvcx', '765432.00', NULL, '2026-07-01 11:00:00', 1),
+(26, 6, 'Fernando', 'Altamirano', '37287390', 'fernando.altamirano@gmail.com', 'cliente123', '3705778822', NULL, NULL, NULL, '2026-07-01 11:10:00', 1),
 (27, 2, 'Thiago', 'Rohaly', NULL, 'rohaly1310thiago@gmail.com', '1234', NULL, NULL, NULL, NULL, '2026-07-09 23:58:12', 1),
 (28, 2, 'Tatiana', 'Aguirre', NULL, 'aguirreTatiana@gmail.com', 'tati123', NULL, NULL, NULL, NULL, '2026-07-10 00:12:08', 1),
-(29, 1, 'Karina', 'Coronel', '48576489', 'karinaCoronel@gmail.com', 'hola12', '87654', '', '23456789.00', NULL, '2026-07-10 17:10:44', 1),
+(29, 1, 'Karina', 'Coronel', '48576489', 'karinaCoronel@gmail.com', 'hola12', '87654', 'fghj', '23456789.00', NULL, '2026-07-10 17:10:44', 1),
 (30, 6, 'Mateo', 'Guerra', NULL, 'mateo@gmail.com', '12345', NULL, NULL, NULL, NULL, '2026-07-10 17:48:10', 0),
 (33, 5, 'Lucas', 'Gomez', NULL, 'gomez@gmail', '123', NULL, NULL, NULL, NULL, '2026-07-10 19:51:16', 0),
 (34, 6, 'Amyra', 'Rohaly', '37456783', 'amy@gmail', 'amy', '3704576879', 'Barrio República Argentina', NULL, NULL, '2026-07-10 21:44:39', 1),
 (35, 6, 'Marlene ', 'Fernandez', NULL, 'marfer@gmail.com', 'Mar123', NULL, NULL, NULL, NULL, '2026-07-13 12:43:29', 0),
 (36, 5, 'Mariano', 'Altamirano', NULL, 'altamirano20Roberto@gmail.com', 'roberto', NULL, NULL, NULL, NULL, '2026-07-16 21:08:31', 1),
-(37, 6, 'Ricardo', 'Perez', '', 'ricardo@gmail.com', '12345', NULL, NULL, NULL, NULL, '2026-07-16 23:33:15', 1),
+(37, 6, 'Ricardo', 'Perez', '', 'ricardo@gmail.com', '12345', NULL, NULL, NULL, NULL, '2026-07-16 23:33:15', 0),
 (38, 6, 'Pedro', ' Benitez', NULL, 'pedrobenitez@gmail.com', 'Pedro1234', NULL, NULL, NULL, NULL, '2026-07-17 11:41:41', 1),
-(39, 1, 'Pablo', 'Gutierres', '12345678', 'pedrogutierres@gmail.com', '1234', '3704564738', 'ugfuyhf', '3333.00', NULL, '2026-07-17 12:05:07', 1),
+(39, 2, 'Pablo', 'Gutierres', '12345678', 'pedrogutierres@gmail.com', '1234', '3704564738', 'ugfuyhf', '3333.00', NULL, '2026-07-17 12:05:07', 1),
 (40, 6, 'Cristian', 'Dure', '76543', 'crisdure@gmail.com', '12345', '76543', 'hgfdgf', NULL, NULL, '2026-07-18 19:48:30', 1),
-(41, 3, 'Paola', 'Gutierres', '', 'pao@gmail.com', '12345', NULL, NULL, NULL, NULL, '2026-07-19 12:36:04', 1),
-(42, 1, 'Ricardo', 'Lopez', '23345567', 'lopezricardo@gmail.com', 'ricardo', NULL, NULL, '60000.00', NULL, '2026-07-20 23:59:45', 1),
-(43, 1, 'Dylan', 'Rohaly', '29388488', 'dylanRohalyy@gmail.com', 'Dylan123', '3704576879', 'Barrio República Argentina', '40000.00', NULL, '2026-07-24 13:23:51', 1),
-(44, 5, 'Manuel', 'Aguirre', '27888999', 'manuAguirr@gmail.com', 'Manu12', '3705670092', '', NULL, NULL, '2026-07-26 20:10:18', 1);
+(41, 3, 'Paola', 'Gutierres', '26456367', 'pao@gmail.com', '12345', '3704555522', '', NULL, NULL, '2026-07-19 12:36:04', 1),
+(42, 2, 'Ricardo', 'Lopez', '23345567', 'lopezricardo@gmail.com', 'ricardo', NULL, NULL, '60000.00', NULL, '2026-07-20 23:59:45', 1),
+(43, 2, 'Dylan', 'Rohaly', '29388488', 'dylanRohalyy@gmail.com', 'Dylan123', '3704576879', 'Barrio República Argentina', '40000.00', NULL, '2026-07-24 13:23:51', 1),
+(44, 5, 'Manuel', 'Aguirre', '27888999', 'manuAguirr@gmail.com', 'Manu12', '3705670092', '', NULL, NULL, '2026-07-26 20:10:18', 1),
+(45, 2, 'Fidelina', 'Gonz??lez ', '246864675', 'fide@gmail.com', '1234', '3704566778', 'Senador Emilio Tomas Mz 7 Cs 11', '2222.00', NULL, '2026-07-27 08:54:52', 0),
+(46, 6, 'Matias', 'Martinez', '27888999', 'matimar@gmail.com', '123', '3704049484', NULL, NULL, NULL, '2026-07-30 10:23:03', 1),
+(47, 1, 'Juan', 'Fernandez', '19234234', 'juanfer@gmail.com', 'juan123', '3704556646', 'B° Independencia Mz 3 Cs 2', '400000.00', NULL, '2026-08-09 21:15:03', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `vista_herramientas_asignadas`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `vista_herramientas_asignadas` (
+`id_herramienta_obra` int(11)
+,`id_herramienta` int(11)
+,`id_obra` int(11)
+,`cantidad_asignada` int(11)
+,`cantidad_devuelta` int(11)
+,`cantidad_pendiente` bigint(12)
+,`estado_devolucion` varchar(18)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `vista_herramientas_asignadas`
+--
+DROP TABLE IF EXISTS `vista_herramientas_asignadas`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vista_herramientas_asignadas`  AS  select `ho`.`id_herramienta_obra` AS `id_herramienta_obra`,`ho`.`id_herramienta` AS `id_herramienta`,`ho`.`id_obra` AS `id_obra`,`ho`.`cantidad_asignada` AS `cantidad_asignada`,`ho`.`cantidad_devuelta` AS `cantidad_devuelta`,`ho`.`cantidad_asignada` - `ho`.`cantidad_devuelta` AS `cantidad_pendiente`,case when `ho`.`cantidad_devuelta` = 0 then 'Pendiente' when `ho`.`cantidad_devuelta` < `ho`.`cantidad_asignada` then 'Devolución parcial' when `ho`.`cantidad_devuelta` >= `ho`.`cantidad_asignada` then 'Devuelta' else 'Pendiente' end AS `estado_devolucion` from `herramienta_obra` `ho` ;
 
 --
 -- Índices para tablas volcadas
@@ -1245,6 +1525,15 @@ ALTER TABLE `detalle_orden`
 ALTER TABLE `detalle_presupuesto`
   ADD PRIMARY KEY (`id_detalle`),
   ADD KEY `idx_detpresupuesto_presupuesto` (`id_presupuesto`);
+
+--
+-- Indices de la tabla `devolucion_herramienta`
+--
+ALTER TABLE `devolucion_herramienta`
+  ADD PRIMARY KEY (`id_devolucion`),
+  ADD KEY `idx_devolucion_herramienta_obra` (`id_herramienta_obra`),
+  ADD KEY `idx_devolucion_fecha` (`fecha_devolucion`),
+  ADD KEY `idx_devolucion_usuario` (`id_usuario`);
 
 --
 -- Indices de la tabla `documento_obra`
@@ -1523,7 +1812,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `acceso_usuario`
 --
 ALTER TABLE `acceso_usuario`
-  MODIFY `id_acceso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `id_acceso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
 
 --
 -- AUTO_INCREMENT de la tabla `asistencia`
@@ -1535,13 +1824,13 @@ ALTER TABLE `asistencia`
 -- AUTO_INCREMENT de la tabla `auditoria`
 --
 ALTER TABLE `auditoria`
-  MODIFY `id_auditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=257;
+  MODIFY `id_auditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=309;
 
 --
 -- AUTO_INCREMENT de la tabla `avance_diario`
 --
 ALTER TABLE `avance_diario`
-  MODIFY `id_avance_diario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id_avance_diario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT de la tabla `cargo`
@@ -1580,6 +1869,12 @@ ALTER TABLE `detalle_presupuesto`
   MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `devolucion_herramienta`
+--
+ALTER TABLE `devolucion_herramienta`
+  MODIFY `id_devolucion` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `documento_obra`
 --
 ALTER TABLE `documento_obra`
@@ -1589,7 +1884,7 @@ ALTER TABLE `documento_obra`
 -- AUTO_INCREMENT de la tabla `empleado_obra`
 --
 ALTER TABLE `empleado_obra`
-  MODIFY `id_empleado_obra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_empleado_obra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `estado_herramienta`
@@ -1601,7 +1896,7 @@ ALTER TABLE `estado_herramienta`
 -- AUTO_INCREMENT de la tabla `etapa_obra`
 --
 ALTER TABLE `etapa_obra`
-  MODIFY `id_etapa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id_etapa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT de la tabla `factura`
@@ -1625,13 +1920,13 @@ ALTER TABLE `gasto_general`
 -- AUTO_INCREMENT de la tabla `herramienta`
 --
 ALTER TABLE `herramienta`
-  MODIFY `id_herramienta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id_herramienta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT de la tabla `herramienta_obra`
 --
 ALTER TABLE `herramienta_obra`
-  MODIFY `id_herramienta_obra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id_herramienta_obra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_estado_obra`
@@ -1781,13 +2076,13 @@ ALTER TABLE `tarea`
 -- AUTO_INCREMENT de la tabla `unidad_herramienta`
 --
 ALTER TABLE `unidad_herramienta`
-  MODIFY `id_unidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_unidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- Restricciones para tablas volcadas
@@ -1849,6 +2144,13 @@ ALTER TABLE `detalle_orden`
 --
 ALTER TABLE `detalle_presupuesto`
   ADD CONSTRAINT `fk_detpresupuesto_presupuesto` FOREIGN KEY (`id_presupuesto`) REFERENCES `presupuesto` (`id_presupuesto`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `devolucion_herramienta`
+--
+ALTER TABLE `devolucion_herramienta`
+  ADD CONSTRAINT `fk_devolucion_herramienta_obra` FOREIGN KEY (`id_herramienta_obra`) REFERENCES `herramienta_obra` (`id_herramienta_obra`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_devolucion_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `documento_obra`

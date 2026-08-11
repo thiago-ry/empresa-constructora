@@ -49,7 +49,7 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
     </div>
 
 
-    <div class="cards-grid">
+    <div class="cards-grid no-print">
 
         <div class="dashboard-card">
 

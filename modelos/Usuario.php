@@ -9,9 +9,7 @@ class Usuario
 
     public function __construct()
     {
-
         $db = new Conexion();
-
         $this->conexion = $db->conectar();
     }
 
@@ -27,7 +25,6 @@ class Usuario
         $sql = "SELECT
                     u.id_usuario,
                     u.id_rol,
-                    u.id_cargo,
                     u.nombre,
                     u.apellido,
                     u.documento,
@@ -44,11 +41,8 @@ class Usuario
                 WHERE u.correo = :correo";
 
         $consulta = $this->conexion->prepare($sql);
-
         $consulta->execute([
-
             ":correo" => $correo
-
         ]);
 
         return $consulta->fetch(PDO::FETCH_ASSOC);
@@ -168,14 +162,12 @@ class Usuario
 
         if ($datos["id_rol"] != $idRolEmpleado) {
 
-            $datos["id_cargo"] = null;
             $datos["salario"] = null;
         }
 
         $sql = "INSERT INTO usuario
                 (
                     id_rol,
-                    id_cargo,
                     nombre,
                     apellido,
                     documento,
@@ -189,7 +181,6 @@ class Usuario
                 VALUES
                 (
                     :id_rol,
-                    :id_cargo,
                     :nombre,
                     :apellido,
                     :documento,
@@ -206,7 +197,6 @@ class Usuario
 
         $consulta->execute([
             ":id_rol"      => $datos["id_rol"],
-            ":id_cargo"    => empty($datos["id_cargo"]) ? null : $datos["id_cargo"],
             ":nombre"      => ucwords(strtolower($datos["nombre"])),
             ":apellido"    => ucwords(strtolower($datos["apellido"])),
             ":documento"   => $datos["documento"],
@@ -259,8 +249,7 @@ class Usuario
 
         $sql = "SELECT
 
-                    id_rol,
-                    id_cargo
+                    id_rol
 
                 FROM usuario
 
@@ -302,8 +291,9 @@ class Usuario
         return $consulta->fetch(PDO::FETCH_ASSOC)["cantidad"] > 0;
     }
 
-public function empleadoEnObra($id_usuario){
-     $sql = "SELECT COUNT(*) AS cantidad
+    public function empleadoEnObra($id_usuario)
+    {
+        $sql = "SELECT COUNT(*) AS cantidad
 
                 FROM empleado_obra
 
@@ -318,7 +308,7 @@ public function empleadoEnObra($id_usuario){
         ]);
 
         return $consulta->fetch(PDO::FETCH_ASSOC)["cantidad"] > 0;
-}
+    }
 
 
 
@@ -329,7 +319,6 @@ public function empleadoEnObra($id_usuario){
 
         if ($datos["id_rol"] != $idRolEmpleado) {
 
-            $datos["id_cargo"] = null;
             $datos["salario"] = null;
         }
         $sql = "UPDATE usuario
@@ -337,7 +326,6 @@ public function empleadoEnObra($id_usuario){
                 SET
 
                     id_rol = :id_rol,
-                    id_cargo = :id_cargo,
 
                     nombre = :nombre,
                     apellido = :apellido,
@@ -357,8 +345,6 @@ public function empleadoEnObra($id_usuario){
         return $consulta->execute([
 
             ":id_rol"      => $datos["id_rol"],
-
-            ":id_cargo"    => empty($datos["id_cargo"]) ? null : $datos["id_cargo"],
 
             ":nombre"      => ucwords(strtolower($datos["nombre"])),
 
@@ -478,11 +464,11 @@ public function empleadoEnObra($id_usuario){
         $sql = "SELECT
 
                     id_cargo,
-                    nombre
+                    nombre_cargo
 
                 FROM cargo
 
-                ORDER BY nombre";
+                ORDER BY nombre_cargo";
 
         $consulta = $this->conexion->prepare($sql);
 
@@ -523,46 +509,27 @@ public function empleadoEnObra($id_usuario){
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
     }
 
+public function obtenerEmpleados()
+{
+    $sql = "SELECT
+                u.id_usuario,
+                u.nombre,
+                u.apellido,
+                u.documento,
+                u.telefono,
+                u.salario,
+                u.estado
+            FROM usuario u
+            INNER JOIN roles r
+                ON u.id_rol = r.id_rol
+            WHERE r.nombre_rol = 'Empleado'
+            ORDER BY u.nombre";
 
+    $consulta = $this->conexion->prepare($sql);
+    $consulta->execute();
 
-
-
-
-
-    public function obtenerEmpleados()
-    {
-
-        $sql = "SELECT
-
-                    u.id_usuario,
-                    u.nombre,
-                    u.apellido,
-                    u.documento,
-                    u.telefono,
-                    u.salario,
-                    u.estado,
-
-                    c.nombre AS cargo
-
-                FROM usuario u
-
-                INNER JOIN roles r
-                    ON u.id_rol = r.id_rol
-
-                LEFT JOIN cargo c
-                    ON u.id_cargo = c.id_cargo
-
-                WHERE r.nombre_rol = 'Empleado'
-
-                ORDER BY u.nombre";
-
-        $consulta = $this->conexion->prepare($sql);
-
-        $consulta->execute();
-
-        return $consulta->fetchAll(PDO::FETCH_ASSOC);
-    }
-
+    return $consulta->fetchAll(PDO::FETCH_ASSOC);
+}
 
 
 
@@ -577,15 +544,12 @@ public function empleadoEnObra($id_usuario){
 
                     r.nombre_rol,
 
-                    c.nombre AS cargo
+                    -- c.nombre AS cargo
 
                 FROM usuario u
 
                 INNER JOIN roles r
                     ON u.id_rol = r.id_rol
-
-                LEFT JOIN cargo c
-                    ON u.id_cargo = c.id_cargo
 
                 WHERE u.id_rol = :id_rol
 
@@ -601,36 +565,6 @@ public function empleadoEnObra($id_usuario){
 
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
     }
-
-
-
-
-
-
-    public function cambiarCargo($id_usuario, $id_cargo)
-    {
-
-        $sql = "UPDATE usuario
-
-                SET id_cargo = :id_cargo
-
-                WHERE id_usuario = :id_usuario";
-
-        $consulta = $this->conexion->prepare($sql);
-
-        return $consulta->execute([
-
-            ":id_cargo"   => empty($id_cargo) ? null : $id_cargo,
-
-            ":id_usuario" => $id_usuario
-
-        ]);
-    }
-
-
-
-
-
 
     public function cambiarRol($id_usuario, $id_rol)
     {
@@ -660,7 +594,7 @@ public function empleadoEnObra($id_usuario){
     public function obtenerNombreCargo($id_cargo)
     {
 
-        $sql = "SELECT nombre
+        $sql = "SELECT nombre_cargo
 
                 FROM cargo
 
@@ -677,9 +611,9 @@ public function empleadoEnObra($id_usuario){
         return $consulta->fetch(PDO::FETCH_ASSOC);
     }
 
-public function obtenerEmpleadosDisponiblesPorObra($id_obra, $busqueda = "")
-{
-    $sql = "SELECT
+    public function obtenerEmpleadosDisponiblesPorObra($id_obra, $busqueda = "")
+    {
+        $sql = "SELECT
                 u.id_usuario,
                 u.nombre,
                 u.apellido,
@@ -702,26 +636,26 @@ public function obtenerEmpleadosDisponiblesPorObra($id_obra, $busqueda = "")
                 AND eo.estado = 1
             )";
 
-    /*
+        /*
     ==========================================
         BUSCADOR
     ==========================================
     */
 
-    if (!empty(trim($busqueda))) {
+        if (!empty(trim($busqueda))) {
 
-        $sql .= " AND (
+            $sql .= " AND (
                     u.nombre LIKE :busqueda
                     OR u.apellido LIKE :busqueda
                     OR u.documento LIKE :busqueda
                     OR CONCAT(u.apellido, ' ', u.nombre) LIKE :busqueda_completo
                     OR CONCAT(u.nombre, ' ', u.apellido) LIKE :busqueda_completo2
                 )";
-    }
+        }
 
-    $sql .= " ORDER BY u.apellido ASC, u.nombre ASC";
+        $sql .= " ORDER BY u.apellido ASC, u.nombre ASC";
 
-    /*
+        /*
     ==========================================
         LIMITAR RESULTADOS
     ==========================================
@@ -730,25 +664,140 @@ public function obtenerEmpleadosDisponiblesPorObra($id_obra, $busqueda = "")
         de una sola vez.
     */
 
-    $sql .= " LIMIT 50";
+        $sql .= " LIMIT 50";
 
-    $consulta = $this->conexion->prepare($sql);
+        $consulta = $this->conexion->prepare($sql);
 
-    $parametros = [
-        ":id_obra" => $id_obra
-    ];
+        $parametros = [
+            ":id_obra" => $id_obra
+        ];
 
-    if (!empty(trim($busqueda))) {
+        if (!empty(trim($busqueda))) {
 
-        $texto = "%" . trim($busqueda) . "%";
+            $texto = "%" . trim($busqueda) . "%";
 
-        $parametros[":busqueda"] = $texto;
-        $parametros[":busqueda_completo"] = $texto;
-        $parametros[":busqueda_completo2"] = $texto;
+            $parametros[":busqueda"] = $texto;
+            $parametros[":busqueda_completo"] = $texto;
+            $parametros[":busqueda_completo2"] = $texto;
+        }
+
+        $consulta->execute($parametros);
+
+        return $consulta->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    $consulta->execute($parametros);
+    public function obtenerCargosEmpleado($id_usuario)
+    {
+        $sql = "SELECT
+                ec.id_empleado_cargo,
+                c.id_cargo,
+                c.nombre_cargo
+            FROM empleado_cargo ec
+            INNER JOIN cargo c
+                ON ec.id_cargo = c.id_cargo
+            WHERE ec.id_usuario = :id_usuario
+            ORDER BY c.nombre_cargo";
 
-    return $consulta->fetchAll(PDO::FETCH_ASSOC);
-}
+        $consulta = $this->conexion->prepare($sql);
+
+        $consulta->execute([
+            ":id_usuario" => $id_usuario
+        ]);
+
+        return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function agregarCargoEmpleado(
+        $id_usuario,
+        $id_cargo
+    ) {
+        $sql = "INSERT INTO empleado_cargo
+            (
+                id_usuario,
+                id_cargo
+            )
+            VALUES
+            (
+                :id_usuario,
+                :id_cargo
+            )";
+
+        $consulta = $this->conexion->prepare($sql);
+
+        return $consulta->execute([
+            ":id_usuario" => $id_usuario,
+            ":id_cargo" => $id_cargo
+        ]);
+    }
+
+    public function eliminarCargoEmpleado(
+        $id_empleado_cargo
+    ) {
+        $sql = "DELETE
+            FROM empleado_cargo
+            WHERE id_empleado_cargo = :id";
+
+        $consulta = $this->conexion->prepare($sql);
+
+        return $consulta->execute([
+            ":id" => $id_empleado_cargo
+        ]);
+    }
+
+    public function obtenerIdsCargosEmpleado(
+        $id_usuario
+    ) {
+        $sql = "SELECT id_cargo
+            FROM empleado_cargo
+            WHERE id_usuario = :id_usuario";
+
+        $consulta = $this->conexion->prepare($sql);
+
+        $consulta->execute([
+            ":id_usuario" => $id_usuario
+        ]);
+
+        return $consulta->fetchAll(
+            PDO::FETCH_COLUMN
+        );
+    }
+
+    public function guardarCargosEmpleado($id_usuario, $cargos)
+    {
+        $sql = "DELETE FROM empleado_cargo
+            WHERE id_usuario = :id_usuario";
+
+        $consulta = $this->conexion->prepare($sql);
+
+        $consulta->execute([
+            ":id_usuario" => $id_usuario
+        ]);
+
+        if (empty($cargos)) {
+            return true;
+        }
+
+        $sql = "INSERT INTO empleado_cargo
+            (
+                id_usuario,
+                id_cargo
+            )
+            VALUES
+            (
+                :id_usuario,
+                :id_cargo
+            )";
+
+        $consulta = $this->conexion->prepare($sql);
+
+        foreach ($cargos as $id_cargo) {
+
+            $consulta->execute([
+                ":id_usuario" => $id_usuario,
+                ":id_cargo"   => $id_cargo
+            ]);
+        }
+
+        return true;
+    }
 }

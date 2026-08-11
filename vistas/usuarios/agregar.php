@@ -1,12 +1,19 @@
+```php
 <?php
 
+require_once "../../modelos/Usuario.php";
 require_once "../../modelos/Rol.php";
+require_once "../../modelos/Cargo.php";
 
-$rol = new Rol();
-$roles = $rol->obtenerTodos();
+$usuarioModel = new Usuario();
+$rolModel = new Rol();
+$cargoModel = new Cargo();
 
-$idRolEmpleado = 1;
-$idRolCliente = 6;
+$roles = $rolModel->obtenerTodos();
+$cargos = $cargoModel->obtenerTodos();
+
+$idRolEmpleado = $usuarioModel->obtenerIdRolEmpleado()["id_rol"];
+$idRolCliente = $usuarioModel->obtenerIdRolCliente()["id_rol"];
 
 require_once "../../layouts/header.php";
 require_once "../../layouts/sidebar.php";
@@ -17,11 +24,16 @@ require_once "../../layouts/sidebar.php";
 
     <div class="page-title">
 
-        <h1>Agregar usuario</h1>
+        <h1>
+            Agregar usuario
+        </h1>
 
-        <p>Complete los datos para registrar un nuevo usuario.</p>
+        <p>
+            Complete los datos para registrar un nuevo usuario.
+        </p>
 
     </div>
+
 
     <div class="form-card">
 
@@ -31,16 +43,24 @@ require_once "../../layouts/sidebar.php";
             method="POST"
             autocomplete="off">
 
+
             <input
                 type="hidden"
                 name="accion"
                 value="agregar">
 
+
+            <!-- =============================
+                 DATOS PERSONALES
+            ============================== -->
+
             <div class="form-row">
 
                 <div class="form-group">
 
-                    <label>Nombre</label>
+                    <label>
+                        Nombre
+                    </label>
 
                     <input
                         type="text"
@@ -51,9 +71,12 @@ require_once "../../layouts/sidebar.php";
 
                 </div>
 
+
                 <div class="form-group">
 
-                    <label>Apellido</label>
+                    <label>
+                        Apellido
+                    </label>
 
                     <input
                         type="text"
@@ -66,11 +89,18 @@ require_once "../../layouts/sidebar.php";
 
             </div>
 
+
+            <!-- =============================
+                 CONTACTO Y ROL
+            ============================== -->
+
             <div class="form-row">
 
                 <div class="form-group">
 
-                    <label>Correo electrónico</label>
+                    <label>
+                        Correo electrónico
+                    </label>
 
                     <input
                         type="email"
@@ -81,13 +111,16 @@ require_once "../../layouts/sidebar.php";
 
                 </div>
 
+
                 <div class="form-group">
 
-                    <label>Rol</label>
+                    <label>
+                        Rol
+                    </label>
 
                     <select
                         id="rol"
-                        name="rol"
+                        name="id_rol"
                         class="filter"
                         required>
 
@@ -95,11 +128,12 @@ require_once "../../layouts/sidebar.php";
                             Seleccione un rol
                         </option>
 
-                        <?php foreach($roles as $r){ ?>
+                        <?php foreach ($roles as $r) { ?>
 
-                            <option value="<?= $r["id_rol"] ?>">
+                            <option
+                                value="<?= $r["id_rol"] ?>">
 
-                                <?= $r["nombre_rol"] ?>
+                                <?= htmlspecialchars($r["nombre_rol"]) ?>
 
                             </option>
 
@@ -110,37 +144,57 @@ require_once "../../layouts/sidebar.php";
                 </div>
 
             </div>
-                            <div class="form-row">
 
-                    <div class="form-group">
 
-                        <label>Documento</label>
-
-                        <input
-                            type="text"
-                            name="documento"
-                            class="input">
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <label>Teléfono</label>
-
-                        <input
-                            type="text"
-                            name="telefono"
-                            class="input">
-
-                    </div>
-
-                </div>
+            <!-- =============================
+                 DOCUMENTO Y TELÉFONO
+            ============================== -->
 
             <div class="form-row">
 
                 <div class="form-group">
 
-                    <label>Contraseña</label>
+                    <label>
+                        Documento
+                    </label>
+
+                    <input
+                        type="text"
+                        name="documento"
+                        class="input"
+                        maxlength="20">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Teléfono
+                    </label>
+
+                    <input
+                        type="text"
+                        name="telefono"
+                        class="input"
+                        maxlength="30">
+
+                </div>
+
+            </div>
+
+
+            <!-- =============================
+                 CONTRASEÑA
+            ============================== -->
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label>
+                        Contraseña
+                    </label>
 
                     <input
                         type="password"
@@ -151,9 +205,12 @@ require_once "../../layouts/sidebar.php";
 
                 </div>
 
+
                 <div class="form-group">
 
-                    <label>Confirmar contraseña</label>
+                    <label>
+                        Confirmar contraseña
+                    </label>
 
                     <input
                         type="password"
@@ -167,29 +224,25 @@ require_once "../../layouts/sidebar.php";
             </div>
 
 
-            <!-- ============================= -->
-            <!-- DATOS EMPLEADO -->
-            <!-- ============================= -->
+            <!-- =============================
+                 DATOS EMPLEADO
+            ============================== -->
 
             <div
                 id="datosEmpleado"
                 class="card"
-                style="display:none;margin-top:30px;">
+                style="display:none; margin-top:30px;">
 
                 <div class="card-header">
 
                     <div>
 
                         <h2>
-
                             Datos del empleado
-
                         </h2>
 
                         <p>
-
-                            Información laboral.
-
+                            Información laboral y cargos del empleado.
                         </p>
 
                     </div>
@@ -197,22 +250,32 @@ require_once "../../layouts/sidebar.php";
                 </div>
 
 
+                <!-- =============================
+                     DIRECCIÓN Y SALARIO
+                ============================== -->
+
                 <div class="form-row">
 
                     <div class="form-group">
 
-                        <label>Dirección</label>
+                        <label>
+                            Dirección
+                        </label>
 
                         <input
                             type="text"
                             name="direccion"
-                            class="input">
+                            class="input"
+                            maxlength="255">
 
                     </div>
 
+
                     <div class="form-group">
 
-                        <label>Salario</label>
+                        <label>
+                            Salario
+                        </label>
 
                         <input
                             type="number"
@@ -225,13 +288,66 @@ require_once "../../layouts/sidebar.php";
 
                 </div>
 
+
+                <!-- =============================
+                     CARGOS
+                ============================== -->
+
+                <div class="form-group">
+
+                    <label>
+                        Cargos del empleado
+                    </label>
+
+                    <p style="margin-bottom:15px; color:#888;">
+                        Seleccione uno o varios cargos que pueda desempeñar.
+                    </p>
+
+
+                    <div
+                        class="cargos-container"
+                        style="
+                            display:grid;
+                            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+                            gap:10px;
+                        ">
+
+                        <?php foreach ($cargos as $cargo) { ?>
+
+                            <label
+                                style="
+                                    display:flex;
+                                    align-items:center;
+                                    gap:10px;
+                                    padding:12px;
+                                    border:1px solid rgba(255,255,255,0.08);
+                                    border-radius:8px;
+                                    cursor:pointer;
+                                ">
+
+                                <input
+                                    type="checkbox"
+                                    name="cargos[]"
+                                    value="<?= $cargo["id_cargo"] ?>">
+
+                                <span>
+                                    <?= htmlspecialchars($cargo["nombre_cargo"]) ?>
+                                </span>
+
+                            </label>
+
+                        <?php } ?>
+
+                    </div>
+
+                </div>
+
             </div>
 
 
-            <!-- ============================= -->
-            <!-- DATOS CLIENTE -->
-            <!-- ============================= -->
-
+            <!-- =============================
+                 ACCIONES
+            ============================== -->
 
             <div class="form-actions">
 
@@ -245,6 +361,7 @@ require_once "../../layouts/sidebar.php";
 
                 </a>
 
+
                 <button
                     type="reset"
                     class="btn btn-warning">
@@ -254,6 +371,7 @@ require_once "../../layouts/sidebar.php";
                     Limpiar
 
                 </button>
+
 
                 <button
                     type="submit"
@@ -273,30 +391,57 @@ require_once "../../layouts/sidebar.php";
 
 </main>
 
+
 <script>
 
-const rol=document.getElementById("rol");
+const rol = document.getElementById("rol");
 
-const empleado=document.getElementById("datosEmpleado");
+const empleado = document.getElementById("datosEmpleado");
+
+const camposEmpleado = empleado.querySelectorAll(
+    "input[name='direccion'], input[name='salario'], input[name='cargos[]']"
+);
 
 
-rol.addEventListener("change",function(){
+function actualizarDatosEmpleado() {
 
-    empleado.style.display="none";
+    if (rol.value == "<?= $idRolEmpleado ?>") {
 
-    if(this.value=="<?= $idRolEmpleado ?>"){
+        empleado.style.display = "block";
 
-        empleado.style.display="block";
+    } else {
+
+        empleado.style.display = "none";
+
+        /*
+         * Si deja de ser empleado,
+         * limpiamos los cargos seleccionados.
+         */
+
+        empleado
+            .querySelectorAll("input[name='cargos[]']")
+            .forEach(function(checkbox) {
+
+                checkbox.checked = false;
+
+            });
 
     }
 
+}
 
-});
+
+rol.addEventListener(
+    "change",
+    actualizarDatosEmpleado
+);
 
 </script>
+
 
 <?php
 
 require_once "../../layouts/footer.php";
 
 ?>
+```

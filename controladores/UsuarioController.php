@@ -1,3 +1,4 @@
+
 <?php
 
 ini_set('display_errors', 1);
@@ -15,21 +16,19 @@ class UsuarioController
 
     public function __construct()
     {
-
         $this->auditoria = new Auditoria();
-
         $this->usuario = new Usuario();
     }
 
+
     /*
     ==========================
-        LOGIN
+            LOGIN
     ==========================
     */
 
     public function login()
     {
-
         session_start();
 
         $correo = $_POST["correo"];
@@ -40,11 +39,8 @@ class UsuarioController
         if (!$usuarioEncontrado) {
 
             echo "<script>
-
                 alert('Usuario no encontrado');
-
                 window.location.href='../vistas/login.php';
-
             </script>";
 
             exit();
@@ -53,11 +49,8 @@ class UsuarioController
         if ($usuarioEncontrado["estado"] == 0) {
 
             echo "<script>
-
                 alert('El usuario está inactivo');
-
                 window.location.href='../vistas/login.php';
-
             </script>";
 
             exit();
@@ -66,11 +59,8 @@ class UsuarioController
         if ($password != $usuarioEncontrado["contraseña"]) {
 
             echo "<script>
-
                 alert('Contraseña incorrecta');
-
                 window.location.href='../vistas/login.php';
-
             </script>";
 
             exit();
@@ -132,124 +122,122 @@ class UsuarioController
         exit();
     }
 
+
     /*
     ==========================
-        AGREGAR
+            AGREGAR
     ==========================
     */
 
     public function agregar()
     {
-
         session_start();
 
         $datos = [
-
-            "id_rol" => $_POST["rol"],
-
-            "id_cargo" => $_POST["id_cargo"] != "" ? $_POST["id_cargo"] : null,
-
+            "id_rol" => $_POST["id_rol"],
             "nombre" => $_POST["nombre"],
-
             "apellido" => $_POST["apellido"],
-
             "documento" => $_POST["documento"],
-
             "telefono" => $_POST["telefono"],
-
-            "direccion" => $_POST["direccion"],
-
-            "salario" => $_POST["salario"] != "" ? $_POST["salario"] : null,
-
+            "direccion" => $_POST["direccion"] ?? "",
+            "salario" => !empty($_POST["salario"])
+                ? $_POST["salario"]
+                : null,
             "correo" => $_POST["correo"],
-
             "contraseña" => $_POST["password"]
-
         ];
 
         if ($this->usuario->existeCorreo($datos["correo"])) {
 
             echo "<script>
-
-                alert('El correo ya está registrado');
-
-                window.location.href='../vistas/usuarios/agregar.php';
-
-            </script>";
+            alert('El correo ya está registrado');
+            window.location.href='../vistas/usuarios/agregar.php';
+        </script>";
 
             exit();
         }
 
+
+        /*
+    ========================================
+    CREAR USUARIO
+    ========================================
+    */
+
         $idUsuario = $this->usuario->agregar($datos);
 
+
+        /*
+    ========================================
+    GUARDAR CARGOS DEL EMPLEADO
+    ========================================
+    */
+
+        $idRolEmpleado =
+            $this->usuario->obtenerIdRolEmpleado()["id_rol"];
+
+
+        if ($datos["id_rol"] == $idRolEmpleado) {
+            $cargos = $_POST["cargos"] ?? [];
+            $this->usuario->guardarCargosEmpleado(
+                $idUsuario,
+                $cargos
+            );
+        }
+
+
+        /*
+    ========================================
+    AUDITORÍA
+    ========================================
+    */
+
         $this->auditoria->registrar([
-
             "id_usuario" => $_SESSION["usuario"]["id"],
-
             "accion" => "INSERTAR",
-
             "tabla_afectada" => "usuario",
-
             "id_registro" => $idUsuario,
-
             "descripcion" => "Registró un nuevo usuario"
-
         ]);
 
-        header("Location: ../vistas/usuarios/index.php");
+
+        header(
+            "Location: ../vistas/usuarios/index.php"
+        );
 
         exit();
     }
 
-    /*
-==========================
-    EDITAR
-==========================
-*/
-
     public function editar()
     {
-
         session_start();
 
         $datos = [
-
             "id_usuario" => $_POST["id_usuario"],
-
             "id_rol" => $_POST["id_rol"],
-
-            "id_cargo" => !empty($_POST["id_cargo"])
-                ? $_POST["id_cargo"]
-                : null,
-
             "nombre" => $_POST["nombre"],
-
             "apellido" => $_POST["apellido"],
-
-            "documento"=>$_POST["documento"],
-
+            "documento" => $_POST["documento"],
             "telefono" => $_POST["telefono"],
-
-
-            "direccion" =>  $_POST["direccion"],
-
-
+            "direccion" => $_POST["direccion"] ?? "",
             "salario" => !empty($_POST["salario"])
                 ? $_POST["salario"]
                 : null,
-
-
             "correo" => $_POST["correo"]
 
         ];
 
-        /*
-    ==========================
-        VALIDAR CORREO
-    ==========================
-    */
 
-        $usuarioActual = $this->usuario->buscarPorId($datos["id_usuario"]);
+        /*
+        ==========================
+        VALIDAR CORREO
+        ==========================
+        */
+
+        $usuarioActual = $this->usuario->buscarPorId(
+            $datos["id_usuario"]
+        );
+
 
         if (
 
@@ -257,30 +245,36 @@ class UsuarioController
 
             &&
 
-            $this->usuario->existeCorreo($datos["correo"])
+            $this->usuario->existeCorreo(
+                $datos["correo"]
+            )
 
         ) {
 
             echo "<script>
 
-            alert('El correo ya se encuentra registrado.');
+                alert('El correo ya se encuentra registrado.');
 
-            window.location.href='../vistas/usuarios/index.php';
+                window.location.href='../vistas/usuarios/index.php';
 
-        </script>";
+            </script>";
 
             exit();
         }
 
-        /*
-    ==========================
-        VALIDAR CLIENTE
-    ==========================
-    */
 
-        $rolAnterior = $this->usuario->obtenerRolActual($datos["id_usuario"]);
+        /*
+        ==========================
+        VALIDAR CLIENTE
+        ==========================
+        */
+
+        $rolAnterior = $this->usuario->obtenerRolActual(
+            $datos["id_usuario"]
+        );
 
         $rolCliente = $this->usuario->obtenerIdRolCliente();
+
 
         if (
 
@@ -292,165 +286,164 @@ class UsuarioController
 
         ) {
 
-            if ($this->usuario->tieneObras($datos["id_usuario"])) {
+            if ($this->usuario->tieneObras(
+                $datos["id_usuario"]
+            )) {
 
                 echo "<script>
 
-                alert('No se puede cambiar el rol porque el cliente tiene obras asociadas.');
+                    alert('No se puede cambiar el rol porque el cliente tiene obras asociadas.');
 
-                window.location.href='../vistas/usuarios/index.php';
+                    window.location.href='../vistas/usuarios/index.php';
 
-            </script>";
+                </script>";
 
                 exit();
             }
         }
 
+
         /*
-    ==========================
-        ACTUALIZAR
-    ==========================
-    */
+        ==========================
+        ACTUALIZAR USUARIO
+        ==========================
+        */
+
         $this->usuario->editar($datos);
 
         /*
-    ==========================
+========================================
+ACTUALIZAR CARGOS DEL EMPLEADO
+========================================
+*/
+
+        $idRolEmpleado = $this->usuario->obtenerIdRolEmpleado()["id_rol"];
+
+        if ($datos["id_rol"] == $idRolEmpleado) {
+
+            $cargos = $_POST["cargos"] ?? [];
+
+            $this->usuario->guardarCargosEmpleado(
+                $datos["id_usuario"],
+                $cargos
+            );
+        } else {
+
+            // Si deja de ser empleado,
+            // eliminamos sus cargos anteriores.
+
+            $this->usuario->guardarCargosEmpleado(
+                $datos["id_usuario"],
+                []
+            );
+        }
+        /*
+        ==========================
         AUDITORÍA
-    ==========================
-    */
+        ==========================
+        */
 
         $this->auditoria->registrar([
-
             "id_usuario" => $_SESSION["usuario"]["id"],
-
             "accion" => "EDITAR",
-
             "tabla_afectada" => "usuario",
-
             "id_registro" => $datos["id_usuario"],
-
             "descripcion" => "Modificó el usuario"
-
         ]);
 
-        header("Location: ../vistas/usuarios/index.php");
 
+        header("Location: ../vistas/usuarios/index.php");
         exit();
     }
 
+
     /*
     ==========================
-        ELIMINAR
+            ELIMINAR
     ==========================
     */
 
-public function eliminar()
-{
+    public function eliminar()
+    {
+        session_start();
 
-    session_start();
+        $id = $_GET["id"];
 
-    $id = $_GET["id"];
 
-    if ($this->usuario->tieneObras($id)) {
+        if ($this->usuario->tieneObras($id)) {
 
-        echo "<script>
+            echo "<script>
+                alert('No se puede dar de baja este usuario porque tiene obras asociadas.');
+                window.location.href='../vistas/usuarios/index.php';
+            </script>";
 
-            alert('No se puede dar de baja este usuario porque tiene obras asociadas.');
+            exit();
+        }
 
-            window.location.href='../vistas/usuarios/index.php';
 
-        </script>";
+        if ($this->usuario->empleadoEnObra($id)) {
+            echo "<script>
+                alert('No se puede dar de baja este usuario porque trabaja en una obra.');
+                window.location.href='../vistas/usuarios/index.php';
+            </script>";
+            exit();
+        }
 
+
+        $this->usuario->bajaLogica($id);
+
+
+        $this->auditoria->registrar([
+            "id_usuario" => $_SESSION["usuario"]["id"],
+            "accion" => "BAJA",
+            "tabla_afectada" => "usuario",
+            "id_registro" => $id,
+            "descripcion" => "Desactivó un usuario"
+        ]);
+        header("Location: ../vistas/usuarios/index.php");
         exit();
-
     }
-     if ($this->usuario->empleadoEnObra($id)) {
-
-        echo "<script>
-
-            alert('No se puede dar de baja este usuario porque trabaja en una obra.');
-
-            window.location.href='../vistas/usuarios/index.php';
-
-        </script>";
-
-        exit();
-
-    }
-
-    $this->usuario->bajaLogica($id);
-
-    $this->auditoria->registrar([
-
-        "id_usuario"      => $_SESSION["usuario"]["id"],
-
-        "accion"          => "BAJA",
-
-        "tabla_afectada"  => "usuario",
-
-        "id_registro"     => $id,
-
-        "descripcion"     => "Desactivó un usuario"
-
-    ]);
-
-    header("Location: ../vistas/usuarios/index.php");
-
-    exit();
-
-}
-
-
-
-
 
 
     /*
     ==========================
-        ACTIVAR
+            ACTIVAR
     ==========================
     */
 
     public function activar()
     {
-
         session_start();
-
         $id = $_GET["id"];
-
         $this->usuario->activarUsuario($id);
-
         $this->auditoria->registrar([
-
-            "id_usuario"      => $_SESSION["usuario"]["id"],
-
-            "accion"          => "ACTIVAR",
-
-            "tabla_afectada"  => "usuario",
-
-            "id_registro"     => $id,
-
-            "descripcion"     => "Activó nuevamente un usuario"
-
+            "id_usuario" => $_SESSION["usuario"]["id"],
+            "accion" => "ACTIVAR",
+            "tabla_afectada" => "usuario",
+            "id_registro" => $id,
+            "descripcion" => "Activó nuevamente un usuario"
         ]);
 
         header("Location: ../vistas/usuarios/index.php");
-
         exit();
     }
 }
 
 
-
-
-
+/*
+==========================
+    INSTANCIAR CONTROLADOR
+==========================
+*/
 
 $controlador = new UsuarioController();
 
 
-
-
-
+/*
+==========================
+    ACCIONES POST
+==========================
+*/
 
 if (isset($_POST["accion"])) {
 
@@ -462,11 +455,13 @@ if (isset($_POST["accion"])) {
 
             break;
 
+
         case "agregar":
 
             $controlador->agregar();
 
             break;
+
 
         case "editar":
 
@@ -477,9 +472,11 @@ if (isset($_POST["accion"])) {
 }
 
 
-
-
-
+/*
+==========================
+    ACCIONES GET
+==========================
+*/
 
 if (isset($_GET["accion"])) {
 
@@ -490,6 +487,7 @@ if (isset($_GET["accion"])) {
             $controlador->eliminar();
 
             break;
+
 
         case "activar":
 

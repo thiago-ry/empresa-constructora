@@ -473,10 +473,7 @@ require_once "../../layouts/sidebar.php";
 
                                 <div
                                     class="progress-bar"
-                                    style="
-                                        width: <?= $avance ?>%;
-                                    ">
-
+                                    style="width: <?= $avance ?>%;">
                                     <?= $avance ?>%
 
                                 </div>

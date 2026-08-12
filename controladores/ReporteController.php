@@ -23,9 +23,13 @@ class ReporteController
 
 
         require "../vistas/reportes/usuarios.php";
-
     }
+    public function obras()
+    {
+        $obras = $this->reporte->obras();
 
+        require "../vistas/reportes/obras.php";
+    }
 }
 
 
@@ -33,18 +37,18 @@ class ReporteController
 $controlador = new ReporteController();
 
 
-if(isset($_GET["accion"]))
-{
+if (isset($_GET["accion"])) {
 
-    switch($_GET["accion"])
-    {
+    switch ($_GET["accion"]) {
 
         case "usuarios":
 
             $controlador->usuarios();
 
-        break;
+            break;
 
+        case "obras":
+            $controlador->obras();
+            break;
     }
-
 }

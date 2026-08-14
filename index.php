@@ -33,41 +33,40 @@ if (isset($_SESSION['usuario'])) {
 
     <!--================ HEADER ================-->
 
-    <header class="header">
+<header class="header">
 
-        <div class="container">
+    <div class="container">
 
-            <a href="#" class="logo">
+        <a href="#inicio" class="logo">
+            <img src="assets/img/logo.png" alt="BuildPro">
+        </a>
 
-                <img src="assets/img/logo.png" width="20px">
+        <nav class="navbar">
 
-            </a>
+            <a href="#inicio">Inicio</a>
 
-            <nav class="navbar">
+            <a href="#nosotros">Quiénes Somos</a>
 
-                <a href="#inicio">Inicio</a>
+            <a href="#servicios">Servicios</a>
 
-                <a href="#nosotros">Nosotros</a>
+            <a href="#ventajas">Ventajas</a>
 
-                <a href="#servicios">Servicios</a>
+            <a href="#galeria">Proyectos</a>
 
-                <a href="#estadisticas">Estadísticas</a>
+            <a href="#contacto">Contacto</a>
 
-                <a href="#galeria">Galería</a>
+        </nav>
 
-                <a href="#contacto">Contacto</a>
+      <a href="vistas/login.php" class="btn-login">
 
-            </nav>
+            Iniciar sesión
 
-            <a href="vistas/login.php" class="btn-login">
-
-                Iniciar sesión
-
-            </a>
-
+        </a>
         </div>
 
-    </header>
+    </div>
+
+</header>
 
     <!--================ HERO ================-->
 
@@ -91,36 +90,25 @@ if (isset($_SESSION['usuario'])) {
             <br>
 
             <h1>
-
-                Construimos el futuro
-                con calidad,
-                innovación y
-                compromiso.
-
+                Construimos proyectos que perduran en el tiempo.
             </h1>
 
             <p>
-
-                BuildPro integra tecnología y experiencia para gestionar
-                obras, materiales, herramientas y personal desde una
-                única plataforma moderna, segura y eficiente.
-
+                Somos una empresa constructora especializada en obras
+                civiles, comerciales y residenciales.
+                Transformamos ideas en proyectos sólidos, seguros y de
+                calidad, acompañando a nuestros clientes en cada etapa
+                de la construcción.
             </p>
 
             <div class="hero-buttons">
-
-                <a href="vistas/login.php" class="btn-primary">
-
-                    Iniciar sesión
-
+                <a href="#contacto" class="btn-primary">
+                    Solicitar presupuesto
                 </a>
 
-                <a href="#nosotros" class="btn-secondary">
-
-                    Conocer más
-
+                <a href="#proyectos" class="btn-secondary">
+                    Ver proyectos
                 </a>
-
             </div>
 
         </div>
@@ -154,24 +142,24 @@ if (isset($_SESSION['usuario'])) {
                     Construimos proyectos que dejan huella.
 
                 </h2>
-
                 <p>
-
-                    Somos una empresa especializada en la planificación,
-                    ejecución y administración de obras civiles,
-                    comerciales e industriales.
-
+                    Somos una empresa constructora comprometida con la
+                    excelencia en cada proyecto que desarrollamos.
                 </p>
 
                 <p>
-
-                    Nuestro compromiso es brindar soluciones de calidad,
-                    utilizando procesos eficientes, personal altamente
-                    capacitado y tecnología que optimiza cada etapa del
-                    proyecto.
-
+                    Contamos con un equipo multidisciplinario de
+                    profesionales capacitados para llevar adelante obras
+                    residenciales, comerciales e industriales,
+                    garantizando calidad, seguridad y cumplimiento en
+                    cada etapa del proceso.
                 </p>
 
+                <p>
+                    Nuestro objetivo es convertir las ideas de nuestros
+                    clientes en espacios funcionales, modernos y
+                    duraderos que generen valor a largo plazo.
+                </p>
                 <a href="#servicios" class="btn-primary">
 
                     Nuestros servicios
@@ -219,28 +207,8 @@ if (isset($_SESSION['usuario'])) {
                     </h3>
 
                     <p>
-
-                        Construcción y ejecución de obras públicas,
-                        privadas y residenciales.
-
-                    </p>
-
-                </div>
-
-                <div class="service-card">
-
-                    <i class="fa-solid fa-helmet-safety"></i>
-
-                    <h3>
-
-                        Gestión de Proyectos
-
-                    </h3>
-
-                    <p>
-
-                        Planificación, seguimiento y control integral
-                        de cada obra.
+                        Construcción de viviendas, edificios y obras de
+                        infraestructura con altos estándares de calidad.
 
                     </p>
 
@@ -248,18 +216,15 @@ if (isset($_SESSION['usuario'])) {
 
                 <div class="service-card">
 
-                    <i class="fa-solid fa-truck"></i>
+                    <i class="fa-solid fa-store"></i>
 
                     <h3>
-
-                        Logística
-
+                        Obras comerciales
                     </h3>
 
                     <p>
-
-                        Administración eficiente de materiales,
-                        herramientas y recursos.
+                        Desarrollo de locales comerciales, oficinas y espacios
+                        corporativos adaptados a cada necesidad.
 
                     </p>
 
@@ -267,18 +232,37 @@ if (isset($_SESSION['usuario'])) {
 
                 <div class="service-card">
 
-                    <i class="fa-solid fa-ruler-combined"></i>
+                    <i class="fa-solid fa-home"></i>
 
                     <h3>
 
-                        Diseño y Planificación
+                        Remodelaciones
 
                     </h3>
 
                     <p>
 
-                        Desarrollo de proyectos adaptados a las
-                        necesidades de cada cliente.
+                        Renovación y ampliación de espacios existentes,
+                        optimizando funcionalidad y diseño.
+
+                    </p>
+
+                </div>
+
+                <div class="service-card">
+
+                    <i class="fa-solid fa-hard-hat"></i>
+
+                    <h3>
+
+                        Obras inndustriales
+
+                    </h3>
+
+                    <p>
+
+                        Construcción de depósitos, plantas industriales y
+                        estructuras de gran escala.
 
                     </p>
 
@@ -286,104 +270,57 @@ if (isset($_SESSION['usuario'])) {
 
             </div>
 
-        </div>
-
     </section>
 
-    <!--================ ESTADÍSTICAS ================-->
-
-    <section class="stats" id="estadisticas">
+    <section class="services" id="ventajas">
 
         <div class="container">
 
             <div class="section-header">
 
-                <span>
-
-                    BUILDPRO EN NÚMEROS
-
-                </span>
+                <span>POR QUÉ ELEGIRNOS</span>
 
                 <h2>
-
-                    Nuestra trayectoria nos respalda
-
+                    La confianza de nuestros clientes nos respalda
                 </h2>
 
             </div>
 
-            <div class="stats-grid">
+            <div class="services-grid">
 
-                <div class="stat-card">
-
-                    <i class="fa-solid fa-building"></i>
-
-                    <h3>
-
-                        +250
-
-                    </h3>
-
+                <div class="service-card">
+                    <i class="fa-solid fa-medal"></i>
+                    <h3>Calidad Garantizada</h3>
                     <p>
-
-                        Obras Finalizadas
-
+                        Utilizamos materiales y procesos que aseguran
+                        resultados duraderos.
                     </p>
-
                 </div>
 
-                <div class="stat-card">
-
+                <div class="service-card">
                     <i class="fa-solid fa-users"></i>
-
-                    <h3>
-
-                        +80
-
-                    </h3>
-
+                    <h3>Equipo Profesional</h3>
                     <p>
-
-                        Profesionales
-
+                        Personal especializado en cada etapa de la obra.
                     </p>
-
                 </div>
 
-                <div class="stat-card">
-
-                    <i class="fa-solid fa-calendar-check"></i>
-
-                    <h3>
-
-                        +20
-
-                    </h3>
-
+                <div class="service-card">
+                    <i class="fa-solid fa-clock"></i>
+                    <h3>Cumplimiento</h3>
                     <p>
-
-                        Años de Experiencia
-
+                        Respetamos plazos y mantenemos una comunicación
+                        constante con nuestros clientes.
                     </p>
-
                 </div>
 
-                <div class="stat-card">
-
-                    <i class="fa-solid fa-award"></i>
-
-                    <h3>
-
-                        100%
-
-                    </h3>
-
+                <div class="service-card">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <h3>Seguridad</h3>
                     <p>
-
-                        Compromiso
-
+                        Aplicamos protocolos de seguridad para proteger
+                        a nuestro personal y a cada proyecto.
                     </p>
-
                 </div>
 
             </div>

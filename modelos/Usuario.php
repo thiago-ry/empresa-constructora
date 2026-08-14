@@ -800,4 +800,19 @@ public function obtenerEmpleados()
 
         return true;
     }
+
+
+ public function cambiarContraseña($id_usuario, $nuevaContraseña)
+{
+    $sql = "UPDATE usuario
+            SET contraseña = :nueva_contrasena
+            WHERE id_usuario = :id_usuario";
+
+    $consulta = $this->conexion->prepare($sql);
+
+    return $consulta->execute([
+        ":nueva_contrasena" => $nuevaContraseña,
+        ":id_usuario" => $id_usuario
+    ]);
+}
 }

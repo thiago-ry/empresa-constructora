@@ -12,62 +12,65 @@ class EmpleadoObra
         $this->conexion = $db->conectar();
     }
 
+
     /*
-    ==========================
-        OBTENER POR OBRA
-    ==========================
+    ==========================================================
+        LISTAR EMPLEADOS DE UNA OBRA
+    ==========================================================
     */
 
-    public function obtenerPorObra($id_obra)
-    {
-        $sql = "SELECT
+   public function obtenerPorObra($id_obra)
+{
+    $sql = "SELECT
+                eo.*,
+                u.nombre,
+                u.apellido,
+                u.documento,
+                u.telefono,
+                c.nombre_cargo
 
-                    eo.*,
+            FROM empleado_obra eo
 
-                    u.nombre,
-                    u.apellido,
-                    u.documento,
-                    u.telefono
+            INNER JOIN usuario u
+                ON eo.id_usuario = u.id_usuario
 
-                FROM empleado_obra eo
+            INNER JOIN roles r
+                ON u.id_rol = r.id_rol
 
-                INNER JOIN usuario u
-                    ON eo.id_usuario = u.id_usuario
+            LEFT JOIN cargo c
+                ON eo.id_cargo = c.id_cargo
 
-                INNER JOIN roles r
-                    ON u.id_rol = r.id_rol
+            WHERE eo.id_obra = ?
 
-                WHERE eo.id_obra = ?
-                AND r.nombre_rol = 'Empleado'
+            AND r.nombre_rol = 'Empleado'
 
-                ORDER BY eo.estado DESC,
-                         u.apellido ASC,
-                         u.nombre ASC";
+            ORDER BY
+                eo.estado DESC,
+                u.apellido ASC,
+                u.nombre ASC";
 
-        $stmt = $this->conexion->prepare($sql);
+    $stmt = $this->conexion->prepare($sql);
 
-        $stmt->execute([$id_obra]);
+    $stmt->execute([$id_obra]);
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
     /*
-    ==========================
+    ==========================================================
         EMPLEADOS ACTIVOS
-    ==========================
+    ==========================================================
     */
 
     public function obtenerActivos($id_obra)
     {
         $sql = "SELECT
-
                     eo.*,
-
                     u.nombre,
                     u.apellido,
                     u.documento,
-                    u.telefono
-
+                    u.telefono,
+                    c.nombre_cargo
                 FROM empleado_obra eo
 
                 INNER JOIN usuario u
@@ -76,12 +79,18 @@ class EmpleadoObra
                 INNER JOIN roles r
                     ON u.id_rol = r.id_rol
 
+                LEFT JOIN cargo c
+                    ON eo.id_cargo = c.id_cargo
+
                 WHERE eo.id_obra = ?
+
                 AND eo.estado = 1
+
                 AND r.nombre_rol = 'Empleado'
 
-                ORDER BY u.apellido,
-                         u.nombre";
+                ORDER BY
+                    u.apellido,
+                    u.nombre";
 
         $stmt = $this->conexion->prepare($sql);
 
@@ -90,23 +99,22 @@ class EmpleadoObra
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+
     /*
-    ==========================
+    ==========================================================
         EMPLEADOS RETIRADOS
-    ==========================
+    ==========================================================
     */
 
     public function obtenerRetirados($id_obra)
     {
         $sql = "SELECT
-
                     eo.*,
-
                     u.nombre,
                     u.apellido,
                     u.documento,
-                    u.telefono
-
+                    u.telefono,
+                    c.nombre_cargo
                 FROM empleado_obra eo
 
                 INNER JOIN usuario u
@@ -115,11 +123,17 @@ class EmpleadoObra
                 INNER JOIN roles r
                     ON u.id_rol = r.id_rol
 
+                LEFT JOIN cargo c
+                    ON eo.id_cargo = c.id_cargo
+
                 WHERE eo.id_obra = ?
+
                 AND eo.estado = 0
+
                 AND r.nombre_rol = 'Empleado'
 
-                ORDER BY eo.fecha_egreso DESC";
+                ORDER BY
+                    eo.fecha_egreso DESC";
 
         $stmt = $this->conexion->prepare($sql);
 
@@ -128,77 +142,82 @@ class EmpleadoObra
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+
     /*
-    ==========================
-        BUSCAR POR ID
-    ==========================
+    ==========================================================
+        BUSCAR ASIGNACIÓN
+    ==========================================================
     */
+public function buscarPorId($id)
+{
+    $sql = "SELECT
+                eo.*,
+                u.nombre,
+                u.apellido,
+                u.documento,
+                u.telefono,
+                c.nombre_cargo
+            FROM empleado_obra eo
 
-    public function buscarPorId($id)
-    {
-        $sql = "SELECT
+            INNER JOIN usuario u
+                ON eo.id_usuario = u.id_usuario
 
-                    eo.*,
+            INNER JOIN roles r
+                ON u.id_rol = r.id_rol
 
-                    u.nombre,
-                    u.apellido,
-                    u.documento,
-                    u.telefono
+            LEFT JOIN cargo c
+                ON eo.id_cargo = c.id_cargo
 
-                FROM empleado_obra eo
+            WHERE eo.id_empleado_obra = ?
 
-                INNER JOIN usuario u
-                    ON eo.id_usuario = u.id_usuario
+            AND r.nombre_rol = 'Empleado'";
 
-                INNER JOIN roles r
-                    ON u.id_rol = r.id_rol
+    $stmt = $this->conexion->prepare($sql);
 
-                WHERE eo.id_empleado_obra = ?
-                AND r.nombre_rol = 'Empleado'";
+    $stmt->execute([$id]);
 
-        $stmt = $this->conexion->prepare($sql);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
-        $stmt->execute([$id]);
-
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
 
     /*
-    ==========================
-        VALIDAR DUPLICADO
-    ==========================
+    ==========================================================
+        VERIFICAR SI YA ESTÁ EN UNA OBRA
+    ==========================================================
     */
 
     public function existeEmpleadoActivo($idUsuario, $idObra)
     {
         $sql = "SELECT COUNT(*)
-
                 FROM empleado_obra
-
                 WHERE id_usuario = ?
                 AND id_obra = ?
                 AND estado = 1";
 
         $stmt = $this->conexion->prepare($sql);
 
-        $stmt->execute([$idUsuario, $idObra]);
+        $stmt->execute([
+            $idUsuario,
+            $idObra
+        ]);
 
         return $stmt->fetchColumn() > 0;
     }
 
-        /*
-    ==========================
-        ASIGNAR EMPLEADO
-    ==========================
+
+    /*
+    ==========================================================
+        ASIGNAR
+    ==========================================================
     */
 
     public function asignar($datos)
     {
-
         $sql = "INSERT INTO empleado_obra
                 (
                     id_usuario,
                     id_obra,
+                    id_cargo,
                     fecha_ingreso,
                     estado,
                     observaciones
@@ -207,195 +226,319 @@ class EmpleadoObra
                 (
                     :id_usuario,
                     :id_obra,
+                    :id_cargo,
                     :fecha_ingreso,
                     1,
                     :observaciones
                 )";
 
-
         $stmt = $this->conexion->prepare($sql);
 
-
         return $stmt->execute([
-
             ":id_usuario" => $datos["id_usuario"],
-
             ":id_obra" => $datos["id_obra"],
-
+            ":id_cargo" => $datos["id_cargo"],
             ":fecha_ingreso" => $datos["fecha_ingreso"],
-
             ":observaciones" => $datos["observaciones"]
-
         ]);
-
     }
 
 
-
-
     /*
-    ==========================
-        EDITAR ASIGNACIÓN
-    ==========================
+    ==========================================================
+        EDITAR
+    ==========================================================
     */
 
     public function editar($datos)
     {
-
         $sql = "UPDATE empleado_obra
-
                 SET
-
                     fecha_ingreso = :fecha_ingreso,
-
                     observaciones = :observaciones
-
                 WHERE id_empleado_obra = :id";
-
 
         $stmt = $this->conexion->prepare($sql);
 
-
         return $stmt->execute([
-
             ":fecha_ingreso" => $datos["fecha_ingreso"],
-
             ":observaciones" => $datos["observaciones"],
-
             ":id" => $datos["id_empleado_obra"]
-
         ]);
-
     }
 
 
-
-
     /*
-    ==========================
-        RETIRAR EMPLEADO
-    ==========================
+    ==========================================================
+        RETIRAR DE UNA OBRA
+    ==========================================================
     */
 
     public function retirar($datos)
     {
-
         $sql = "UPDATE empleado_obra
-
                 SET
-
                     fecha_egreso = :fecha_egreso,
-
                     motivo_egreso = :motivo_egreso,
-
                     observaciones = :observaciones,
-
                     estado = 0
-
-                WHERE id_empleado_obra = :id";
-
+                WHERE id_empleado_obra = :id
+                AND estado = 1";
 
         $stmt = $this->conexion->prepare($sql);
 
-
         return $stmt->execute([
-
             ":fecha_egreso" => $datos["fecha_egreso"],
-
             ":motivo_egreso" => $datos["motivo_egreso"],
-
             ":observaciones" => $datos["observaciones"],
-
             ":id" => $datos["id_empleado_obra"]
-
         ]);
-
     }
 
 
-
-
     /*
-    ==========================
-        REACTIVAR EMPLEADO
-    ==========================
+    ==========================================================
+        ACTIVAR
+    ==========================================================
     */
 
-    public function activar($id)
-    {
+public function activar($id)
+{
+    $sql = "UPDATE empleado_obra
+            SET
+                estado = 1,
+                fecha_egreso = NULL,
+                motivo_egreso = NULL
+            WHERE id_empleado_obra = :id";
 
-        $sql = "UPDATE empleado_obra
+    $stmt = $this->conexion->prepare($sql);
 
-                SET
-
-                    estado = 1,
-
-                    fecha_egreso = NULL,
-
-                    motivo_egreso = NULL
-
-                WHERE id_empleado_obra = :id";
-
-
-        $stmt = $this->conexion->prepare($sql);
-
-
-        return $stmt->execute([
-
-            ":id" => $id
-
-        ]);
-
-    }
-
-
+    return $stmt->execute([
+        ":id" => $id
+    ]);
+}
 
 
     /*
-    ==========================
-        RESUMEN DE EMPLEADOS
-    ==========================
+    ==========================================================
+        RESUMEN
+    ==========================================================
     */
 
     public function obtenerResumen($id_obra)
     {
-
         $sql = "SELECT
-
                     COUNT(*) AS total,
 
-                    SUM(CASE 
-                        WHEN estado = 1 
-                        THEN 1 
-                        ELSE 0 
-                    END) AS activos,
+                    SUM(
+                        CASE
+                            WHEN estado = 1 THEN 1
+                            ELSE 0
+                        END
+                    ) AS activos,
 
-                    SUM(CASE 
-                        WHEN estado = 0 
-                        THEN 1 
-                        ELSE 0 
-                    END) AS retirados
+                    SUM(
+                        CASE
+                            WHEN estado = 0 THEN 1
+                            ELSE 0
+                        END
+                    ) AS retirados
 
                 FROM empleado_obra
 
                 WHERE id_obra = :id_obra";
 
+        $stmt = $this->conexion->prepare($sql);
+
+        $stmt->execute([
+            ":id_obra" => $id_obra
+        ]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
+    /*
+    ==========================================================
+        CARGOS DEL EMPLEADO
+    ==========================================================
+    */
+
+    public function obtenerCargosEmpleado($id_usuario)
+    {
+        $sql = "SELECT
+                    ec.id_cargo,
+                    c.nombre_cargo
+
+                FROM empleado_cargo ec
+
+                INNER JOIN cargo c
+                    ON ec.id_cargo = c.id_cargo
+
+                WHERE ec.id_usuario = ?
+
+                ORDER BY c.nombre_cargo ASC";
+
+        $stmt = $this->conexion->prepare($sql);
+
+        $stmt->execute([
+            $id_usuario
+        ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    /*
+    ==========================================================
+        OTRAS OBRAS ACTIVAS DEL EMPLEADO
+    ==========================================================
+    */
+
+    public function obtenerOtrasObrasActivas(
+        $id_usuario,
+        $id_obra_actual
+    ) {
+
+        $sql = "SELECT
+                    eo.id_empleado_obra,
+                    eo.id_obra,
+                    eo.id_cargo,
+                    eo.fecha_ingreso,
+
+                    o.nombre_obra,
+
+                    c.nombre_cargo
+
+                FROM empleado_obra eo
+
+                INNER JOIN obra o
+                    ON eo.id_obra = o.id_obra
+
+                LEFT JOIN cargo c
+                    ON eo.id_cargo = c.id_cargo
+
+                WHERE eo.id_usuario = ?
+
+                AND eo.id_obra <> ?
+
+                AND eo.estado = 1
+
+                ORDER BY o.nombre_obra ASC";
+
+        $stmt = $this->conexion->prepare($sql);
+
+        $stmt->execute([
+            $id_usuario,
+            $id_obra_actual
+        ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    /*
+    ==========================================================
+        RETIRAR DE TODAS LAS OBRAS ACTIVAS
+    ==========================================================
+    */
+
+    public function retirarDeTodasLasObras(
+        $id_usuario,
+        $fecha_egreso,
+        $motivo_egreso,
+        $observaciones
+    ) {
+
+        $sql = "UPDATE empleado_obra
+
+                SET
+                    fecha_egreso = :fecha_egreso,
+                    motivo_egreso = :motivo_egreso,
+                    observaciones = :observaciones,
+                    estado = 0
+
+                WHERE id_usuario = :id_usuario
+
+                AND estado = 1";
+
+        $stmt = $this->conexion->prepare($sql);
+
+        return $stmt->execute([
+            ":fecha_egreso" => $fecha_egreso,
+            ":motivo_egreso" => $motivo_egreso,
+            ":observaciones" => $observaciones,
+            ":id_usuario" => $id_usuario
+        ]);
+    }
+
+
+    /*
+    ==========================================================
+        RETIRAR DE OBRAS SELECCIONADAS
+    ==========================================================
+    */
+
+    public function retirarDeObrasSeleccionadas(
+        $id_usuario,
+        $ids_obras,
+        $fecha_egreso,
+        $motivo_egreso,
+        $observaciones
+    ) {
+
+        if (empty($ids_obras)) {
+            return false;
+        }
+
+
+        $placeholders = implode(
+            ",",
+            array_fill(
+                0,
+                count($ids_obras),
+                "?"
+            )
+        );
+
+
+        $sql = "UPDATE empleado_obra
+
+                SET
+                    fecha_egreso = ?,
+                    motivo_egreso = ?,
+                    observaciones = ?,
+                    estado = 0
+
+                WHERE id_usuario = ?
+
+                AND id_obra IN ($placeholders)
+
+                AND estado = 1";
+
 
         $stmt = $this->conexion->prepare($sql);
 
 
-        $stmt->execute([
+        $parametros = [
+            $fecha_egreso,
+            $motivo_egreso,
+            $observaciones,
+            $id_usuario
+        ];
 
-            ":id_obra" => $id_obra
 
-        ]);
+        foreach ($ids_obras as $id_obra) {
+
+            $parametros[] = $id_obra;
+
+        }
 
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-
+        return $stmt->execute($parametros);
     }
-
-
-
-
+    public function getConexion()
+{
+    return $this->conexion;
+}
 }

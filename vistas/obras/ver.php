@@ -77,56 +77,59 @@ require_once "../../layouts/sidebar.php";
 
         <div class="info-grid">
 
-            <div class="info-item">
+    <div class="info-item">
 
-                <span>
-                    Cliente
+        <span>
+            Cliente
+        </span>
+
+        <strong>
+            <?= htmlspecialchars(
+                $detalle["nombre_cliente"] . " " . $detalle["apellido_cliente"]
+            ) ?>
+        </strong>
+
+    </div>
+
+
+    <div class="info-item">
+
+        <span>
+            Jefe de Obra
+        </span>
+
+        <strong>
+
+            <?php if (!empty($detalle["nombre_jefe_obra"])) { ?>
+
+                <?= htmlspecialchars(
+                    $detalle["nombre_jefe_obra"] . " " . $detalle["apellido_jefe_obra"]
+                ) ?>
+
+            <?php } else { ?>
+
+                <span style="color: #999;">
+                    Sin asignar
                 </span>
 
-                <strong>
-                    <?= htmlspecialchars($detalle["nombre_cliente"]) ?>
-                </strong>
+            <?php } ?>
 
-            </div>
+        </strong>
 
-            <div class="info-item">
+    </div>
 
-                <span>
-                    Dirección
-                </span>
 
-                <strong>
-                    <?= htmlspecialchars($detalle["direccion"]) ?>
-                </strong>
+    <div class="info-item">
 
-            </div>
+        <span>
+            Dirección
+        </span>
 
-            <div class="info-item">
+        <strong>
+            <?= htmlspecialchars($detalle["direccion"]) ?>
+        </strong>
 
-                <span>
-                    Fecha de inicio
-                </span>
-
-                <strong>
-                    <?= htmlspecialchars($detalle["fecha_inicio"]) ?>
-                </strong>
-
-            </div>
-
-            <div class="info-item">
-
-                <span>
-                    Fecha estimada de finalización
-                </span>
-
-                <strong>
-                    <?= htmlspecialchars($detalle["fecha_fin"]) ?>
-                </strong>
-
-            </div>
-
-        </div>
-
+    </div>
         <br>
 
         <strong>
@@ -332,13 +335,13 @@ require_once "../../layouts/sidebar.php";
                 Herramientas
             </h3>
 
-<a
-href="herramientas/index.php?id_obra=<?= $detalle["id_obra"] ?>"
-class="btn btn-primary">
+            <a
+                href="herramientas/index.php?id_obra=<?= $detalle["id_obra"] ?>"
+                class="btn btn-primary">
 
-Ingresar
+                Ingresar
 
-</a>
+            </a>
 
         </div>
 

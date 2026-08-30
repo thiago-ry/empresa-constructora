@@ -81,6 +81,7 @@ require_once "../../layouts/sidebar.php";
                 <tr>
                     <th>Obra</th>
                     <th>Cliente</th>
+                    <th>Capataz</th>
                     <th>Dirección</th>
                     <th>Inicio</th>
                     <th>Fin</th>
@@ -102,6 +103,14 @@ require_once "../../layouts/sidebar.php";
                         </td>
 
                         <td>
+                            <?php if (!empty($o["nombre_jefe_obra"])) { ?>
+                                <?= htmlspecialchars($o["nombre_jefe_obra"] . " " . $o["apellido_jefe_obra"]) ?>
+                            <?php } else { ?>
+                                <span>Sin asignar</span>
+                            <?php } ?>
+                        </td>
+
+                        <td>
                             <?= $o["direccion"] ?>
                         </td>
 
@@ -119,12 +128,12 @@ require_once "../../layouts/sidebar.php";
 
                         <td class="no-print">
                             <div class="table-actions">
-                            <a href="editar.php?id=<?= $o["id_obra"] ?>" class="btn btn-warning">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
-                            <a href="ver.php?id=<?= $o["id_obra"] ?>" class="btn btn-secondary">
-                                <i class="fa-solid fa-eye"></i>
-                            </a>
+                                <a href="editar.php?id=<?= $o["id_obra"] ?>" class="btn btn-warning">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                                <a href="ver.php?id=<?= $o["id_obra"] ?>" class="btn btn-secondary">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
                             </div>
                         </td>
                     </tr>

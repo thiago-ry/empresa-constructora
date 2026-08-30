@@ -7,31 +7,31 @@ class Conexion {
     private $password = "";
     private $baseDatos = "constructora";
 
-    public function conectar(){
+public function conectar(){
 
-        try {
+    try {
 
-            $conexion = new PDO(
-                "mysql:host=".$this->host.";dbname=".$this->baseDatos.";charset=utf8",
-                $this->usuario,
-                $this->password
-            );
+        $conexion = new PDO(
+            "mysql:host=".$this->host.
+            ";dbname=".$this->baseDatos.
+            ";charset=utf8mb4",
+            $this->usuario,
+            $this->password
+        );
 
-            $conexion->setAttribute(
-                PDO::ATTR_ERRMODE,
-                PDO::ERRMODE_EXCEPTION
-            );
+        $conexion->setAttribute(
+            PDO::ATTR_ERRMODE,
+            PDO::ERRMODE_EXCEPTION
+        );
 
-            return $conexion;
+        return $conexion;
 
-        } catch(PDOException $e){
+    } catch(PDOException $e){
 
-            die("Error de conexión: ".$e->getMessage());
-
-        }
+        die("Error de conexión: ".$e->getMessage());
 
     }
-
+}
 }
 
 ?>

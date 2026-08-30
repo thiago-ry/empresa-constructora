@@ -1,14 +1,16 @@
 <?php
 
 require_once "../../modelos/Usuario.php";
+require_once "../../modelos/Obra.php";
 require_once "../../config/permisos.php";
 
 verificarPermiso("obras");
 
 $usuarios = new Usuario();
+$obra = new Obra();
 
 $clientes = $usuarios->obtenerClientes(true);
-
+$jefesObra = $obra->obtenerJefesObra();
 
 require_once "../../layouts/header.php";
 require_once "../../layouts/sidebar.php";
@@ -27,7 +29,6 @@ require_once "../../layouts/sidebar.php";
 
     </div>
 
-
     <div class="form-card">
 
         <form
@@ -36,11 +37,12 @@ require_once "../../layouts/sidebar.php";
             method="POST"
             autocomplete="off">
 
-            <input type="hidden" name="accion" value="agregar">
-
+            <input
+                type="hidden"
+                name="accion"
+                value="agregar">
 
             <div class="form-row">
-
 
                 <div class="form-group">
 
@@ -60,13 +62,11 @@ require_once "../../layouts/sidebar.php";
                 </div>
 
 
-
                 <div class="form-group">
 
                     <label for="cliente">
                         Cliente
                     </label>
-
 
                     <select
                         id="cliente"
@@ -74,42 +74,75 @@ require_once "../../layouts/sidebar.php";
                         class="filter"
                         required>
 
-
                         <option value="">
                             Seleccione un cliente
                         </option>
-
 
                         <?php foreach ($clientes as $c) { ?>
 
                             <option value="<?= $c["id_usuario"]; ?>">
 
-                                <?= $c["nombre"] . " " . $c["apellido"]; ?>
+                                <?= htmlspecialchars(
+                                    $c["nombre"] . " " . $c["apellido"]
+                                ); ?>
 
                             </option>
 
                         <?php } ?>
 
-
                     </select>
 
-
                 </div>
-
 
             </div>
 
 
+            <!-- JEFE DE OBRA -->
 
             <div class="form-row">
 
+                <div class="form-group">
+
+                    <label for="jefe_obra">
+                        Jefe de Obra
+                    </label>
+
+                    <select
+                        id="jefe_obra"
+                        name="id_jefe_obra"
+                        class="filter"
+                        required>
+
+                        <option value="">
+                            Seleccione un Jefe de Obra
+                        </option>
+
+                        <?php foreach ($jefesObra as $jefe) { ?>
+
+                            <option value="<?= $jefe["id_usuario"]; ?>">
+
+                                <?= htmlspecialchars(
+                                    $jefe["nombre"] . " " . $jefe["apellido"]
+                                ); ?>
+
+                            </option>
+
+                        <?php } ?>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-row">
 
                 <div class="form-group">
 
                     <label for="direccion">
                         Dirección
                     </label>
-
 
                     <input
                         type="text"
@@ -120,7 +153,6 @@ require_once "../../layouts/sidebar.php";
                         maxlength="255"
                         required>
 
-
                 </div>
 
 
@@ -130,12 +162,10 @@ require_once "../../layouts/sidebar.php";
                         Estado
                     </label>
 
-
                     <select
                         id="estado"
                         name="estado"
                         class="filter">
-
 
                         <option value="Planificacion">
                             Planificación
@@ -157,15 +187,11 @@ require_once "../../layouts/sidebar.php";
                             Cancelada
                         </option>
 
-
                     </select>
-
 
                 </div>
 
-
             </div>
-
 
 
             <div class="form-group">
@@ -174,7 +200,6 @@ require_once "../../layouts/sidebar.php";
                     Descripción
                 </label>
 
-
                 <textarea
                     id="descripcion"
                     name="descripcion"
@@ -182,14 +207,10 @@ require_once "../../layouts/sidebar.php";
                     rows="4"
                     placeholder="Ingrese una descripción de la obra"></textarea>
 
-
             </div>
 
 
-
-
             <div class="form-row">
-
 
                 <div class="form-group">
 
@@ -197,16 +218,13 @@ require_once "../../layouts/sidebar.php";
                         Fecha de inicio
                     </label>
 
-
                     <input
                         type="date"
                         id="fecha_inicio"
                         name="fecha_inicio"
                         class="input">
 
-
                 </div>
-
 
 
                 <div class="form-group">
@@ -215,24 +233,18 @@ require_once "../../layouts/sidebar.php";
                         Fecha estimada de finalización
                     </label>
 
-
                     <input
                         type="date"
                         id="fecha_fin"
                         name="fecha_fin"
                         class="input">
 
-
                 </div>
-
 
             </div>
 
 
-
-
             <div class="form-actions">
-
 
                 <a
                     href="index.php"
@@ -243,7 +255,6 @@ require_once "../../layouts/sidebar.php";
                     Cancelar
 
                 </a>
-
 
 
                 <button
@@ -257,8 +268,6 @@ require_once "../../layouts/sidebar.php";
                 </button>
 
 
-
-
                 <button
                     type="submit"
                     class="btn btn-primary">
@@ -269,18 +278,12 @@ require_once "../../layouts/sidebar.php";
 
                 </button>
 
-
-
             </div>
-
 
         </form>
 
-
     </div>
 
-
 </main>
-
 
 <?php require_once "../../layouts/footer.php"; ?>

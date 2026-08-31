@@ -1,3 +1,4 @@
+
 <?php
 
 session_start();
@@ -10,6 +11,7 @@ require_once "../modelos/HerramientaObra.php";
 require_once "../modelos/Herramienta.php";
 require_once "../modelos/Obra.php";
 require_once "../modelos/Auditoria.php";
+require_once "../modelos/UnidadHerramienta.php";
 
 
 class HerramientaObraController
@@ -18,6 +20,7 @@ class HerramientaObraController
     private $herramienta;
     private $obra;
     private $auditoria;
+    private $unidad;
 
 
     public function __construct()
@@ -26,6 +29,7 @@ class HerramientaObraController
         $this->herramienta = new Herramienta();
         $this->obra = new Obra();
         $this->auditoria = new Auditoria();
+        $this->unidad = new UnidadHerramienta();
     }
 
 
@@ -69,26 +73,23 @@ class HerramientaObraController
             return;
         }
 
-
         $datos = [
-
             "id_herramienta" =>
-            $_POST["id_herramienta"],
+                $_POST["id_herramienta"],
 
             "id_obra" =>
-            $_POST["id_obra"],
+                $_POST["id_obra"],
 
             "cantidad" =>
-            (int)$_POST["cantidad"],
+                (int)$_POST["cantidad"],
 
             "fecha_asignacion" =>
-            $_POST["fecha_asignacion"],
+                $_POST["fecha_asignacion"],
 
             "id_estado_herramienta" => 2,
 
             "observaciones" =>
-            $_POST["observaciones"] ?? null
-
+                $_POST["observaciones"] ?? null
         ];
 
 
@@ -103,7 +104,7 @@ class HerramientaObraController
 
             header(
                 "Location: /empresa_constructora/controladores/HerramientaObraController.php?accion=crear&id_obra="
-                    . $datos["id_obra"]
+                . $datos["id_obra"]
             );
 
             exit();
@@ -130,7 +131,7 @@ class HerramientaObraController
 
             header(
                 "Location: /empresa_constructora/controladores/HerramientaObraController.php?accion=crear&id_obra="
-                    . $datos["id_obra"]
+                . $datos["id_obra"]
             );
 
             exit();
@@ -138,35 +139,73 @@ class HerramientaObraController
 
 
         // =====================================================
-        // GUARDAR
+        // GUARDAR ASIGNACIÓN
         // =====================================================
 
         if ($this->herramientaObra->agregar($datos)) {
 
+
+            // =================================================
+            // MARCAR UNIDADES COMO ASIGNADAS
+            // =================================================
+            //
+            // Estado 2 = Asignada
+            //
+            // =================================================
+
+            $unidadesDisponibles =
+                $this->unidad->obtenerDisponibles(
+                    $datos["id_herramienta"]
+                );
+
+            $cantidadAsignada =
+                $datos["cantidad"];
+
+
+            for (
+                $i = 0;
+                $i < $cantidadAsignada;
+                $i++
+            ) {
+
+                if (!isset($unidadesDisponibles[$i])) {
+                    break;
+                }
+
+                $this->unidad->cambiarEstado(
+                    $unidadesDisponibles[$i]["id_unidad"],
+                    2
+                );
+            }
+
+
+            // =================================================
+            // AUDITORÍA
+            // =================================================
+
             $this->auditoria->registrar([
 
                 "id_usuario" =>
-                $_SESSION["usuario"]["id"],
+                    $_SESSION["usuario"]["id"],
 
                 "accion" =>
-                "INSERTAR",
+                    "INSERTAR",
 
                 "tabla_afectada" =>
-                "herramienta_obra",
+                    "herramienta_obra",
 
                 "id_registro" =>
-                $datos["id_obra"],
+                    $datos["id_obra"],
 
                 "descripcion" =>
-                "Asignación de herramienta a obra"
-
+                    "Asignación de herramienta a obra"
             ]);
         }
 
 
         header(
             "Location: /empresa_constructora/controladores/HerramientaObraController.php?accion=listar&id_obra="
-                . $datos["id_obra"]
+            . $datos["id_obra"]
         );
 
         exit();
@@ -182,7 +221,8 @@ class HerramientaObraController
         $id = $_GET["id"] ?? 0;
 
         $herramientaObra =
-            $this->herramientaObra->obtenerPorId($id);
+            $this->herramientaObra
+            ->obtenerPorId($id);
 
         require_once "../vistas/obras/herramientas/editar.php";
     }
@@ -191,8 +231,10 @@ class HerramientaObraController
     // =========================================================
     // ACTUALIZAR ASIGNACIÓN
     // =========================================================
+    //
     // IMPORTANTE:
     // Ya NO registra devoluciones.
+    //
     // =========================================================
 
     public function actualizar()
@@ -202,7 +244,8 @@ class HerramientaObraController
         }
 
 
-        $id = $_POST["id_herramienta_obra"];
+        $id =
+            $_POST["id_herramienta_obra"];
 
 
         $asignacion =
@@ -226,14 +269,13 @@ class HerramientaObraController
         $datos = [
 
             "id_herramienta_obra" =>
-            $id,
+                $id,
 
             "cantidad_asignada" =>
-            (int)$_POST["cantidad_asignada"],
+                (int)$_POST["cantidad_asignada"],
 
             "observaciones" =>
-            $_POST["observaciones"] ?? null
-
+                $_POST["observaciones"] ?? null
         ];
 
 
@@ -253,7 +295,7 @@ class HerramientaObraController
 
             header(
                 "Location: /empresa_constructora/controladores/HerramientaObraController.php?accion=editar&id="
-                    . $id
+                . $id
             );
 
             exit();
@@ -267,27 +309,26 @@ class HerramientaObraController
             $this->auditoria->registrar([
 
                 "id_usuario" =>
-                $_SESSION["usuario"]["id"],
+                    $_SESSION["usuario"]["id"],
 
                 "accion" =>
-                "EDITAR",
+                    "EDITAR",
 
                 "tabla_afectada" =>
-                "herramienta_obra",
+                    "herramienta_obra",
 
                 "id_registro" =>
-                $id,
+                    $id,
 
                 "descripcion" =>
-                "Actualización de asignación de herramienta"
-
+                    "Actualización de asignación de herramienta"
             ]);
         }
 
 
         header(
             "Location: /empresa_constructora/controladores/HerramientaObraController.php?accion=listar&id_obra="
-                . $asignacion["id_obra"]
+            . $asignacion["id_obra"]
         );
 
         exit();
@@ -321,6 +362,8 @@ class HerramientaObraController
         $devoluciones =
             $this->herramientaObra
             ->obtenerDevoluciones($id);
+
+
         $cantidadPendiente =
             $this->herramientaObra
             ->obtenerCantidadPendiente($id);
@@ -345,6 +388,10 @@ class HerramientaObraController
         $id =
             $_POST["id_herramienta_obra"];
 
+
+        // =====================================================
+        // OBTENER ASIGNACIÓN
+        // =====================================================
 
         $asignacion =
             $this->herramientaObra
@@ -388,7 +435,7 @@ class HerramientaObraController
 
             header(
                 "Location: /empresa_constructora/controladores/HerramientaObraController.php?accion=devolver&id="
-                    . $id
+                . $id
             );
 
             exit();
@@ -406,7 +453,7 @@ class HerramientaObraController
 
             header(
                 "Location: /empresa_constructora/controladores/HerramientaObraController.php?accion=devolver&id="
-                    . $id
+                . $id
             );
 
             exit();
@@ -420,22 +467,21 @@ class HerramientaObraController
         $datos = [
 
             "id_herramienta_obra" =>
-            $id,
+                $id,
 
             "cantidad" =>
-            $cantidad,
+                $cantidad,
 
             "fecha_devolucion" =>
-            $_POST["fecha_devolucion"]
+                $_POST["fecha_devolucion"]
                 ?? date("Y-m-d H:i:s"),
 
             "observaciones" =>
-            $_POST["observaciones"]
+                $_POST["observaciones"]
                 ?? null,
 
             "id_usuario" =>
-            $_SESSION["usuario"]["id"]
-
+                $_SESSION["usuario"]["id"]
         ];
 
 
@@ -444,42 +490,93 @@ class HerramientaObraController
             ->registrarDevolucion($datos)
         ) {
 
-            $pendienteFinal =
-                $this->herramientaObra
-                ->obtenerCantidadPendiente($id);
 
-            if ($pendienteFinal <= 0) {
+            // =================================================
+            // LIBERAR UNIDADES INDIVIDUALES
+            // =================================================
+            //
+            // La devolución ya fue registrada.
+            //
+            // Ahora buscamos las unidades ASIGNADAS de esa
+            // herramienta y las cambiamos a DISPONIBLE.
+            //
+            // Estado Disponible se busca por nombre dentro
+            // de UnidadHerramienta.php.
+            //
+            // =================================================
 
-                $this->herramientaObra
-                    ->marcarComoDevuelta($id);
+            $liberadas =
+                $this->unidad->liberarUnidades(
+                    $asignacion["id_herramienta"],
+                    $cantidad
+                );
+
+
+            // =================================================
+            // VERIFICAR SI LAS UNIDADES FUERON LIBERADAS
+            // =================================================
+
+            if (!$liberadas) {
+
+                $_SESSION["error"] =
+                    "La devolución fue registrada, pero no se pudieron liberar las unidades de la herramienta.";
+
+            } else {
+
+                // =================================================
+                // VERIFICAR SI LA ASIGNACIÓN TERMINÓ
+                // =================================================
+
+                $pendienteFinal =
+                    $this->herramientaObra
+                    ->obtenerCantidadPendiente($id);
+
+
+                if ($pendienteFinal <= 0) {
+
+                    $this->herramientaObra
+                        ->marcarComoDevuelta($id);
+                }
+
+
+                // =================================================
+                // AUDITORÍA
+                // =================================================
+
+                $this->auditoria->registrar([
+
+                    "id_usuario" =>
+                        $_SESSION["usuario"]["id"],
+
+                    "accion" =>
+                        "INSERTAR",
+
+                    "tabla_afectada" =>
+                        "devolucion_herramienta",
+
+                    "id_registro" =>
+                        $id,
+
+                    "descripcion" =>
+                        "Registro de devolución de "
+                        . $cantidad
+                        . " herramienta(s)"
+                ]);
+
+
+                $_SESSION["success"] =
+                    "Devolución registrada correctamente.";
             }
-
-            $this->auditoria->registrar([
-
-                "id_usuario" =>
-                $_SESSION["usuario"]["id"],
-
-                "accion" =>
-                "INSERTAR",
-
-                "tabla_afectada" =>
-                "devolucion_herramienta",
-
-                "id_registro" =>
-                $id,
-
-                "descripcion" =>
-                "Registro de devolución de "
-                    . $cantidad
-                    . " herramienta(s)"
-
-            ]);
         }
 
 
+        // =====================================================
+        // VOLVER AL LISTADO
+        // =====================================================
+
         header(
             "Location: /empresa_constructora/controladores/HerramientaObraController.php?accion=listar&id_obra="
-                . $asignacion["id_obra"]
+            . $asignacion["id_obra"]
         );
 
         exit();
@@ -496,6 +593,7 @@ class HerramientaObraController
             $_GET["id"]
             ?? 0;
 
+
         $id_obra =
             $_GET["id_obra"]
             ?? 0;
@@ -509,27 +607,26 @@ class HerramientaObraController
             $this->auditoria->registrar([
 
                 "id_usuario" =>
-                $_SESSION["usuario"]["id"],
+                    $_SESSION["usuario"]["id"],
 
                 "accion" =>
-                "ELIMINAR",
+                    "ELIMINAR",
 
                 "tabla_afectada" =>
-                "herramienta_obra",
+                    "herramienta_obra",
 
                 "id_registro" =>
-                $id,
+                    $id,
 
                 "descripcion" =>
-                "Eliminación de herramienta asignada"
-
+                    "Eliminación de herramienta asignada"
             ]);
         }
 
 
         header(
             "Location: /empresa_constructora/controladores/HerramientaObraController.php?accion=listar&id_obra="
-                . $id_obra
+            . $id_obra
         );
 
         exit();
@@ -553,6 +650,7 @@ $accion =
 if (method_exists($controller, $accion)) {
 
     $controller->$accion();
+
 } else {
 
     echo "Acción no válida";

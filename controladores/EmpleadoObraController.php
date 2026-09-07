@@ -176,8 +176,8 @@ class EmpleadoObraController
 
             header(
                 "Location: ../vistas/obras/empleados/index.php?id_obra="
-                . $id_obra
-                . "&error=datos"
+                    . $id_obra
+                    . "&error=datos"
             );
 
             exit();
@@ -193,8 +193,8 @@ class EmpleadoObraController
 
             header(
                 "Location: ../vistas/obras/empleados/index.php?id_obra="
-                . $id_obra
-                . "&error=duplicado"
+                    . $id_obra
+                    . "&error=duplicado"
             );
 
             exit();
@@ -224,26 +224,26 @@ class EmpleadoObraController
             $this->auditoria->registrar([
 
                 "id_usuario" =>
-                    $_SESSION["usuario"]["id"],
+                $_SESSION["usuario"]["id"],
 
                 "accion" =>
-                    "INSERTAR",
+                "INSERTAR",
 
                 "tabla_afectada" =>
-                    "empleado_obra",
+                "empleado_obra",
 
                 "id_registro" =>
-                    $id_usuario,
+                $id_usuario,
 
                 "descripcion" =>
-                    "Asignó un empleado a una obra"
+                "Asignó un empleado a una obra"
             ]);
         }
 
 
         header(
             "Location: ../vistas/obras/empleados/index.php?id_obra="
-            . $id_obra
+                . $id_obra
         );
 
         exit();
@@ -263,13 +263,13 @@ class EmpleadoObraController
         $datos = [
 
             "id_empleado_obra" =>
-                $_POST["id_empleado_obra"],
+            $_POST["id_empleado_obra"],
 
             "fecha_ingreso" =>
-                $_POST["fecha_ingreso"],
+            $_POST["fecha_ingreso"],
 
             "observaciones" =>
-                $_POST["observaciones"]
+            $_POST["observaciones"]
         ];
 
 
@@ -279,25 +279,25 @@ class EmpleadoObraController
         $this->auditoria->registrar([
 
             "id_usuario" =>
-                $_SESSION["usuario"]["id"],
+            $_SESSION["usuario"]["id"],
 
             "accion" =>
-                "EDITAR",
+            "EDITAR",
 
             "tabla_afectada" =>
-                "empleado_obra",
+            "empleado_obra",
 
             "id_registro" =>
-                $_POST["id_empleado_obra"],
+            $_POST["id_empleado_obra"],
 
             "descripcion" =>
-                "Editó una asignación de empleado"
+            "Editó una asignación de empleado"
         ]);
 
 
         header(
             "Location: ../vistas/obras/empleados/index.php?id_obra="
-            . $_POST["id_obra"]
+                . $_POST["id_obra"]
         );
 
         exit();
@@ -356,8 +356,8 @@ class EmpleadoObraController
 
             header(
                 "Location: ../vistas/obras/empleados/retirar.php?id="
-                . $id_empleado_obra
-                . "&error=datos"
+                    . $id_empleado_obra
+                    . "&error=datos"
             );
 
             exit();
@@ -391,16 +391,16 @@ class EmpleadoObraController
                     $this->empleadoObra->retirar([
 
                         "id_empleado_obra" =>
-                            $id_empleado_obra,
+                        $id_empleado_obra,
 
                         "fecha_egreso" =>
-                            $fecha_egreso,
+                        $fecha_egreso,
 
                         "motivo_egreso" =>
-                            $motivo_egreso,
+                        $motivo_egreso,
 
                         "observaciones" =>
-                            $observaciones
+                        $observaciones
                     ]);
 
 
@@ -417,18 +417,16 @@ class EmpleadoObraController
             ==============================================
                 TODAS LAS OBRAS
             ==============================================
-            */
-
-            elseif ($alcance === "todas") {
+            */ elseif ($alcance === "todas") {
 
                 $resultado =
                     $this->empleadoObra
-                        ->retirarDeTodasLasObras(
-                            $id_usuario,
-                            $fecha_egreso,
-                            $motivo_egreso,
-                            $observaciones
-                        );
+                    ->retirarDeTodasLasObras(
+                        $id_usuario,
+                        $fecha_egreso,
+                        $motivo_egreso,
+                        $observaciones
+                    );
 
 
                 if (!$resultado) {
@@ -444,9 +442,7 @@ class EmpleadoObraController
             ==============================================
                 OBRAS SELECCIONADAS
             ==============================================
-            */
-
-            elseif ($alcance === "seleccionadas") {
+            */ elseif ($alcance === "seleccionadas") {
 
                 $ids = array_map(
                     "intval",
@@ -474,18 +470,18 @@ class EmpleadoObraController
 
                 $resultado =
                     $this->empleadoObra
-                        ->retirarDeObrasSeleccionadas(
+                    ->retirarDeObrasSeleccionadas(
 
-                            $id_usuario,
+                        $id_usuario,
 
-                            $ids,
+                        $ids,
 
-                            $fecha_egreso,
+                        $fecha_egreso,
 
-                            $motivo_egreso,
+                        $motivo_egreso,
 
-                            $observaciones
-                        );
+                        $observaciones
+                    );
 
 
                 if (!$resultado) {
@@ -494,10 +490,7 @@ class EmpleadoObraController
                         "No se pudieron retirar las obras seleccionadas."
                     );
                 }
-            }
-
-
-            else {
+            } else {
 
                 throw new Exception(
                     "Tipo de retiro inválido."
@@ -517,17 +510,13 @@ class EmpleadoObraController
                     "Retiró al empleado de la obra actual. "
                     . "Motivo: "
                     . $motivo_egreso;
-            }
-
-            elseif ($alcance === "todas") {
+            } elseif ($alcance === "todas") {
 
                 $descripcion =
                     "Retiró al empleado de todas sus obras activas. "
                     . "Motivo: "
                     . $motivo_egreso;
-            }
-
-            else {
+            } else {
 
                 $descripcion =
                     "Retiró al empleado de las obras seleccionadas. "
@@ -539,19 +528,19 @@ class EmpleadoObraController
             $this->auditoria->registrar([
 
                 "id_usuario" =>
-                    $_SESSION["usuario"]["id"],
+                $_SESSION["usuario"]["id"],
 
                 "accion" =>
-                    "EDITAR",
+                "EDITAR",
 
                 "tabla_afectada" =>
-                    "empleado_obra",
+                "empleado_obra",
 
                 "id_registro" =>
-                    $id_empleado_obra,
+                $id_empleado_obra,
 
                 "descripcion" =>
-                    $descripcion
+                $descripcion
             ]);
 
 
@@ -560,156 +549,153 @@ class EmpleadoObraController
 
             header(
                 "Location: ../vistas/obras/empleados/index.php?id_obra="
-                . $id_obra_actual
-                . "&success=retirado"
+                    . $id_obra_actual
+                    . "&success=retirado"
             );
 
             exit();
-
-
         } catch (Exception $e) {
 
             if ($conexion->inTransaction()) {
 
                 $conexion->rollBack();
-
             }
 
 
             header(
                 "Location: ../vistas/obras/empleados/retirar.php?id="
-                . $id_empleado_obra
-                . "&error=retiro"
+                    . $id_empleado_obra
+                    . "&error=retiro"
             );
 
             exit();
         }
     }
     public function activar()
-{
-    session_start();
+    {
+        session_start();
 
-    $id_empleado_obra = $_GET["id"] ?? 0;
-    $id_obra = $_GET["id_obra"] ?? 0;
+        $id_empleado_obra = $_GET["id"] ?? 0;
+        $id_obra = $_GET["id_obra"] ?? 0;
 
-    if (empty($id_empleado_obra) || empty($id_obra)) {
+        if (empty($id_empleado_obra) || empty($id_obra)) {
 
-        header(
-            "Location: ../vistas/obras/empleados/index.php?id_obra="
-            . $id_obra
-            . "&error=datos"
-        );
+            header(
+                "Location: ../vistas/obras/empleados/index.php?id_obra="
+                    . $id_obra
+                    . "&error=datos"
+            );
 
-        exit();
-    }
+            exit();
+        }
 
 
-    /*
+        /*
     ==================================================
         BUSCAR ASIGNACIÓN
     ==================================================
     */
 
-    $empleado = $this->empleadoObra->buscarPorId(
-        $id_empleado_obra
-    );
-
-
-    if (!$empleado) {
-
-        header(
-            "Location: ../vistas/obras/empleados/index.php?id_obra="
-            . $id_obra
-            . "&error=no_encontrado"
+        $empleado = $this->empleadoObra->buscarPorId(
+            $id_empleado_obra
         );
 
-        exit();
-    }
+
+        if (!$empleado) {
+
+            header(
+                "Location: ../vistas/obras/empleados/index.php?id_obra="
+                    . $id_obra
+                    . "&error=no_encontrado"
+            );
+
+            exit();
+        }
 
 
-    /*
+        /*
     ==================================================
         VERIFICAR SI YA ESTÁ ACTIVO
     ==================================================
     */
 
-    if ((int)$empleado["estado"] === 1) {
+        if ((int)$empleado["estado"] === 1) {
 
-        header(
-            "Location: ../vistas/obras/empleados/index.php?id_obra="
-            . $id_obra
-            . "&error=ya_activo"
-        );
+            header(
+                "Location: ../vistas/obras/empleados/index.php?id_obra="
+                    . $id_obra
+                    . "&error=ya_activo"
+            );
 
-        exit();
-    }
+            exit();
+        }
 
 
-    /*
+        /*
     ==================================================
         REACTIVAR
     ==================================================
     */
 
-    $resultado = $this->empleadoObra->activar(
-        $id_empleado_obra
-    );
-
-
-    if (!$resultado) {
-
-        header(
-            "Location: ../vistas/obras/empleados/index.php?id_obra="
-            . $id_obra
-            . "&error=activar"
+        $resultado = $this->empleadoObra->activar(
+            $id_empleado_obra
         );
 
-        exit();
-    }
+
+        if (!$resultado) {
+
+            header(
+                "Location: ../vistas/obras/empleados/index.php?id_obra="
+                    . $id_obra
+                    . "&error=activar"
+            );
+
+            exit();
+        }
 
 
-    /*
+        /*
     ==================================================
         AUDITORÍA
     ==================================================
     */
 
-    $this->auditoria->registrar([
+        $this->auditoria->registrar([
 
-        "id_usuario" =>
+            "id_usuario" =>
             $_SESSION["usuario"]["id"],
 
-        "accion" =>
+            "accion" =>
             "ACTIVAR",
 
-        "tabla_afectada" =>
+            "tabla_afectada" =>
             "empleado_obra",
 
-        "id_registro" =>
+            "id_registro" =>
             $id_empleado_obra,
 
-        "descripcion" =>
+            "descripcion" =>
             "Reactivó al empleado "
-            . $empleado["nombre"]
-            . " "
-            . $empleado["apellido"]
-            . " en una obra"
+                . $empleado["nombre"]
+                . " "
+                . $empleado["apellido"]
+                . " en una obra"
 
-    ]);
+        ]);
 
 
-    /*
+        /*
     ==================================================
         VOLVER
     ==================================================
     */
-    header(
-        "Location: ../vistas/obras/empleados/index.php?id_obra="
-        . $id_obra
-        . "&success=reactivado"
-    );
-    exit();
-}
+        header(
+            "Location: ../vistas/obras/empleados/index.php?id_obra="
+                . $id_obra
+                . "&success=reactivado"
+        );
+        exit();
+    }
 }
 
 $controlador =

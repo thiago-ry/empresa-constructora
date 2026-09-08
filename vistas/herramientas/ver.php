@@ -1,6 +1,9 @@
 <?php
 
 /** @var array $herramienta */
+/** @var int $totalAsignaciones */
+/** @var int $asignacionesActivas */
+/** @var string|null $ultimaDevolucion */
 
 require_once __DIR__ . "/../../config/permisos.php";
 verificarPermiso("herramientas");
@@ -292,11 +295,9 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
             </div>
 
-
             <!-- =================================================
-             HISTORIAL
-        ================================================== -->
-
+     HISTORIAL DE ASIGNACIONES
+================================================== -->
             <div class="herramienta-module">
 
                 <div class="herramienta-module-icon">
@@ -305,21 +306,22 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
                 <div class="herramienta-module-content">
 
-                    <h3>
-                        Historial de asignaciones
-                    </h3>
+                    <h3>Historial de asignaciones</h3>
 
                     <p>
                         Consulte las obras donde esta herramienta
-                        fue utilizada o asignada.
+                        fue asignada y el estado de cada devolución.
                     </p>
 
-                    <a
-                        href="#"
+                    <button
+                        type="button"
+                        id="btnVerHistorial"
                         class="btn btn-primary">
+
                         <i class="fa-solid fa-clock-rotate-left"></i>
                         Ver historial
-                    </a>
+
+                    </button>
 
                 </div>
 
@@ -602,6 +604,297 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
     </div>
 
 </div>
+
+
+<!-- =========================================================
+     MODAL HISTORIAL DE ASIGNACIONES
+========================================================= -->
+
+<div
+    id="modalHistorial"
+    class="modal-historial-overlay">
+
+    <div
+        class="modal-historial"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalHistorialTitulo">
+
+        <!-- HEADER -->
+
+        <div class="modal-historial-header">
+
+            <div>
+
+                <div class="modal-section-label">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    Historial
+                </div>
+
+                <h2 id="modalHistorialTitulo">
+                    Historial de asignaciones
+                </h2>
+
+                <p>
+                    Registro de las asignaciones realizadas
+                    para esta herramienta.
+                </p>
+
+            </div>
+
+            <button
+                type="button"
+                class="modal-historial-close"
+                id="btnCerrarHistorial"
+                aria-label="Cerrar">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+
+        <!-- RESUMEN -->
+
+        <div class="modal-historial-resumen">
+
+            <div class="historial-resumen-item">
+
+                <span>Total de asignaciones</span>
+
+                <strong>
+                    <?= (int) $totalAsignaciones ?>
+                </strong>
+
+            </div>
+
+            <div class="historial-resumen-item">
+
+                <span>Asignaciones activas</span>
+
+                <strong>
+                    <?= (int) $asignacionesActivas ?>
+                </strong>
+
+            </div>
+
+            <div class="historial-resumen-item">
+
+                <span>Última devolución</span>
+
+                <strong>
+
+                    <?php if ($ultimaDevolucion): ?>
+
+                        <?= date(
+                            "d/m/Y",
+                            strtotime($ultimaDevolucion)
+                        ) ?>
+
+                    <?php else: ?>
+
+                        —
+
+                    <?php endif; ?>
+
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- CONTENIDO -->
+
+        <div class="modal-historial-body">
+
+            <?php if (empty($historial)): ?>
+
+                <div class="historial-empty">
+
+                    <div class="historial-empty-icon">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+
+                    <h3>
+                        Sin historial de asignaciones
+                    </h3>
+
+                    <p>
+                        Esta herramienta todavía no fue
+                        asignada a ninguna obra.
+                    </p>
+
+                </div>
+
+            <?php else: ?>
+
+                <div class="historial-table-wrapper">
+
+                    <table class="historial-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Obra</th>
+
+                                <th>Cantidad</th>
+
+                                <th>Asignación</th>
+
+                                <th>Devuelta</th>
+
+                                <th>Pendiente</th>
+
+                                <th>Última devolución</th>
+
+                                <th>Estado</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <?php foreach ($historial as $registro): ?>
+
+                                <?php
+
+                                $pendiente =
+                                    (int) $registro["cantidad_pendiente"];
+
+                                if ($pendiente <= 0) {
+
+                                    $estadoHistorial = "Devuelta";
+                                    $estadoClase = "devuelta";
+                                } elseif (
+                                    (int) $registro["cantidad_devuelta"] > 0
+                                ) {
+
+                                    $estadoHistorial =
+                                        "Devolución parcial";
+
+                                    $estadoClase = "parcial";
+                                } else {
+
+                                    $estadoHistorial = "Asignada";
+                                    $estadoClase = "asignada";
+                                }
+
+                                ?>
+
+                                <tr>
+
+                                    <td>
+
+                                        <strong>
+                                            <?= htmlspecialchars(
+                                                $registro["obra"]
+                                            ) ?>
+                                        </strong>
+
+                                    </td>
+
+                                    <td>
+                                        <?= (int)
+                                        $registro["cantidad_asignada"] ?>
+                                    </td>
+
+                                    <td>
+
+                                        <?= !empty($registro["fecha_asignacion"])
+                                            ? date(
+                                                "d/m/Y",
+                                                strtotime(
+                                                    $registro["fecha_asignacion"]
+                                                )
+                                            )
+                                            : "—"
+                                        ?>
+
+                                    </td>
+
+                                    <td>
+                                        <?= (int)
+                                        $registro["cantidad_devuelta"] ?>
+                                    </td>
+
+                                    <td>
+                                        <?= $pendiente ?>
+                                    </td>
+
+                                    <td>
+
+                                        <?php if (
+                                            !empty($registro["fecha_ultima_devolucion"])
+                                        ): ?>
+
+                                            <?= date(
+                                                "d/m/Y",
+                                                strtotime(
+                                                    $registro["fecha_ultima_devolucion"]
+                                                )
+                                            ) ?>
+
+                                        <?php else: ?>
+
+                                            —
+
+                                        <?php endif; ?>
+
+                                    </td>
+
+                                    <td>
+
+                                        <span
+                                            class="
+                                                historial-estado
+                                                historial-estado-<?= $estadoClase ?>
+                                            ">
+
+                                            <?= $estadoHistorial ?>
+
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+                            <?php endforeach; ?>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            <?php endif; ?>
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <div class="modal-historial-footer">
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+                id="btnCerrarHistorialFooter">
+
+                <i class="fa-solid fa-xmark"></i>
+                Cerrar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
 
 <!-- =========================================================
      ESTILOS
@@ -1711,6 +2004,547 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
         }
 
     }
+
+    /* =========================================================
+   HISTORIAL DE ASIGNACIONES
+   ========================================================= */
+
+    .herramienta-history {
+        margin-top: 30px;
+        background: var(--card-bg, #0b1320);
+        border: 1px solid var(--border-color, #e5e7eb);
+        border-radius: 16px;
+        padding: 28px;
+    }
+
+    .herramienta-history-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .herramienta-section-label {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        margin-bottom: 6px;
+        opacity: .6;
+    }
+
+    .herramienta-history-header h2 {
+        margin: 0 0 6px;
+        font-size: 22px;
+    }
+
+    .herramienta-history-header p {
+        margin: 0;
+        opacity: .65;
+    }
+
+    .herramienta-history-total {
+        min-width: 100px;
+        text-align: center;
+        padding: 14px 20px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, .04);
+        border: 1px solid var(--border-color, #e5e7eb);
+    }
+
+    .herramienta-history-total strong {
+        display: block;
+        font-size: 28px;
+    }
+
+    .herramienta-history-total span {
+        font-size: 12px;
+        opacity: .65;
+    }
+
+    .herramienta-history-summary {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .history-summary-card {
+        padding: 18px;
+        border: 1px solid var(--border-color, #0b1320);
+        border-radius: 12px;
+    }
+
+    .history-summary-card span {
+        display: block;
+        font-size: 13px;
+        opacity: .65;
+        margin-bottom: 8px;
+    }
+
+    .history-summary-card strong {
+        font-size: 22px;
+    }
+
+    .herramienta-history-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .herramienta-history-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .herramienta-history-table th {
+        text-align: left;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        opacity: .6;
+        padding: 14px;
+        border-bottom: 1px solid var(--border-color, #0b1320);
+    }
+
+    .herramienta-history-table td {
+        padding: 16px 14px;
+        border-bottom: 1px solid var(--border-color, #0b1320);
+        font-size: 14px;
+    }
+
+    .herramienta-history-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .history-status {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .history-status-asignada {
+        background: rgba(59, 130, 246, .12);
+    }
+
+    .history-status-parcial {
+        background: rgba(245, 158, 11, .12);
+    }
+
+    .history-status-devuelta {
+        background: rgba(34, 197, 94, .12);
+    }
+
+    .herramienta-history-empty {
+        text-align: center;
+        padding: 50px 20px;
+    }
+
+    .herramienta-history-empty i {
+        font-size: 35px;
+        opacity: .4;
+        margin-bottom: 15px;
+    }
+
+    .herramienta-history-empty h3 {
+        margin: 0 0 8px;
+    }
+
+    .herramienta-history-empty p {
+        margin: 0;
+        opacity: .6;
+    }
+
+    @media (max-width: 768px) {
+
+        .herramienta-history {
+            padding: 20px;
+        }
+
+        .herramienta-history-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .herramienta-history-total {
+            width: 100%;
+        }
+
+        .herramienta-history-summary {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+    /* =========================================================
+   MODAL HISTORIAL
+========================================================= */
+
+    .modal-historial-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 10000;
+
+        align-items: center;
+        justify-content: center;
+
+        padding: 24px;
+
+        background: rgba(0, 0, 0, 0.68);
+        backdrop-filter: blur(5px);
+    }
+
+    .modal-historial-overlay.active {
+        display: flex;
+    }
+
+    .modal-historial {
+        width: 100%;
+        max-width: 1100px;
+        max-height: 90vh;
+
+        display: flex;
+        flex-direction: column;
+
+        background: var(--card-bg, #0b1320);
+
+        border: 1px solid rgba(128, 128, 128, 0.18);
+        border-radius: 14px;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 25px 70px rgba(0, 0, 0, 0.35);
+
+        animation: historialEntrada 0.2s ease;
+    }
+
+    @keyframes historialEntrada {
+
+        from {
+            opacity: 0;
+            transform: translateY(-10px) scale(.985);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+
+    /* HEADER */
+
+    .modal-historial-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        gap: 20px;
+
+        padding: 24px 28px;
+
+        border-bottom:
+            1px solid rgba(128, 128, 128, 0.18);
+    }
+
+    .modal-historial-header h2 {
+        margin: 0;
+        font-size: 22px;
+    }
+
+    .modal-historial-header p {
+        margin: 6px 0 0;
+
+        font-size: 13px;
+        opacity: .62;
+    }
+
+    .modal-historial-close {
+        width: 38px;
+        height: 38px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border:
+            1px solid rgba(128, 128, 128, 0.18);
+
+        border-radius: 8px;
+
+        background: transparent;
+        color: inherit;
+
+        cursor: pointer;
+
+        font-size: 17px;
+    }
+
+    .modal-historial-close:hover {
+        background:
+            rgba(128, 128, 128, .10);
+    }
+
+
+    /* RESUMEN */
+
+    .modal-historial-resumen {
+
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+
+        gap: 12px;
+
+        padding: 18px 28px;
+
+        background:
+            rgba(128, 128, 128, .035);
+
+        border-bottom:
+            1px solid rgba(128, 128, 128, .12);
+    }
+
+    .historial-resumen-item {
+
+        padding: 14px 16px;
+
+        border:
+            1px solid rgba(128, 128, 128, .15);
+
+        border-radius: 9px;
+
+        background:
+            rgba(128, 128, 128, .035);
+    }
+
+    .historial-resumen-item span {
+
+        display: block;
+
+        margin-bottom: 5px;
+
+        font-size: 11px;
+
+        text-transform: uppercase;
+        letter-spacing: .5px;
+
+        opacity: .58;
+    }
+
+    .historial-resumen-item strong {
+        font-size: 22px;
+    }
+
+
+    /* BODY */
+
+    .modal-historial-body {
+
+        padding: 24px 28px;
+
+        overflow: auto;
+
+        min-height: 180px;
+    }
+
+
+    /* TABLA */
+
+    .historial-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .historial-table {
+
+        width: 100%;
+
+        border-collapse: collapse;
+
+        white-space: nowrap;
+    }
+
+    .historial-table th {
+
+        padding: 12px 14px;
+
+        text-align: left;
+
+        font-size: 11px;
+
+        text-transform: uppercase;
+        letter-spacing: .5px;
+
+        opacity: .55;
+
+        border-bottom:
+            1px solid rgba(128, 128, 128, .18);
+    }
+
+    .historial-table td {
+
+        padding: 15px 14px;
+
+        font-size: 13px;
+
+        border-bottom:
+            1px solid rgba(128, 128, 128, .12);
+    }
+
+    .historial-table tbody tr:hover {
+        background:
+            rgba(128, 128, 128, .04);
+    }
+
+
+    /* ESTADOS */
+
+    .historial-estado {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        padding: 5px 10px;
+
+        border-radius: 6px;
+
+        font-size: 11px;
+
+        font-weight: 600;
+
+        border: 1px solid transparent;
+    }
+
+    .historial-estado-asignada {
+
+        color: #2563eb;
+
+        background:
+            rgba(59, 130, 246, .10);
+
+        border-color:
+            rgba(59, 130, 246, .20);
+    }
+
+    .historial-estado-parcial {
+
+        color: #d97706;
+
+        background:
+            rgba(245, 158, 11, .10);
+
+        border-color:
+            rgba(245, 158, 11, .20);
+    }
+
+    .historial-estado-devuelta {
+
+        color: #16a34a;
+
+        background:
+            rgba(34, 197, 94, .10);
+
+        border-color:
+            rgba(34, 197, 94, .20);
+    }
+
+
+    /* SIN HISTORIAL */
+
+    .historial-empty {
+
+        min-height: 260px;
+
+        display: flex;
+        flex-direction: column;
+
+        align-items: center;
+        justify-content: center;
+
+        text-align: center;
+    }
+
+    .historial-empty-icon {
+
+        width: 54px;
+        height: 54px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-bottom: 14px;
+
+        border-radius: 10px;
+
+        background:
+            rgba(128, 128, 128, .08);
+
+        font-size: 21px;
+
+        opacity: .55;
+    }
+
+    .historial-empty h3 {
+        margin: 0 0 6px;
+        font-size: 15px;
+    }
+
+    .historial-empty p {
+        margin: 0;
+        font-size: 13px;
+        opacity: .60;
+    }
+
+
+    /* FOOTER */
+
+    .modal-historial-footer {
+
+        display: flex;
+        justify-content: flex-end;
+
+        padding: 16px 28px;
+
+        border-top:
+            1px solid rgba(128, 128, 128, .18);
+    }
+
+
+    /* RESPONSIVE */
+
+    @media (max-width: 700px) {
+
+        .modal-historial-overlay {
+            padding: 12px;
+        }
+
+        .modal-historial {
+            max-height: 94vh;
+        }
+
+        .modal-historial-header,
+        .modal-historial-body,
+        .modal-historial-footer {
+            padding-left: 18px;
+            padding-right: 18px;
+        }
+
+        .modal-historial-resumen {
+            grid-template-columns: 1fr;
+
+            padding-left: 18px;
+            padding-right: 18px;
+        }
+    }
 </style>
 
 <!-- =========================================================
@@ -1721,6 +2555,85 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
     document.addEventListener(
         "DOMContentLoaded",
         function() {
+
+            /* =====================================================
+               MODAL HISTORIAL
+            ===================================================== */
+
+            const modalHistorial =
+                document.getElementById("modalHistorial");
+
+            const btnVerHistorial =
+                document.getElementById("btnVerHistorial");
+
+            const btnCerrarHistorial =
+                document.getElementById("btnCerrarHistorial");
+
+            const btnCerrarHistorialFooter =
+                document.getElementById("btnCerrarHistorialFooter");
+
+
+            function abrirHistorial() {
+
+                modalHistorial.classList.add("active");
+
+                document.body.style.overflow = "hidden";
+            }
+
+
+            function cerrarHistorial() {
+
+                modalHistorial.classList.remove("active");
+
+                document.body.style.overflow = "";
+            }
+
+
+            btnVerHistorial.addEventListener(
+                "click",
+                abrirHistorial
+            );
+
+
+            btnCerrarHistorial.addEventListener(
+                "click",
+                cerrarHistorial
+            );
+
+
+            btnCerrarHistorialFooter.addEventListener(
+                "click",
+                cerrarHistorial
+            );
+
+
+            modalHistorial.addEventListener(
+                "click",
+                function(event) {
+
+                    if (event.target === modalHistorial) {
+                        cerrarHistorial();
+                    }
+
+                }
+            );
+
+
+            document.addEventListener(
+                "keydown",
+                function(event) {
+
+                    if (
+                        event.key === "Escape" &&
+                        modalHistorial.classList.contains("active")
+                    ) {
+
+                        cerrarHistorial();
+
+                    }
+
+                }
+            );
 
 
             const modal =
@@ -2245,7 +3158,11 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
             }
 
+
+
         }
+
+
     );
 </script>
 

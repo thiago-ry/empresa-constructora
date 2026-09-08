@@ -402,4 +402,69 @@ class HerramientaObra
             $id_herramienta_obra
         ]);
     }
+
+    // =========================================================
+// OBTENER HISTORIAL DE UNA HERRAMIENTA
+// =========================================================
+public function obtenerHistorialPorHerramienta($id_herramienta)
+{
+    $sql = "
+        SELECT
+            ho.id_herramienta_obra,
+            ho.id_herramienta,
+            ho.id_obra,
+
+            h.nombre AS herramienta,
+
+            o.nombre_obra AS obra,
+
+            ho.cantidad_asignada,
+            ho.cantidad_devuelta,
+
+            (
+                ho.cantidad_asignada -
+                ho.cantidad_devuelta
+            ) AS cantidad_pendiente,
+
+            ho.fecha_asignacion,
+            ho.observaciones,
+
+            eh.nombre AS estado,
+
+            (
+                SELECT MAX(d.fecha_devolucion)
+                FROM devolucion_herramienta d
+                WHERE d.id_herramienta_obra =
+                      ho.id_herramienta_obra
+            ) AS fecha_ultima_devolucion
+
+        FROM herramienta_obra ho
+
+        INNER JOIN herramienta h
+            ON ho.id_herramienta =
+               h.id_herramienta
+
+        INNER JOIN obra o
+            ON ho.id_obra =
+               o.id_obra
+
+        INNER JOIN estado_herramienta eh
+            ON ho.id_estado_herramienta =
+               eh.id_estado_herramienta
+
+        WHERE ho.id_herramienta = ?
+
+        ORDER BY
+            ho.fecha_asignacion DESC,
+            ho.id_herramienta_obra DESC
+    ";
+
+    $stmt = $this->conexion->prepare($sql);
+
+    $stmt->execute([
+        $id_herramienta
+    ]);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 }

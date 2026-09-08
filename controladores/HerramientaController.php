@@ -4,6 +4,7 @@
 require_once "../modelos/Auditoria.php";
 require_once "../modelos/Herramienta.php";
 require_once "../modelos/UnidadHerramienta.php";
+require_once "../modelos/HerramientaObra.php";
 
 
 class HerramientaController
@@ -11,6 +12,7 @@ class HerramientaController
     private $auditoria;
     private $herramienta;
     private $unidad;
+    private $herramientaObra;
 
 
     public function __construct()
@@ -18,6 +20,7 @@ class HerramientaController
         $this->auditoria = new Auditoria();
         $this->herramienta = new Herramienta();
         $this->unidad = new UnidadHerramienta();
+        $this->herramientaObra = new HerramientaObra();
     }
 
 
@@ -269,20 +272,44 @@ class HerramientaController
 
     public function ver()
     {
-
         $id = $_GET["id"] ?? 0;
 
-        $herramienta =
-            $this->herramienta->obtenerDetalle($id);
-
+        $herramienta = $this->herramienta->obtenerDetalle($id);
 
         if (!$herramienta) {
-
-            header("Location: ../vistas/herramientas/");
-
-            exit;
+            header("Location: /empresa_constructora/vistas/herramientas/");
+            exit();
         }
 
+        // Historial completo de asignaciones
+        $historial = $this->herramientaObra
+            ->obtenerHistorialPorHerramienta($id);
+
+        // Cantidad total de veces que fue asignada
+        $totalAsignaciones = count($historial);
+
+        // Asignaciones que todavía tienen herramientas pendientes
+        $asignacionesActivas = 0;
+
+        // Última devolución registrada
+        $ultimaDevolucion = null;
+
+        foreach ($historial as $registro) {
+
+            if ((int)$registro["cantidad_pendiente"] > 0) {
+                $asignacionesActivas++;
+            }
+
+            if (
+                !empty($registro["fecha_ultima_devolucion"]) &&
+                (
+                    $ultimaDevolucion === null ||
+                    $registro["fecha_ultima_devolucion"] > $ultimaDevolucion
+                )
+            ) {
+                $ultimaDevolucion = $registro["fecha_ultima_devolucion"];
+            }
+        }
 
         require_once "../vistas/herramientas/ver.php";
     }

@@ -47,6 +47,42 @@ class HerramientaObraController
         require_once "../vistas/obras/herramientas/index.php";
     }
 
+        public function historial()
+    {
+        $id_herramienta = isset($_GET["id_herramienta"])
+            ? (int) $_GET["id_herramienta"]
+            : 0;
+
+        if ($id_herramienta <= 0) {
+            header(
+                "Location: /empresa_constructora/vistas/herramientas/"
+            );
+            exit();
+        }
+
+        // Obtener herramienta
+        $herramienta =
+            $this->herramienta->obtenerDetalle(
+                $id_herramienta
+            );
+
+        if (!$herramienta) {
+            header(
+                "Location: /empresa_constructora/vistas/herramientas/"
+            );
+            exit();
+        }
+
+        // Obtener historial
+        $historial =
+            $this->herramientaObra
+            ->obtenerHistorialPorHerramienta(
+                $id_herramienta
+            );
+
+        require_once
+            "../vistas/herramientas/historial.php";
+    }
 
     // =========================================================
     // CREAR

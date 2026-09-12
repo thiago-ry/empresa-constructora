@@ -77,332 +77,332 @@ require_once "../../layouts/sidebar.php";
 
         <div class="info-grid">
 
-    <div class="info-item">
+            <div class="info-item">
 
-        <span>
-            Cliente
-        </span>
-
-        <strong>
-            <?= htmlspecialchars(
-                $detalle["nombre_cliente"] . " " . $detalle["apellido_cliente"]
-            ) ?>
-        </strong>
-
-    </div>
-
-
-    <div class="info-item">
-
-        <span>
-            Jefe de Obra
-        </span>
-
-        <strong>
-
-            <?php if (!empty($detalle["nombre_jefe_obra"])) { ?>
-
-                <?= htmlspecialchars(
-                    $detalle["nombre_jefe_obra"] . " " . $detalle["apellido_jefe_obra"]
-                ) ?>
-
-            <?php } else { ?>
-
-                <span style="color: #999;">
-                    Sin asignar
+                <span>
+                    Cliente
                 </span>
 
-            <?php } ?>
+                <strong>
+                    <?= htmlspecialchars(
+                        $detalle["nombre_cliente"] . " " . $detalle["apellido_cliente"]
+                    ) ?>
+                </strong>
 
-        </strong>
-
-    </div>
-
-
-    <div class="info-item">
-
-        <span>
-            Dirección
-        </span>
-
-        <strong>
-            <?= htmlspecialchars($detalle["direccion"]) ?>
-        </strong>
-
-    </div>
-        <br>
-
-        <strong>
-            Descripción
-        </strong>
-
-        <p>
-
-            <?= nl2br(htmlspecialchars($detalle["descripcion"])) ?>
-
-        </p>
-
-    </div>
+            </div>
 
 
-    <div class="toolbar">
+            <div class="info-item">
 
-        <h2>
-            Resumen de la obra
-        </h2>
+                <span>
+                    Jefe de Obra
+                </span>
 
-    </div>
+                <strong>
+
+                    <?php if (!empty($detalle["nombre_jefe_obra"])) { ?>
+
+                        <?= htmlspecialchars(
+                            $detalle["nombre_jefe_obra"] . " " . $detalle["apellido_jefe_obra"]
+                        ) ?>
+
+                    <?php } else { ?>
+
+                        <span style="color: #999;">
+                            Sin asignar
+                        </span>
+
+                    <?php } ?>
+
+                </strong>
+
+            </div>
 
 
-    <div class="cards-grid">
+            <div class="info-item">
+
+                <span>
+                    Dirección
+                </span>
+
+                <strong>
+                    <?= htmlspecialchars($detalle["direccion"]) ?>
+                </strong>
+
+            </div>
+            <br>
+
+            <strong>
+                Descripción
+            </strong>
+
+            <p>
+
+                <?= nl2br(htmlspecialchars($detalle["descripcion"])) ?>
+
+            </p>
+
+        </div>
 
 
-        <div class="card">
-
-            <i class="fa-solid fa-list-check fa-2x"></i>
-
-            <h3>
-                Total de etapas
-            </h3>
+        <div class="toolbar">
 
             <h2>
-                <?= $resumen["total"] ?>
+                Resumen de la obra
             </h2>
 
         </div>
 
 
-        <div class="card">
-
-            <i class="fa-solid fa-circle-check fa-2x"></i>
-
-            <h3>
-                Finalizadas
-            </h3>
-
-            <h2>
-                <?= $resumen["finalizadas"] ?>
-            </h2>
-
-        </div>
+        <div class="cards-grid">
 
 
-        <div class="card">
+            <div class="card">
 
-            <i class="fa-solid fa-person-digging fa-2x"></i>
+                <i class="fa-solid fa-list-check fa-2x"></i>
 
-            <h3>
-                En proceso
-            </h3>
+                <h3>
+                    Total de etapas
+                </h3>
 
-            <h2>
-                <?= $resumen["proceso"] ?>
-            </h2>
+                <h2>
+                    <?= $resumen["total"] ?>
+                </h2>
 
-        </div>
-
-
-        <div class="card">
-
-            <i class="fa-regular fa-clock fa-2x"></i>
-
-            <h3>
-                Pendientes
-            </h3>
-
-            <h2>
-                <?= $resumen["pendientes"] ?>
-            </h2>
-
-        </div>
+            </div>
 
 
-        <div class="card">
+            <div class="card">
 
-            <i class="fa-solid fa-chart-line fa-2x"></i>
+                <i class="fa-solid fa-circle-check fa-2x"></i>
 
-            <h3>
-                Avance general
-            </h3>
+                <h3>
+                    Finalizadas
+                </h3>
 
-            <h2>
-                <?= $avance ?>%
-            </h2>
+                <h2>
+                    <?= $resumen["finalizadas"] ?>
+                </h2>
 
-            <div class="progress">
+            </div>
 
-                <div
-                    class="progress-bar"
-                    style="width: <?= $avance ?>%;">
+
+            <div class="card">
+
+                <i class="fa-solid fa-person-digging fa-2x"></i>
+
+                <h3>
+                    En proceso
+                </h3>
+
+                <h2>
+                    <?= $resumen["proceso"] ?>
+                </h2>
+
+            </div>
+
+
+            <div class="card">
+
+                <i class="fa-regular fa-clock fa-2x"></i>
+
+                <h3>
+                    Pendientes
+                </h3>
+
+                <h2>
+                    <?= $resumen["pendientes"] ?>
+                </h2>
+
+            </div>
+
+
+            <div class="card">
+
+                <i class="fa-solid fa-chart-line fa-2x"></i>
+
+                <h3>
+                    Avance general
+                </h3>
+
+                <h2>
+                    <?= $avance ?>%
+                </h2>
+
+                <div class="progress">
+
+                    <div
+                        class="progress-bar"
+                        style="width: <?= $avance ?>%;">
+                    </div>
+
                 </div>
 
             </div>
 
         </div>
+        <div class="toolbar" style="margin-top: 20px;">
 
-    </div>
-    <div class="toolbar" style="margin-top: 20px;">
-
-        <h2>
-            Módulos de la obra
-        </h2>
-
-    </div>
-
-    <div class="cards-grid">
-
-        <div class="card">
-
-            <i class="fa-solid fa-layer-group fa-2x"></i>
-
-            <h3>
-                Etapas
-            </h3>
-
-            <a
-                href="etapas/index.php?id_obra=<?= $detalle["id_obra"] ?>"
-                class="btn btn-primary">
-
-                Ingresar
-
-            </a>
+            <h2>
+                Módulos de la obra
+            </h2>
 
         </div>
 
+        <div class="cards-grid">
 
-        <div class="card">
+            <div class="card">
 
-            <i class="fa-solid fa-chart-line fa-2x"></i>
+                <i class="fa-solid fa-layer-group fa-2x"></i>
 
-            <h3>
-                Diario de obra
-            </h3>
+                <h3>
+                    Etapas
+                </h3>
 
-            <a
-                href="../../controladores/AvanceController.php?accion=listar&id_obra=<?= $detalle["id_obra"] ?>"
-                class="btn btn-primary">
+                <a
+                    href="etapas/index.php?id_obra=<?= $detalle["id_obra"] ?>"
+                    class="btn btn-primary">
 
-                Ingresar
+                    Ingresar
 
-            </a>
+                </a>
+
+            </div>
+
+
+            <div class="card">
+
+                <i class="fa-solid fa-chart-line fa-2x"></i>
+
+                <h3>
+                    Diario de obra
+                </h3>
+
+                <a
+                    href="../../controladores/AvanceController.php?accion=listar&id_obra=<?= $detalle["id_obra"] ?>"
+                    class="btn btn-primary">
+
+                    Ingresar
+
+                </a>
+
+            </div>
+
+
+            <div class="card">
+
+                <i class="fa-solid fa-users fa-2x"></i>
+
+                <h3>
+                    Empleados
+                </h3>
+
+                <a
+                    href="../../controladores/EmpleadoObraController.php?accion=listar&id_obra=<?= $detalle["id_obra"] ?>"
+                    class="btn btn-primary">
+
+                    Ingresar
+
+                </a>
+
+            </div>
+
+
+            <div class="card">
+
+                <i class="fa-solid fa-boxes-stacked fa-2x"></i>
+
+                <h3>
+                    Materiales
+                </h3>
+
+                <a
+                    href="../../controladores/SolicitudMaterialController.php?accion=listar&id_obra=<?= $detalle["id_obra"] ?>"
+                    class="btn btn-primary">
+
+                    Ingresar
+
+                </a>
+
+            </div>
+
+
+            <div class="card">
+
+                <i class="fa-solid fa-screwdriver-wrench fa-2x"></i>
+
+                <h3>
+                    Herramientas
+                </h3>
+
+                <a
+                    href="herramientas/index.php?id_obra=<?= $detalle["id_obra"] ?>"
+                    class="btn btn-primary">
+
+                    Ingresar
+
+                </a>
+
+            </div>
+
+
+            <div class="card">
+
+                <i class="fa-solid fa-triangle-exclamation fa-2x"></i>
+
+                <h3>
+                    Incidencias
+                </h3>
+
+                <a
+                    href="#"
+                    class="btn btn-secondary">
+
+                    Próximamente
+
+                </a>
+
+            </div>
+
+
+            <div class="card">
+
+                <i class="fa-solid fa-camera fa-2x"></i>
+
+                <h3>
+                    Fotos
+                </h3>
+
+                <a
+                    href="#"
+                    class="btn btn-secondary">
+
+                    Próximamente
+
+                </a>
+
+            </div>
+
+
+            <div class="card">
+
+                <i class="fa-solid fa-folder-open fa-2x"></i>
+
+                <h3>
+                    Documentos
+                </h3>
+
+                <a
+                    href="#"
+                    class="btn btn-secondary">
+
+                    Próximamente
+
+                </a>
+
+            </div>
 
         </div>
-
-
-        <div class="card">
-
-            <i class="fa-solid fa-users fa-2x"></i>
-
-            <h3>
-                Empleados
-            </h3>
-
-            <a
-                href="../../controladores/EmpleadoObraController.php?accion=listar&id_obra=<?= $detalle["id_obra"] ?>"
-                class="btn btn-primary">
-
-                Ingresar
-
-            </a>
-
-        </div>
-
-
-        <div class="card">
-
-            <i class="fa-solid fa-boxes-stacked fa-2x"></i>
-
-            <h3>
-                Materiales
-            </h3>
-
-            <a
-                href="#"
-                class="btn btn-secondary">
-
-                Próximamente
-
-            </a>
-
-        </div>
-
-
-        <div class="card">
-
-            <i class="fa-solid fa-screwdriver-wrench fa-2x"></i>
-
-            <h3>
-                Herramientas
-            </h3>
-
-            <a
-                href="herramientas/index.php?id_obra=<?= $detalle["id_obra"] ?>"
-                class="btn btn-primary">
-
-                Ingresar
-
-            </a>
-
-        </div>
-
-
-        <div class="card">
-
-            <i class="fa-solid fa-triangle-exclamation fa-2x"></i>
-
-            <h3>
-                Incidencias
-            </h3>
-
-            <a
-                href="#"
-                class="btn btn-secondary">
-
-                Próximamente
-
-            </a>
-
-        </div>
-
-
-        <div class="card">
-
-            <i class="fa-solid fa-camera fa-2x"></i>
-
-            <h3>
-                Fotos
-            </h3>
-
-            <a
-                href="#"
-                class="btn btn-secondary">
-
-                Próximamente
-
-            </a>
-
-        </div>
-
-
-        <div class="card">
-
-            <i class="fa-solid fa-folder-open fa-2x"></i>
-
-            <h3>
-                Documentos
-            </h3>
-
-            <a
-                href="#"
-                class="btn btn-secondary">
-
-                Próximamente
-
-            </a>
-
-        </div>
-
-    </div>
 
 
 </main>

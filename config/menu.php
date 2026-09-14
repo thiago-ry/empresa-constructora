@@ -33,6 +33,15 @@ $menu = [
         ["fa-solid fa-user", "Perfil", "/empresa_constructora/vistas/perfil/"]
     ],
 
+       "Capataz" => [
+        ["fa-solid fa-house", "Dashboard", "/empresa_constructora/vistas/dashboard/capataz.php"],
+        ["fa-solid fa-building", "Obras", "/empresa_constructora/vistas/obras/"],
+        ["fa-solid fa-chart-line", "Avances", "/empresa_constructora/vistas/avances/"],
+        ["fa-solid fa-list-check", "Tareas", "/empresa_constructora/vistas/tareas/"],
+        ["fa-solid fa-triangle-exclamation", "Incidencias", "/empresa_constructora/vistas/incidencias/"],
+        ["fa-solid fa-user", "Perfil", "/empresa_constructora/vistas/perfil/"]
+    ],
+
     "Encargado de Depósito" => [
         ["fa-solid fa-house", "Dashboard", "/empresa_constructora/vistas/dashboard/deposito.php"],
         ["fa-solid fa-boxes-stacked", "Materiales", "/empresa_constructora/vistas/materiales/"],

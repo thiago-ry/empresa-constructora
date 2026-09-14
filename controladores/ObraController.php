@@ -14,27 +14,27 @@ class ObraController
         $this->obra = new Obra();
     }
 
-    /*
-    ==========================
-        AGREGAR
-    ==========================
-    */
     public function agregar()
     {
         session_start();
 
         $datos = [
-            "id_usuario"   => $_POST["id_usuario"],
+            "id_usuario" => $_POST["id_usuario"],
+
             "id_jefe_obra" => !empty($_POST["id_jefe_obra"])
                 ? $_POST["id_jefe_obra"]
                 : null,
 
-            "nombre_obra"  => $_POST["nombre_obra"],
-            "direccion"    => $_POST["direccion"],
-            "descripcion"  => $_POST["descripcion"],
+            "id_capataz" => !empty($_POST["id_capataz"])
+                ? $_POST["id_capataz"]
+                : null,
+
+            "nombre_obra" => $_POST["nombre_obra"],
+            "direccion" => $_POST["direccion"],
+            "descripcion" => $_POST["descripcion"],
             "fecha_inicio" => $_POST["fecha_inicio"],
-            "fecha_fin"    => $_POST["fecha_fin"],
-            "estado"       => $_POST["estado"]
+            "fecha_fin" => $_POST["fecha_fin"],
+            "estado" => $_POST["estado"]
         ];
 
         $id_obra = $this->obra->agregar($datos);
@@ -68,6 +68,10 @@ class ObraController
                 ? $_POST["id_jefe_obra"]
                 : null,
 
+            "id_capataz" => !empty($_POST["id_capataz"])
+                ? $_POST["id_capataz"]
+                : null,
+
             "nombre_obra"  => $_POST["nombre_obra"],
             "direccion"    => $_POST["direccion"],
             "descripcion"  => $_POST["descripcion"],
@@ -84,6 +88,7 @@ class ObraController
             "tabla_afectada" => "obra",
             "id_registro" => $datos["id_obra"],
             "descripcion" => "Modificó la obra " . $datos["nombre_obra"]
+
         ]);
 
         header("Location: ../vistas/obras/index.php");

@@ -10,23 +10,22 @@ $usuarios = new Usuario();
 $obra = new Obra();
 
 $clientes = $usuarios->obtenerClientes(true);
+
 $jefesObra = $obra->obtenerJefesObra();
+
+$capataces = $obra->obtenerCapatacesDisponibles();
 
 require_once "../../layouts/header.php";
 require_once "../../layouts/sidebar.php";
-
 ?>
 
 <main class="content">
 
     <div class="page-title">
-
         <h1>Agregar obra</h1>
-
         <p>
             Complete los datos para registrar una nueva obra.
         </p>
-
     </div>
 
     <div class="form-card">
@@ -35,17 +34,19 @@ require_once "../../layouts/sidebar.php";
             class="form"
             action="../../controladores/ObraController.php"
             method="POST"
-            autocomplete="off">
+            autocomplete="off"
+        >
 
             <input
                 type="hidden"
                 name="accion"
-                value="agregar">
+                value="agregar"
+            >
 
+            <!-- NOMBRE Y CLIENTE -->
             <div class="form-row">
 
                 <div class="form-group">
-
                     <label for="nombre_obra">
                         Nombre de la obra
                     </label>
@@ -57,13 +58,11 @@ require_once "../../layouts/sidebar.php";
                         class="input"
                         placeholder="Ingrese el nombre de la obra"
                         maxlength="150"
-                        required>
-
+                        required
+                    >
                 </div>
 
-
                 <div class="form-group">
-
                     <label for="cliente">
                         Cliente
                     </label>
@@ -72,8 +71,8 @@ require_once "../../layouts/sidebar.php";
                         id="cliente"
                         name="id_usuario"
                         class="filter"
-                        required>
-
+                        required
+                    >
                         <option value="">
                             Seleccione un cliente
                         </option>
@@ -81,28 +80,22 @@ require_once "../../layouts/sidebar.php";
                         <?php foreach ($clientes as $c) { ?>
 
                             <option value="<?= $c["id_usuario"]; ?>">
-
                                 <?= htmlspecialchars(
                                     $c["nombre"] . " " . $c["apellido"]
                                 ); ?>
-
                             </option>
 
                         <?php } ?>
 
                     </select>
-
                 </div>
 
             </div>
 
-
-            <!-- JEFE DE OBRA -->
-
+            <!-- JEFE DE OBRA Y CAPATAZ -->
             <div class="form-row">
 
                 <div class="form-group">
-
                     <label for="jefe_obra">
                         Jefe de Obra
                     </label>
@@ -111,8 +104,8 @@ require_once "../../layouts/sidebar.php";
                         id="jefe_obra"
                         name="id_jefe_obra"
                         class="filter"
-                        required>
-
+                        required
+                    >
                         <option value="">
                             Seleccione un Jefe de Obra
                         </option>
@@ -120,26 +113,50 @@ require_once "../../layouts/sidebar.php";
                         <?php foreach ($jefesObra as $jefe) { ?>
 
                             <option value="<?= $jefe["id_usuario"]; ?>">
-
                                 <?= htmlspecialchars(
                                     $jefe["nombre"] . " " . $jefe["apellido"]
                                 ); ?>
-
                             </option>
 
                         <?php } ?>
 
                     </select>
+                </div>
 
+                <div class="form-group">
+                    <label for="capataz">
+                        Capataz
+                    </label>
+
+                    <select
+                        id="capataz"
+                        name="id_capataz"
+                        class="filter"
+                        required
+                    >
+                        <option value="">
+                            Seleccione un Capataz
+                        </option>
+
+                        <?php foreach ($capataces as $capataz) { ?>
+
+                            <option value="<?= $capataz["id_usuario"]; ?>">
+                                <?= htmlspecialchars(
+                                    $capataz["nombre"] . " " . $capataz["apellido"]
+                                ); ?>
+                            </option>
+
+                        <?php } ?>
+
+                    </select>
                 </div>
 
             </div>
 
-
+            <!-- DIRECCIÓN Y ESTADO -->
             <div class="form-row">
 
                 <div class="form-group">
-
                     <label for="direccion">
                         Dirección
                     </label>
@@ -151,13 +168,11 @@ require_once "../../layouts/sidebar.php";
                         class="input"
                         placeholder="Ingrese la dirección"
                         maxlength="255"
-                        required>
-
+                        required
+                    >
                 </div>
 
-
                 <div class="form-group">
-
                     <label for="estado">
                         Estado
                     </label>
@@ -165,8 +180,9 @@ require_once "../../layouts/sidebar.php";
                     <select
                         id="estado"
                         name="estado"
-                        class="filter">
-
+                        class="filter"
+                        required
+                    >
                         <option value="Planificacion">
                             Planificación
                         </option>
@@ -186,14 +202,12 @@ require_once "../../layouts/sidebar.php";
                         <option value="Cancelada">
                             Cancelada
                         </option>
-
                     </select>
-
                 </div>
 
             </div>
 
-
+            <!-- DESCRIPCIÓN -->
             <div class="form-group">
 
                 <label for="descripcion">
@@ -205,15 +219,15 @@ require_once "../../layouts/sidebar.php";
                     name="descripcion"
                     class="input"
                     rows="4"
-                    placeholder="Ingrese una descripción de la obra"></textarea>
+                    placeholder="Ingrese una descripción de la obra"
+                ></textarea>
 
             </div>
 
-
+            <!-- FECHAS -->
             <div class="form-row">
 
                 <div class="form-group">
-
                     <label for="fecha_inicio">
                         Fecha de inicio
                     </label>
@@ -222,13 +236,11 @@ require_once "../../layouts/sidebar.php";
                         type="date"
                         id="fecha_inicio"
                         name="fecha_inicio"
-                        class="input">
-
+                        class="input"
+                    >
                 </div>
 
-
                 <div class="form-group">
-
                     <label for="fecha_fin">
                         Fecha estimada de finalización
                     </label>
@@ -237,45 +249,37 @@ require_once "../../layouts/sidebar.php";
                         type="date"
                         id="fecha_fin"
                         name="fecha_fin"
-                        class="input">
-
+                        class="input"
+                    >
                 </div>
 
             </div>
 
-
+            <!-- ACCIONES -->
             <div class="form-actions">
 
                 <a
                     href="index.php"
-                    class="btn btn-secondary">
-
+                    class="btn btn-secondary"
+                >
                     <i class="fa-solid fa-arrow-left"></i>
-
                     Cancelar
-
                 </a>
-
 
                 <button
                     type="reset"
-                    class="btn btn-warning">
-
+                    class="btn btn-warning"
+                >
                     <i class="fa-solid fa-rotate-left"></i>
-
                     Limpiar
-
                 </button>
-
 
                 <button
                     type="submit"
-                    class="btn btn-primary">
-
+                    class="btn btn-primary"
+                >
                     <i class="fa-solid fa-floppy-disk"></i>
-
                     Guardar obra
-
                 </button>
 
             </div>

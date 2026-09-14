@@ -32,7 +32,7 @@ $obra = $obra ?? [];
 
     <?php if (
         isset($_SESSION["usuario"]["rol"]) &&
-        $_SESSION["usuario"]["rol"] === "Jefe de Obra"
+        $_SESSION["usuario"]["rol"] === "Jefe de Obra" or $_SESSION["usuario"]["rol"] === "Capataz"
     ): ?>
 
         <a

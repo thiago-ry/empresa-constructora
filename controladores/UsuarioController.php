@@ -117,6 +117,10 @@ class UsuarioController
                 header("Location: ../vistas/dashboard/cliente.php");
 
                 break;
+
+            case "Capataz":
+                header("Location: ../vistas/dashboard/capataz.php");
+                break;
         }
 
         exit();

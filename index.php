@@ -1,10 +1,18 @@
 <?php
+
 session_start();
+
+require_once __DIR__ . "/controladores/LandingPageController.php";
+
+$landingPageController = new LandingPageController();
 
 if (isset($_SESSION['usuario'])) {
     header("Location: vistas/dashboard/index.php");
     exit;
 }
+
+$proyectos = $landingPageController->obtenerTodos();
+
 ?>
 
 <!DOCTYPE html>
@@ -33,40 +41,40 @@ if (isset($_SESSION['usuario'])) {
 
     <!--================ HEADER ================-->
 
-<header class="header">
+    <header class="header">
 
-    <div class="container">
+        <div class="container">
 
-        <a href="#inicio" class="logo">
-            <img src="assets/img/logo.png" alt="BuildPro">
-        </a>
+            <a href="#inicio" class="logo">
+                <img src="assets/img/logo.png" alt="BuildPro">
+            </a>
 
-        <nav class="navbar">
+            <nav class="navbar">
 
-            <a href="#inicio">Inicio</a>
+                <a href="#inicio">Inicio</a>
 
-            <a href="#nosotros">Quiénes Somos</a>
+                <a href="#nosotros">Quiénes Somos</a>
 
-            <a href="#servicios">Servicios</a>
+                <a href="#servicios">Servicios</a>
 
-            <a href="#ventajas">Ventajas</a>
+                <a href="#ventajas">Ventajas</a>
 
-            <a href="#galeria">Proyectos</a>
+                <a href="#galeria">Proyectos</a>
 
-            <a href="#contacto">Contacto</a>
+                <a href="#contacto">Contacto</a>
 
-        </nav>
+            </nav>
 
-      <a href="vistas/login.php" class="btn-login">
+            <a href="vistas/login.php" class="btn-login">
 
-            Iniciar sesión
+                Iniciar sesión
 
-        </a>
+            </a>
         </div>
 
-    </div>
+        </div>
 
-</header>
+    </header>
 
     <!--================ HERO ================-->
 
@@ -125,7 +133,7 @@ if (isset($_SESSION['usuario'])) {
 
             <div class="about-image">
 
-                <img src="assets/img/about.jpg" alt="Nosotros">
+                <img src="https://tse3.mm.bing.net/th/id/OIP.hSYzJYTVcu1iqD1sPHGCCAHaE8?r=0&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Nosotros">
 
             </div>
 
@@ -352,43 +360,12 @@ if (isset($_SESSION['usuario'])) {
             </div>
 
             <div class="gallery-grid">
-
-                <div class="gallery-item">
-
-                    <img src="assets/img/proyecto1.jpg" alt="Proyecto 1">
-
-                </div>
-
-                <div class="gallery-item">
-
-                    <img src="assets/img/proyecto2.jpg" alt="Proyecto 2">
-
-                </div>
-
-                <div class="gallery-item">
-
-                    <img src="assets/img/proyecto3.jpg" alt="Proyecto 3">
-
-                </div>
-
-                <div class="gallery-item">
-
-                    <img src="assets/img/proyecto4.jpg" alt="Proyecto 4">
-
-                </div>
-
-                <div class="gallery-item">
-
-                    <img src="assets/img/proyecto5.jpg" alt="Proyecto 5">
-
-                </div>
-
-                <div class="gallery-item">
-
-                    <img src="assets/img/proyecto6.jpg" alt="Proyecto 6">
-
-                </div>
-
+                <?php if (!empty($proyectos)): ?> <?php foreach ($proyectos as $proyecto): ?>
+                        <div class="gallery-item">
+                            <img src="<?php echo htmlspecialchars($proyecto['ruta_imagen']); ?>" alt="<?php echo htmlspecialchars($proyecto['descripcion'] ?? 'Proyecto BuildPro'); ?>">
+                        </div> <?php endforeach; ?> <?php else: ?> <div class="gallery-empty">
+                        <p>Actualmente no hay proyectos finalizados para mostrar.</p>
+                    </div> <?php endif; ?>
             </div>
 
         </div>

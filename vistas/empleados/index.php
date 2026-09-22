@@ -1,4 +1,4 @@
-```php
+
 <?php
 
 session_start();
@@ -674,4 +674,3 @@ $script = "empleados";
 require_once "../../layouts/footer.php";
 
 ?>
-```

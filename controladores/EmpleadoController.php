@@ -2,184 +2,196 @@
 
 require_once "../modelos/Auditoria.php";
 require_once "../modelos/Usuario.php";
+require_once "../modelos/Empleado.php";
 require_once "../config/permisos.php";
 
 class EmpleadoController
 {
     private $auditoria;
     private $usuario;
+    private $empleado;
 
     public function __construct()
     {
         $this->auditoria = new Auditoria();
         $this->usuario = new Usuario();
+        $this->empleado = new Empleado();
     }
-
-
-    /*
-    ==========================================================
-        INDEX
-    ==========================================================
-    */
 
     public function index()
     {
         verificarPermiso("empleados");
 
-        $empleados = $this->usuario->obtenerEmpleados();
+        $busqueda = trim(
+            $_GET["busqueda"] ?? ""
+        );
+
+        $estado = $_GET["estado"] ?? "";
+
+        $id_cargo = $_GET["id_cargo"] ?? "";
+
+        if (
+            $estado !== "" &&
+            $estado !== "1" &&
+            $estado !== "0"
+        ) {
+            $estado = "";
+        }
+
+        if (
+            $id_cargo !== "" &&
+            !is_numeric($id_cargo)
+        ) {
+            $id_cargo = "";
+        }
+
+        $empleados = $this->empleado->obtenerTodos(
+            $busqueda,
+            $estado,
+            $id_cargo
+        );
+
+        $cargos = $this->empleado->obtenerTodosLosCargos();
+
+        $estadisticas =
+            $this->empleado->obtenerEstadisticas();
+
+        $totalEmpleados =
+            $estadisticas["total"] ?? 0;
+
+        $empleadosActivos =
+            $estadisticas["activos"] ?? 0;
+
+        $empleadosInactivos =
+            $estadisticas["inactivos"] ?? 0;
 
         require_once "../vistas/empleados/index.php";
     }
-
-
-    /*
-    ==========================================================
-        VER EMPLEADO
-    ==========================================================
-    */
 
     public function ver()
     {
         verificarPermiso("empleados");
 
-        if (!isset($_GET["id"]) || empty($_GET["id"])) {
-
-            header("Location: ../vistas/empleados/index.php");
+        if (
+            !isset($_GET["id"]) ||
+            empty($_GET["id"])
+        ) {
+            header(
+                "Location: ../vistas/empleados/index.php"
+            );
             exit;
         }
 
         $id = intval($_GET["id"]);
 
-        $empleado = $this->usuario->buscarPorId($id);
+        $empleado =
+            $this->usuario->buscarPorId($id);
 
         if (
             !$empleado ||
             !isset($empleado["nombre_rol"]) ||
             $empleado["nombre_rol"] != "Empleado"
         ) {
-
-            header("Location: ../vistas/empleados/index.php");
+            header(
+                "Location: ../vistas/empleados/index.php"
+            );
             exit;
         }
 
-        $cargos = $this->usuario->obtenerCargosEmpleado($id);
+        $cargos =
+            $this->usuario->obtenerCargosEmpleado($id);
 
         require_once "../vistas/empleados/ver.php";
     }
-
-
-    /*
-    ==========================================================
-        BUSCAR
-    ==========================================================
-    */
 
     public function buscar()
     {
         verificarPermiso("empleados");
 
-        $texto = $_GET["buscar"] ?? "";
+        $texto = trim(
+            $_GET["buscar"] ?? ""
+        );
 
-        $empleados = $this->usuario->obtenerEmpleados();
-
-        if (!empty(trim($texto))) {
-
-            $texto = strtolower(trim($texto));
-
-            $empleados = array_filter(
-                $empleados,
-                function ($empleado) use ($texto) {
-
-                    $nombre = strtolower(
-                        $empleado["nombre"] ?? ""
-                    );
-
-                    $apellido = strtolower(
-                        $empleado["apellido"] ?? ""
-                    );
-
-                    $documento = strtolower(
-                        $empleado["documento"] ?? ""
-                    );
-
-                    $nombreCompleto = $nombre . " " . $apellido;
-
-                    return
-                        strpos($nombre, $texto) !== false ||
-                        strpos($apellido, $texto) !== false ||
-                        strpos($documento, $texto) !== false ||
-                        strpos($nombreCompleto, $texto) !== false;
-                }
+        $empleados =
+            $this->empleado->obtenerTodos(
+                $texto,
+                "",
+                ""
             );
-        }
+
+        $busqueda = $texto;
+        $estado = "";
+        $id_cargo = "";
+
+        $cargos =
+            $this->empleado->obtenerTodosLosCargos();
+
+        $estadisticas =
+            $this->empleado->obtenerEstadisticas();
+
+        $totalEmpleados =
+            $estadisticas["total"] ?? 0;
+
+        $empleadosActivos =
+            $estadisticas["activos"] ?? 0;
+
+        $empleadosInactivos =
+            $estadisticas["inactivos"] ?? 0;
 
         require_once "../vistas/empleados/index.php";
     }
 
-
-    /*
-    ==========================================================
-        DAR DE BAJA
-    ==========================================================
-    */
-
     public function eliminar()
     {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
-        if (!isset($_GET["id"]) || empty($_GET["id"])) {
+        verificarPermiso("empleados");
 
-            header("Location: ../vistas/empleados/index.php");
+        if (
+            !isset($_GET["id"]) ||
+            empty($_GET["id"])
+        ) {
+            header(
+                "Location: ../vistas/empleados/index.php"
+            );
             exit;
         }
 
         $id = intval($_GET["id"]);
 
-        $empleado = $this->usuario->buscarPorId($id);
+        $empleado =
+            $this->usuario->buscarPorId($id);
 
         if (
             !$empleado ||
             !isset($empleado["nombre_rol"]) ||
             $empleado["nombre_rol"] != "Empleado"
         ) {
-
-            header("Location: ../vistas/empleados/index.php");
+            header(
+                "Location: ../vistas/empleados/index.php"
+            );
             exit;
         }
 
-
-        /*
-        ======================================================
-            VERIFICAR SI ESTÁ ASIGNADO A UNA OBRA
-        ======================================================
-        */
-
-        if ($this->usuario->empleadoEnObra($id)) {
-
+        if (
+            $this->usuario->empleadoEnObra($id)
+        ) {
             echo "<script>
-
-                alert('No se puede dar de baja a este empleado porque está asignado a una obra.');
-
-                window.location.href='../vistas/empleados/index.php';
-
-            </script>";
-
+                    alert(
+                        'No se puede dar de baja a este empleado porque está asignado a una obra.'
+                    );
+                    window.location.href='../vistas/empleados/index.php';
+                  </script>";
             exit;
         }
-
 
         $this->usuario->bajaLogica($id);
 
-
-        /*
-        ======================================================
-            AUDITORÍA
-        ======================================================
-        */
-
         $this->auditoria->registrar([
-
-            "id_usuario" => $_SESSION["usuario"]["id"],
+            "id_usuario" =>
+                $_SESSION["usuario"]["id"],
 
             "accion" => "BAJA",
 
@@ -187,60 +199,55 @@ class EmpleadoController
 
             "id_registro" => $id,
 
-            "descripcion" => "Desactivó un empleado"
-
+            "descripcion" =>
+                "Desactivó un empleado"
         ]);
 
-
-        header("Location: ../vistas/empleados/index.php");
-
+        header(
+            "Location: ../vistas/empleados/index.php"
+        );
         exit;
     }
 
-
-    /*
-    ==========================================================
-        ACTIVAR
-    ==========================================================
-    */
-
     public function activar()
     {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
-        if (!isset($_GET["id"]) || empty($_GET["id"])) {
+        verificarPermiso("empleados");
 
-            header("Location: ../vistas/empleados/index.php");
+        if (
+            !isset($_GET["id"]) ||
+            empty($_GET["id"])
+        ) {
+            header(
+                "Location: ../vistas/empleados/index.php"
+            );
             exit;
         }
 
         $id = intval($_GET["id"]);
 
-        $empleado = $this->usuario->buscarPorId($id);
+        $empleado =
+            $this->usuario->buscarPorId($id);
 
         if (
             !$empleado ||
             !isset($empleado["nombre_rol"]) ||
             $empleado["nombre_rol"] != "Empleado"
         ) {
-
-            header("Location: ../vistas/empleados/index.php");
+            header(
+                "Location: ../vistas/empleados/index.php"
+            );
             exit;
         }
 
-
         $this->usuario->activarUsuario($id);
 
-
-        /*
-        ======================================================
-            AUDITORÍA
-        ======================================================
-        */
-
         $this->auditoria->registrar([
-
-            "id_usuario" => $_SESSION["usuario"]["id"],
+            "id_usuario" =>
+                $_SESSION["usuario"]["id"],
 
             "accion" => "ACTIVAR",
 
@@ -248,78 +255,61 @@ class EmpleadoController
 
             "id_registro" => $id,
 
-            "descripcion" => "Activó nuevamente un empleado"
-
+            "descripcion" =>
+                "Activó nuevamente un empleado"
         ]);
 
-
-        header("Location: ../vistas/empleados/index.php");
-
+        header(
+            "Location: ../vistas/empleados/index.php"
+        );
         exit;
     }
 
-
-    /*
-    ==========================================================
-        AGREGAR EMPLEADO
-    ==========================================================
-    */
-
     public function agregar()
     {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
+        verificarPermiso("empleados");
 
-        /*
-        ======================================================
-            OBTENER ROL EMPLEADO
-        ======================================================
-        */
-
-        $rolEmpleado = $this->usuario->obtenerIdRolEmpleado();
+        $rolEmpleado =
+            $this->usuario->obtenerIdRolEmpleado();
 
         if (!$rolEmpleado) {
-
             die(
                 "ERROR: No se encontró el rol Empleado en la base de datos."
             );
         }
 
-
-        /*
-        ======================================================
-            DATOS DEL EMPLEADO
-        ======================================================
-        */
-
         $datos = [
+            "id_rol" =>
+                $rolEmpleado["id_rol"],
 
-            "id_rol" => $rolEmpleado["id_rol"],
+            "nombre" =>
+                $_POST["nombre"] ?? "",
 
-            "nombre" => $_POST["nombre"] ?? "",
+            "apellido" =>
+                $_POST["apellido"] ?? "",
 
-            "apellido" => $_POST["apellido"] ?? "",
+            "documento" =>
+                $_POST["documento"] ?? "",
 
-            "documento" => $_POST["documento"] ?? "",
+            "telefono" =>
+                $_POST["telefono"] ?? "",
 
-            "telefono" => $_POST["telefono"] ?? "",
+            "direccion" =>
+                $_POST["direccion"] ?? "",
 
-            "direccion" => $_POST["direccion"] ?? "",
+            "salario" =>
+                $_POST["salario"] ?? 0,
 
-            "salario" => $_POST["salario"] ?? 0,
+            "correo" =>
+                $_POST["correo"] ?? "",
 
-            "correo" => $_POST["correo"] ?? "",
-
-            "contraseña" => $_POST["password"] ?? ""
-
+            "contraseña" =>
+                $_POST["password"] ?? ""
         ];
-
-
-        /*
-        ======================================================
-            VALIDAR DATOS OBLIGATORIOS
-        ======================================================
-        */
 
         if (
             empty($datos["nombre"]) ||
@@ -327,120 +317,81 @@ class EmpleadoController
             empty($datos["correo"]) ||
             empty($datos["contraseña"])
         ) {
-
-            die("ERROR: Faltan datos obligatorios.");
+            die(
+                "ERROR: Faltan datos obligatorios."
+            );
         }
 
+        $confirmar =
+            $_POST["confirmar"] ?? "";
 
-        /*
-        ======================================================
-            CONFIRMAR CONTRASEÑA
-        ======================================================
-        */
-
-        $confirmar = $_POST["confirmar"] ?? "";
-
-        if ($datos["contraseña"] !== $confirmar) {
-
+        if (
+            $datos["contraseña"] !==
+            $confirmar
+        ) {
             echo "<script>
-
-                alert('Las contraseñas no coinciden.');
-
-                window.location.href='../vistas/empleados/agregar.php';
-
-            </script>";
-
+                    alert('Las contraseñas no coinciden.');
+                    window.location.href='../vistas/empleados/agregar.php';
+                  </script>";
             exit;
         }
 
-
-        /*
-        ======================================================
-            VERIFICAR CORREO
-        ======================================================
-        */
-
-        if ($this->usuario->existeCorreo($datos["correo"])) {
-
+        if (
+            $this->usuario->existeCorreo(
+                $datos["correo"]
+            )
+        ) {
             echo "<script>
-
-                alert('El correo ya está registrado.');
-
-                window.location.href='../vistas/empleados/agregar.php';
-
-            </script>";
-
+                    alert('El correo ya está registrado.');
+                    window.location.href='../vistas/empleados/agregar.php';
+                  </script>";
             exit;
         }
-
-
-        /*
-        ======================================================
-            CREAR EMPLEADO
-        ======================================================
-        */
 
         try {
-
-            $idUsuario = $this->usuario->agregar($datos);
+            $idUsuario =
+                $this->usuario->agregar($datos);
 
             if (!$idUsuario) {
-
                 die(
                     "ERROR: No se pudo crear el empleado."
                 );
             }
-
-
-            /*
-            ==================================================
-                GUARDAR CARGOS
-            ==================================================
-            */
 
             if (
                 isset($_POST["cargos"]) &&
                 is_array($_POST["cargos"]) &&
                 !empty($_POST["cargos"])
             ) {
-
                 $this->usuario->guardarCargosEmpleado(
                     $idUsuario,
                     $_POST["cargos"]
                 );
             }
 
-
-            /*
-            ==================================================
-                AUDITORÍA
-            ==================================================
-            */
-
             $this->auditoria->registrar([
+                "id_usuario" =>
+                    $_SESSION["usuario"]["id"],
 
-                "id_usuario" => $_SESSION["usuario"]["id"],
+                "accion" =>
+                    "INSERTAR",
 
-                "accion" => "INSERTAR",
+                "tabla_afectada" =>
+                    "usuario",
 
-                "tabla_afectada" => "usuario",
+                "id_registro" =>
+                    $idUsuario,
 
-                "id_registro" => $idUsuario,
-
-                "descripcion" => "Registró un nuevo empleado"
-
+                "descripcion" =>
+                    "Registró un nuevo empleado"
             ]);
-
 
             header(
                 "Location: ../vistas/empleados/index.php"
             );
-
             exit;
 
-
         } catch (PDOException $e) {
-
             die(
                 "ERROR DE BASE DE DATOS:<br><br>" .
                 $e->getMessage()
@@ -448,189 +399,128 @@ class EmpleadoController
         }
     }
 
-
-    /*
-    ==========================================================
-        EDITAR EMPLEADO
-    ==========================================================
-    */
-
     public function editar()
     {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        verificarPermiso("empleados");
 
         $id = intval(
             $_POST["id_usuario"] ?? 0
         );
 
         if (!$id) {
-
             header(
                 "Location: ../vistas/empleados/index.php"
             );
-
             exit;
         }
 
-
-        /*
-        ======================================================
-            EMPLEADO ACTUAL
-        ======================================================
-        */
-
-        $empleadoActual = $this->usuario->buscarPorId($id);
+        $empleadoActual =
+            $this->usuario->buscarPorId($id);
 
         if (
             !$empleadoActual ||
             !isset($empleadoActual["nombre_rol"]) ||
             $empleadoActual["nombre_rol"] != "Empleado"
         ) {
-
             header(
                 "Location: ../vistas/empleados/index.php"
             );
-
             exit;
         }
-
-
-        /*
-        ======================================================
-            ROL EMPLEADO
-        ======================================================
-        */
 
         $rolEmpleado =
             $this->usuario->obtenerIdRolEmpleado();
 
-
         if (!$rolEmpleado) {
-
             die(
                 "ERROR: No se encontró el rol Empleado."
             );
         }
 
-
-        /*
-        ======================================================
-            DATOS
-        ======================================================
-        */
-
         $datos = [
+            "id_usuario" =>
+                $id,
 
-            "id_usuario" => $id,
+            "id_rol" =>
+                $rolEmpleado["id_rol"],
 
-            "id_rol" => $rolEmpleado["id_rol"],
+            "nombre" =>
+                $_POST["nombre"] ?? "",
 
-            "nombre" => $_POST["nombre"] ?? "",
+            "apellido" =>
+                $_POST["apellido"] ?? "",
 
-            "apellido" => $_POST["apellido"] ?? "",
+            "documento" =>
+                $_POST["documento"] ?? "",
 
-            "documento" => $_POST["documento"] ?? "",
+            "telefono" =>
+                $_POST["telefono"] ?? "",
 
-            "telefono" => $_POST["telefono"] ?? "",
+            "direccion" =>
+                $_POST["direccion"] ?? "",
 
-            "direccion" => $_POST["direccion"] ?? "",
+            "salario" =>
+                $_POST["salario"] ?? 0,
 
-            "salario" => $_POST["salario"] ?? 0,
-
-            "correo" => $_POST["correo"] ?? ""
-
+            "correo" =>
+                $_POST["correo"] ?? ""
         ];
 
-
-        /*
-        ======================================================
-            VERIFICAR CORREO
-        ======================================================
-        */
-
         if (
-
-            $empleadoActual["correo"] != $datos["correo"]
-
-            &&
-
+            $empleadoActual["correo"] !=
+            $datos["correo"] &&
             $this->usuario->existeCorreo(
-                $datos["correo"]
+                $datos["correo"],
+                $id
             )
-
         ) {
-
             echo "<script>
-
-                alert('El correo ya se encuentra registrado.');
-
-                window.location.href='../vistas/empleados/index.php';
-
-            </script>";
-
+                    alert('El correo ya se encuentra registrado.');
+                    window.location.href='../vistas/empleados/index.php';
+                  </script>";
             exit;
         }
 
-
-        /*
-        ======================================================
-            ACTUALIZAR EMPLEADO
-        ======================================================
-        */
-
         try {
-
             $this->usuario->editar($datos);
-
-
-            /*
-            ==================================================
-                ACTUALIZAR CARGOS
-            ==================================================
-            */
 
             if (
                 isset($_POST["cargos"]) &&
                 is_array($_POST["cargos"])
             ) {
-
                 $this->usuario->guardarCargosEmpleado(
                     $id,
                     $_POST["cargos"]
                 );
             }
 
-
-            /*
-            ==================================================
-                AUDITORÍA
-            ==================================================
-            */
-
             $this->auditoria->registrar([
+                "id_usuario" =>
+                    $_SESSION["usuario"]["id"],
 
-                "id_usuario" => $_SESSION["usuario"]["id"],
+                "accion" =>
+                    "EDITAR",
 
-                "accion" => "EDITAR",
+                "tabla_afectada" =>
+                    "usuario",
 
-                "tabla_afectada" => "usuario",
+                "id_registro" =>
+                    $id,
 
-                "id_registro" => $id,
-
-                "descripcion" => "Modificó los datos de un empleado"
-
+                "descripcion" =>
+                    "Modificó los datos de un empleado"
             ]);
-
 
             header(
                 "Location: ../vistas/empleados/index.php"
             );
-
             exit;
 
-
         } catch (PDOException $e) {
-
             die(
                 "ERROR DE BASE DE DATOS:<br><br>" .
                 $e->getMessage()
@@ -640,62 +530,53 @@ class EmpleadoController
 }
 
 
-/*
-==============================================================
-    CREAR CONTROLADOR
-==============================================================
-*/
-
 $controlador = new EmpleadoController();
 
-
-/*
-==============================================================
-    ACCIONES POST
-==============================================================
-*/
 
 if (isset($_POST["accion"])) {
 
     switch ($_POST["accion"]) {
 
         case "agregar":
-
             $controlador->agregar();
-
             break;
-
 
         case "editar":
-
             $controlador->editar();
-
             break;
     }
+
+    exit;
 }
 
-
-/*
-==============================================================
-    ACCIONES GET
-==============================================================
-*/
 
 if (isset($_GET["accion"])) {
 
     switch ($_GET["accion"]) {
 
         case "baja":
-
             $controlador->eliminar();
-
             break;
-
 
         case "activar":
-
             $controlador->activar();
+            break;
 
+        case "ver":
+            $controlador->ver();
+            break;
+
+        case "buscar":
+            $controlador->buscar();
+            break;
+
+        case "index":
+            $controlador->index();
             break;
     }
+
+    exit;
 }
+
+
+$controlador->index();

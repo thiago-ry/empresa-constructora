@@ -539,27 +539,28 @@ body {
 
   border-collapse: collapse;
 }
+/*==================================================
+=              TABLE HEADER (MODERNO)
+==================================================*/
 
 .table thead {
-  background: #182536;
+  background: rgba(11, 19, 32, 0.6); /* Color del fondo principal con transparencia */
+  backdrop-filter: blur(8px);
 }
 
 .table th {
-  padding: 18px 20px;
-
+  padding: 14px 20px;
   text-align: left;
-
-  color: #cbd5e1;
-
-  font-size: 13px;
-
-  font-weight: 600;
-
-  letter-spacing: 0.6px;
-
+  color: var(--text-secondary); /* Usa #94a3b8 para menor saturación */
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
   text-transform: uppercase;
-
-  border-bottom: 1px solid var(--border);
+  border-bottom: 2px solid var(--border);
+  position: relative;
+}
+.table th:last-child {
+  text-align: center;
 }
 
 .table td {
@@ -1557,6 +1558,122 @@ select:focus {
 .filter,
 .search-box {
   max-width: 100%;
+}
+
+/*==================================================
+=              TOOLBAR & FILTROS REDISEÑADOS
+==================================================*/
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 24px;
+  background: linear-gradient(180deg, #132133, #101b29);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  flex-wrap: wrap;
+}
+
+/* Grupo de Filtros a la izquierda en una sola línea horizontal */
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  flex-wrap: wrap;
+  min-width: 280px;
+}
+
+/* Buscador y Selects con alturas e integraciones uniformes */
+.search-box,
+.filter {
+  height: 42px; /* Altura ideal y compacta */
+  background: #182536;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 13.5px;
+  padding: 0 14px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-box {
+  min-width: 240px;
+  flex: 1; /* Permite adaptarse fluidamente */
+}
+
+.search-box::placeholder {
+  color: var(--text-secondary);
+}
+
+.filter {
+  min-width: 160px;
+  cursor: pointer;
+  /* Personalización de la flecha del select */
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%3C94a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+
+.search-box:focus,
+.filter:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(244, 180, 0, 0.15);
+}
+
+/* Contenedor de Botones a la derecha */
+.toolbar .btn-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/*==================================================
+=            BOTONES DE TOOLBAR Y JERARQUÍA
+==================================================*/
+
+/* Estilo unificado para los botones de la barra */
+.toolbar .btn {
+  height: 42px; /* Misma altura que inputs y filtros */
+  padding: 0 18px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+/* Botón Secundario (Ej: Imprimir, Exportar) */
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-outline:hover {
+  background: #182536;
+  border-color: #38526d;
+  color: var(--white);
+  transform: translateY(-1px);
+}
+
+/* Ajuste al Botón Primario (+ Agregar) */
+.btn-primary {
+  background: var(--primary);
+  color: #0f172a;
+  box-shadow: 0 4px 14px rgba(244, 180, 0, 0.2); /* Sombra más sutil */
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+  box-shadow: 0 6px 18px rgba(244, 180, 0, 0.3);
+  transform: translateY(-1px);
 }
 
 /*==================================================

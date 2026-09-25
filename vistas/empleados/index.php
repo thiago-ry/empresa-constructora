@@ -3,203 +3,39 @@
 
 session_start();
 
-require_once "../../modelos/Conexion.php";
+require_once "../../modelos/Empleado.php";
 require_once "../../config/permisos.php";
 
 verificarPermiso("empleados");
 
-$db = new Conexion();
-$conexion = $db->conectar();
+$empleado = new Empleado();
+
+$busqueda = trim($_GET["busqueda"] ?? "");
+$estado = $_GET["estado"] ?? "";
+$id_cargo = $_GET["id_cargo"] ?? "";
+
+
+$cargos = $empleado->obtenerTodosLosCargos();
+
+$empleados = $empleado->obtenerTodos(
+    $busqueda,
+    $estado,
+    $id_cargo
+);
+
+$estadisticas = $empleado->obtenerEstadisticas();
+
+$totalEmpleados = $estadisticas["total"] ?? 0;
+$empleadosActivos = $estadisticas["activos"] ?? 0;
+$empleadosInactivos = $estadisticas["inactivos"] ?? 0;
+
 
 require_once "../../layouts/header.php";
 require_once "../../layouts/sidebar.php";
 
-
-/*
-==================================================
-    BUSCADOR
-==================================================
-*/
-
-$busqueda = trim($_GET["busqueda"] ?? "");
-
-
-/*
-==================================================
-    CONSULTAR EMPLEADOS
-==================================================
-*/
-
-$sql = "SELECT
-            u.id_usuario,
-            u.nombre,
-            u.apellido,
-            u.documento,
-            u.telefono,
-            u.direccion,
-            u.salario,
-            u.correo,
-            u.estado,
-
-            GROUP_CONCAT(
-                DISTINCT c.nombre_cargo
-                ORDER BY c.nombre_cargo
-                SEPARATOR ', '
-            ) AS cargos
-
-        FROM usuario u
-
-        INNER JOIN roles r
-            ON u.id_rol = r.id_rol
-
-        LEFT JOIN empleado_cargo ec
-            ON u.id_usuario = ec.id_usuario
-
-        LEFT JOIN cargo c
-            ON ec.id_cargo = c.id_cargo
-
-        WHERE r.nombre_rol = 'Empleado'";
-
-
-/*
-==================================================
-    BUSCADOR
-==================================================
-*/
-
-if ($busqueda !== "") {
-
-    $sql .= " AND (
-                u.nombre LIKE :busqueda
-                OR u.apellido LIKE :busqueda
-                OR u.documento LIKE :busqueda
-                OR u.telefono LIKE :busqueda
-                OR u.correo LIKE :busqueda
-                OR CONCAT(u.nombre, ' ', u.apellido)
-                    LIKE :busqueda_completo
-                OR CONCAT(u.apellido, ' ', u.nombre)
-                    LIKE :busqueda_completo2
-            )";
-}
-
-
-$sql .= "
-
-        GROUP BY
-            u.id_usuario,
-            u.nombre,
-            u.apellido,
-            u.documento,
-            u.telefono,
-            u.direccion,
-            u.salario,
-            u.correo,
-            u.estado
-
-        ORDER BY
-            u.apellido ASC,
-            u.nombre ASC
-";
-
-
-$consulta = $conexion->prepare($sql);
-
-
-/*
-==================================================
-    PARÁMETROS
-==================================================
-*/
-
-if ($busqueda !== "") {
-
-    $texto = "%" . $busqueda . "%";
-
-    $consulta->bindValue(
-        ":busqueda",
-        $texto,
-        PDO::PARAM_STR
-    );
-
-    $consulta->bindValue(
-        ":busqueda_completo",
-        $texto,
-        PDO::PARAM_STR
-    );
-
-    $consulta->bindValue(
-        ":busqueda_completo2",
-        $texto,
-        PDO::PARAM_STR
-    );
-}
-
-
-$consulta->execute();
-
-$empleados = $consulta->fetchAll(PDO::FETCH_ASSOC);
-
-
-/*
-==================================================
-    ESTADÍSTICAS
-==================================================
-*/
-
-$sqlEstadisticas = "SELECT
-
-                        COUNT(*) AS total,
-
-                        SUM(
-                            CASE
-                                WHEN u.estado = 1
-                                THEN 1
-                                ELSE 0
-                            END
-                        ) AS activos,
-
-                        SUM(
-                            CASE
-                                WHEN u.estado = 0
-                                THEN 1
-                                ELSE 0
-                            END
-                        ) AS inactivos
-
-                    FROM usuario u
-
-                    INNER JOIN roles r
-                        ON u.id_rol = r.id_rol
-
-                    WHERE r.nombre_rol = 'Empleado'";
-
-
-$consultaEstadisticas =
-    $conexion->prepare($sqlEstadisticas);
-
-$consultaEstadisticas->execute();
-
-$estadisticas =
-    $consultaEstadisticas->fetch(PDO::FETCH_ASSOC);
-
-
-$totalEmpleados =
-    $estadisticas["total"] ?? 0;
-
-$empleadosActivos =
-    $estadisticas["activos"] ?? 0;
-
-$empleadosInactivos =
-    $estadisticas["inactivos"] ?? 0;
-
 ?>
 
 <main class="content">
-
-
-    <!-- ==================================================
-         TÍTULO
-    ================================================== -->
 
     <div class="page-title no-print">
 
@@ -214,16 +50,8 @@ $empleadosInactivos =
     </div>
 
 
-    <!-- ==================================================
-         CONTENEDOR PRINCIPAL
-    ================================================== -->
-
     <div class="table-container">
 
-
-        <!-- ==================================================
-             ENCABEZADO PARA IMPRESIÓN
-        ================================================== -->
 
         <div class="print-header">
 
@@ -240,12 +68,15 @@ $empleadosInactivos =
             </p>
 
             <p>
+
                 Fecha de generación:
+
                 <?= date("d/m/Y H:i"); ?>
 
                 <br>
 
                 Generado por:
+
                 <?= htmlspecialchars(
                     ($_SESSION["usuario"]["nombre"] ?? "") .
                     " " .
@@ -257,22 +88,15 @@ $empleadosInactivos =
         </div>
 
 
-        <!-- ==================================================
-             BARRA DE HERRAMIENTAS
-        ================================================== -->
-
         <div class="toolbar no-print">
 
+            <form
+                method="GET"
+                style="display: contents;"
+            >
 
-            <div class="toolbar-left">
+                <div class="toolbar-left">
 
-
-                <!-- BUSCADOR -->
-
-                <form
-                    method="GET"
-                    style="display: flex; gap: 10px; align-items: center;"
-                >
 
                     <input
                         type="text"
@@ -283,34 +107,88 @@ $empleadosInactivos =
                     >
 
 
-                    <button
-                        type="submit"
-                        class="btn btn-primary"
+                    <select
+                        name="estado"
+                        class="filter"
                     >
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        Buscar
-                    </button>
+
+                        <option value="">
+                            Todos los estados
+                        </option>
+
+                        <option
+                            value="1"
+                            <?= $estado === "1" ? "selected" : ""; ?>
+                        >
+                            Activos
+                        </option>
+
+                        <option
+                            value="0"
+                            <?= $estado === "0" ? "selected" : ""; ?>
+                        >
+                            Inactivos
+                        </option>
+
+                    </select>
 
 
-                    <?php if ($busqueda !== ""): ?>
+                    <select
+                        name="id_cargo"
+                        class="filter"
+                    >
+
+                        <option value="">
+                            Todos los cargos
+                        </option>
+
+                        <?php foreach ($cargos as $cargo): ?>
+
+                            <option
+                                value="<?= $cargo["id_cargo"]; ?>"
+                                <?= (string) $id_cargo ===
+                                    (string) $cargo["id_cargo"]
+                                    ? "selected"
+                                    : ""; ?>
+                            >
+
+                                <?= htmlspecialchars(
+                                    $cargo["nombre_cargo"]
+                                ); ?>
+
+                            </option>
+
+                        <?php endforeach; ?>
+
+                    </select>
+
+
+                    <?php
+                    if (
+                        $busqueda !== "" ||
+                        $estado !== "" ||
+                        $id_cargo !== ""
+                    ):
+                    ?>
 
                         <a
                             href="index.php"
                             class="btn btn-secondary"
                         >
+
                             <i class="fa-solid fa-rotate-left"></i>
+
                             Limpiar
+
                         </a>
 
                     <?php endif; ?>
 
-                </form>
 
+                </div>
 
-            </div>
+            </form>
 
-
-            <!-- BOTONES -->
 
             <div
                 style="
@@ -325,8 +203,11 @@ $empleadosInactivos =
                     class="btn btn-primary"
                     style="margin-bottom: 10px;"
                 >
+
                     <i class="fa-solid fa-print"></i>
+
                     Imprimir
+
                 </button>
 
 
@@ -334,50 +215,116 @@ $empleadosInactivos =
                     href="agregar.php"
                     class="btn btn-primary"
                 >
+
                     <i class="fa-solid fa-plus"></i>
+
                     Agregar empleado
+
                 </a>
 
             </div>
 
-
         </div>
 
 
-        <!-- ==================================================
-             ESTADÍSTICAS
-        ================================================== -->
+        <?php
+        if (
+            $busqueda !== "" ||
+            $estado !== "" ||
+            $id_cargo !== ""
+        ):
+        ?>
 
-        <div
-            class="toolbar no-print"
-            style="
-                justify-content: flex-start;
-                gap: 15px;
-                padding: 10px 20px;
-            "
-        >
+            <div
+                class="toolbar no-print"
+                style="
+                    justify-content: flex-start;
+                    gap: 10px;
+                    padding: 5px 20px 15px;
+                    flex-wrap: wrap;
+                "
+            >
 
-            <div class="badge badge-primary">
-                Total:
-                <?= $totalEmpleados; ?>
+                <strong>
+                    Filtros aplicados:
+                </strong>
+
+
+                <?php if ($busqueda !== ""): ?>
+
+                    <span class="badge badge-primary">
+
+                        Búsqueda:
+
+                        <?= htmlspecialchars($busqueda); ?>
+
+                    </span>
+
+                <?php endif; ?>
+
+
+                <?php if ($estado === "1"): ?>
+
+                    <span class="badge badge-success">
+
+                        Estado: Activo
+
+                    </span>
+
+                <?php elseif ($estado === "0"): ?>
+
+                    <span class="badge badge-danger">
+
+                        Estado: Inactivo
+
+                    </span>
+
+                <?php endif; ?>
+
+
+                <?php if ($id_cargo !== ""): ?>
+
+                    <?php
+
+                    $nombreCargoSeleccionado = "";
+
+                    foreach ($cargos as $cargo) {
+
+                        if (
+                            (string) $cargo["id_cargo"] ===
+                            (string) $id_cargo
+                        ) {
+
+                            $nombreCargoSeleccionado =
+                                $cargo["nombre_cargo"];
+
+                            break;
+                        }
+                    }
+
+                    ?>
+
+                    <?php if ($nombreCargoSeleccionado !== ""): ?>
+
+                        <span class="badge badge-primary">
+
+                            Cargo:
+
+                            <?= htmlspecialchars(
+                                $nombreCargoSeleccionado
+                            ); ?>
+
+                        </span>
+
+                    <?php endif; ?>
+
+                <?php endif; ?>
+
+
             </div>
 
-            <div class="badge badge-success">
-                Activos:
-                <?= $empleadosActivos; ?>
-            </div>
+        <?php endif; ?>
 
-            <div class="badge badge-danger">
-                Inactivos:
-                <?= $empleadosInactivos; ?>
-            </div>
-
-        </div>
-
-
-        <!-- ==================================================
-             TABLA
-        ================================================== -->
 
         <table
             class="table"
@@ -429,14 +376,33 @@ $empleadosInactivos =
                     <tr>
 
                         <td
-                            colspan="8"
-                            style="text-align: center;"
+                            colspan="7"
+                            style="
+                                text-align: center;
+                                padding: 30px;
+                            "
                         >
 
-                            <?php if ($busqueda !== ""): ?>
+                            <?php
+                            if (
+                                $busqueda !== "" ||
+                                $estado !== "" ||
+                                $id_cargo !== ""
+                            ):
+                            ?>
+
+                                <i
+                                    class="fa-solid fa-filter"
+                                    style="
+                                        font-size: 25px;
+                                        margin-bottom: 10px;
+                                    "
+                                ></i>
+
+                                <br>
 
                                 No se encontraron empleados
-                                con esa búsqueda.
+                                con los filtros seleccionados.
 
                             <?php else: ?>
 
@@ -452,62 +418,65 @@ $empleadosInactivos =
                 <?php else: ?>
 
 
-                    <?php foreach ($empleados as $empleado): ?>
+                    <?php foreach ($empleados as $empleadoActual): ?>
 
                         <tr>
 
 
-                            <!-- NOMBRE -->
-
                             <td>
 
                                 <strong>
+
                                     <?= htmlspecialchars(
-                                        $empleado["nombre"] .
+                                        $empleadoActual["nombre"] .
                                         " " .
-                                        $empleado["apellido"]
+                                        $empleadoActual["apellido"]
                                     ); ?>
+
                                 </strong>
 
                                 <br>
 
                                 <small>
+
                                     ID:
+
                                     <?= htmlspecialchars(
-                                        $empleado["id_usuario"]
+                                        $empleadoActual["id_usuario"]
                                     ); ?>
+
                                 </small>
 
                             </td>
 
 
-                            <!-- DOCUMENTO -->
-
                             <td>
 
                                 <?= htmlspecialchars(
-                                    $empleado["documento"]
+                                    $empleadoActual["documento"]
                                 ); ?>
 
                             </td>
 
 
-                            <!-- CORREO -->
-
                             <td
                                 title="<?= htmlspecialchars(
-                                    $empleado["correo"]
+                                    $empleadoActual["correo"]
                                 ); ?>"
                             >
 
                                 <?php
 
                                 $correo =
-                                    $empleado["correo"];
+                                    $empleadoActual["correo"];
 
                                 echo strlen($correo) > 20
                                     ? htmlspecialchars(
-                                        substr($correo, 0, 20)
+                                        substr(
+                                            $correo,
+                                            0,
+                                            20
+                                        )
                                     ) . "..."
                                     : htmlspecialchars($correo);
 
@@ -516,22 +485,20 @@ $empleadosInactivos =
                             </td>
 
 
-                            <!-- CARGO -->
-
                             <td>
 
                                 <?php
 
                                 if (
                                     !empty(
-                                        $empleado["cargos"]
+                                        $empleadoActual["cargos"]
                                     )
                                 ) {
 
                                     $listaCargos =
                                         explode(
                                             ", ",
-                                            $empleado["cargos"]
+                                            $empleadoActual["cargos"]
                                         );
 
                                     foreach (
@@ -539,14 +506,21 @@ $empleadosInactivos =
                                         as $cargo
                                     ) {
 
-                                        echo '<span class="badge badge-primary" style="margin: 2px;">'
-                                            . htmlspecialchars($cargo)
-                                            . '</span>';
+                                        echo '<span
+                                                class="badge badge-primary"
+                                                style="margin: 2px;"
+                                            >'
+                                            .
+                                            htmlspecialchars($cargo)
+                                            .
+                                            '</span>';
                                     }
 
                                 } else {
 
-                                    echo '<span class="badge badge-secondary">
+                                    echo '<span
+                                            class="badge badge-secondary"
+                                        >
                                             Sin cargo
                                           </span>';
                                 }
@@ -556,22 +530,20 @@ $empleadosInactivos =
                             </td>
 
 
-                            <!-- SALARIO -->
-
                             <td>
 
                                 <?php
 
                                 if (
-                                    $empleado["salario"] !== null
+                                    $empleadoActual["salario"] !== null
                                     &&
-                                    $empleado["salario"] !== ""
+                                    $empleadoActual["salario"] !== ""
                                 ) {
 
                                     echo "$ " .
                                         number_format(
                                             (float)
-                                            $empleado["salario"],
+                                            $empleadoActual["salario"],
                                             2,
                                             ",",
                                             "."
@@ -580,7 +552,6 @@ $empleadosInactivos =
                                 } else {
 
                                     echo "No especificado";
-
                                 }
 
                                 ?>
@@ -588,26 +559,26 @@ $empleadosInactivos =
                             </td>
 
 
-                            <!-- ESTADO -->
-
                             <td>
 
-                                <?php if (
-                                    $empleado["estado"] == 1
-                                ): ?>
+                                <?php
+                                if (
+                                    $empleadoActual["estado"] == 1
+                                ):
+                                ?>
 
-                                    <span
-                                        class="badge badge-success"
-                                    >
+                                    <span class="badge badge-success">
+
                                         Activo
+
                                     </span>
 
                                 <?php else: ?>
 
-                                    <span
-                                        class="badge badge-danger"
-                                    >
+                                    <span class="badge badge-danger">
+
                                         Inactivo
+
                                     </span>
 
                                 <?php endif; ?>
@@ -615,32 +586,34 @@ $empleadosInactivos =
                             </td>
 
 
-                            <!-- ACCIONES -->
-
                             <td class="no-print">
 
                                 <div class="table-actions">
 
 
-                                    <!-- VER -->
-
                                     <a
-                                        href="ver.php?id=<?= $empleado["id_usuario"]; ?>"
-                                        class="btn btn-primary"
+                                        href="ver.php?id=<?= $empleadoActual["id_usuario"]; ?>"
+                                        class="btn btn-secondary"
                                         title="Ver empleado"
                                     >
-                                        <i class="fa-solid fa-eye"></i>
+
+                                        <i
+                                            class="fa-solid fa-eye"
+                                        ></i>
+
                                     </a>
 
 
-                                    <!-- EDITAR -->
-
                                     <a
-                                        href="editar.php?id=<?= $empleado["id_usuario"]; ?>"
+                                        href="editar.php?id=<?= $empleadoActual["id_usuario"]; ?>"
                                         class="btn btn-warning"
                                         title="Editar empleado"
                                     >
-                                        <i class="fa-solid fa-pen-to-square"></i>
+
+                                        <i
+                                            class="fa-solid fa-pen-to-square"
+                                        ></i>
+
                                     </a>
 
 

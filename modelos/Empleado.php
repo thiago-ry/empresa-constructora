@@ -309,4 +309,47 @@ class Empleado
     {
         return $this->conexion;
     }
+
+public function obtenerEmpleadosPorObra($id_obra)
+{
+    $sql = "SELECT
+                u.id_usuario,
+                u.nombre,
+                u.apellido,
+                eo.id_obra,
+                eo.id_cargo,
+                c.nombre_cargo,
+                a.id_asistencia,
+                a.fecha,
+                a.hora_entrada,
+                a.hora_salida,
+                a.estado
+            FROM empleado_obra eo
+
+            INNER JOIN usuario u
+                ON u.id_usuario = eo.id_usuario
+
+            LEFT JOIN cargo c
+                ON c.id_cargo = eo.id_cargo
+
+            LEFT JOIN asistencia a
+                ON a.id_usuario = eo.id_usuario
+                AND a.id_obra = eo.id_obra
+                AND a.fecha = CURDATE()
+
+            WHERE eo.id_obra = :id_obra
+              AND u.estado = 1
+
+            ORDER BY
+                u.apellido ASC,
+                u.nombre ASC";
+
+    $stmt = $this->conexion->prepare($sql);
+
+    $stmt->execute([
+        ":id_obra" => $id_obra
+    ]);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 }

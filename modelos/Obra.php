@@ -592,4 +592,184 @@ WHERE id_capataz = :id_capataz";
 
         return $consulta->fetch(PDO::FETCH_ASSOC) === false;
     }
+
+    public function obtenerObrasVisibles($usuario)
+{
+    $id_usuario = (int)($usuario["id"] ?? 0);
+    $id_rol = (int)($usuario["id_rol"] ?? 0);
+
+    if ($id_usuario <= 0 || $id_rol <= 0) {
+        return [];
+    }
+
+    /*
+    ==================================================
+    GERENTE
+    ==================================================
+    */
+
+    if ($id_rol == 2) {
+
+        $sql = "SELECT
+                    o.*,
+                    u.nombre AS nombre_cliente,
+                    u.apellido AS apellido_cliente,
+                    j.nombre AS nombre_jefe,
+                    j.apellido AS apellido_jefe,
+                    c.nombre AS nombre_capataz,
+                    c.apellido AS apellido_capataz
+
+                FROM obra o
+
+                LEFT JOIN usuario u
+                    ON u.id_usuario = o.id_usuario
+
+                LEFT JOIN usuario j
+                    ON j.id_usuario = o.id_jefe_obra
+
+                LEFT JOIN usuario c
+                    ON c.id_usuario = o.id_capataz
+
+                WHERE o.activo = 1
+
+                ORDER BY o.id_obra DESC";
+
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    /*
+    ==================================================
+    JEFE DE OBRA
+    ==================================================
+    */
+
+    if ($id_rol == 4) {
+
+        $sql = "SELECT
+                    o.*,
+                    u.nombre AS nombre_cliente,
+                    u.apellido AS apellido_cliente,
+                    j.nombre AS nombre_jefe,
+                    j.apellido AS apellido_jefe,
+                    c.nombre AS nombre_capataz,
+                    c.apellido AS apellido_capataz
+
+                FROM obra o
+
+                LEFT JOIN usuario u
+                    ON u.id_usuario = o.id_usuario
+
+                LEFT JOIN usuario j
+                    ON j.id_usuario = o.id_jefe_obra
+
+                LEFT JOIN usuario c
+                    ON c.id_usuario = o.id_capataz
+
+                WHERE o.id_jefe_obra = :id_usuario
+                  AND o.activo = 1
+
+                ORDER BY o.id_obra DESC";
+
+        $stmt = $this->conexion->prepare($sql);
+
+        $stmt->execute([
+            ":id_usuario" => $id_usuario
+        ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    /*
+    ==================================================
+    CAPATAZ
+    ==================================================
+    */
+
+    if ($id_rol == 7) {
+
+        $sql = "SELECT
+                    o.*,
+                    u.nombre AS nombre_cliente,
+                    u.apellido AS apellido_cliente,
+                    j.nombre AS nombre_jefe,
+                    j.apellido AS apellido_jefe,
+                    c.nombre AS nombre_capataz,
+                    c.apellido AS apellido_capataz
+
+                FROM obra o
+
+                LEFT JOIN usuario u
+                    ON u.id_usuario = o.id_usuario
+
+                LEFT JOIN usuario j
+                    ON j.id_usuario = o.id_jefe_obra
+
+                LEFT JOIN usuario c
+                    ON c.id_usuario = o.id_capataz
+
+                WHERE o.id_capataz = :id_usuario
+                  AND o.activo = 1
+
+                ORDER BY o.id_obra DESC";
+
+        $stmt = $this->conexion->prepare($sql);
+
+        $stmt->execute([
+            ":id_usuario" => $id_usuario
+        ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    /*
+    ==================================================
+    CLIENTE
+    ==================================================
+    */
+
+    if ($id_rol == 6) {
+
+        $sql = "SELECT
+                    o.*,
+                    u.nombre AS nombre_cliente,
+                    u.apellido AS apellido_cliente,
+                    j.nombre AS nombre_jefe,
+                    j.apellido AS apellido_jefe,
+                    c.nombre AS nombre_capataz,
+                    c.apellido AS apellido_capataz
+
+                FROM obra o
+
+                LEFT JOIN usuario u
+                    ON u.id_usuario = o.id_usuario
+
+                LEFT JOIN usuario j
+                    ON j.id_usuario = o.id_jefe_obra
+
+                LEFT JOIN usuario c
+                    ON c.id_usuario = o.id_capataz
+
+                WHERE o.id_usuario = :id_usuario
+                  AND o.activo = 1
+
+                ORDER BY o.id_obra DESC";
+
+        $stmt = $this->conexion->prepare($sql);
+
+        $stmt->execute([
+            ":id_usuario" => $id_usuario
+        ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    return [];
+}
 }

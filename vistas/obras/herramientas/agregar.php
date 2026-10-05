@@ -47,10 +47,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
     <div class="form-card">
 
 
-        <!-- ==================================================
-             BUSCADOR
-        ================================================== -->
-
         <div class="form-group">
 
             <label for="buscarHerramienta">
@@ -98,10 +94,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
         </div>
 
 
-
-        <!-- ==================================================
-             TABLA DE HERRAMIENTAS
-        ================================================== -->
 
         <div
             class="table-container"
@@ -249,10 +241,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
 
 
-        <!-- ==================================================
-             HERRAMIENTA SELECCIONADA
-        ================================================== -->
-
         <div
             id="herramientaSeleccionada"
             style="
@@ -329,10 +317,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
 
 
-        <!-- ==================================================
-             FORMULARIO
-        ================================================== -->
-
         <form
             class="form"
             id="formAsignarHerramienta"
@@ -354,10 +338,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
                 id="id_herramienta"
                 value="">
 
-
-            <!-- ==================================================
-                 CANTIDAD
-            ================================================== -->
 
             <div class="form-row">
 
@@ -396,10 +376,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
                 </div>
 
 
-                <!-- ==================================================
-                     FECHA
-                ================================================== -->
-
                 <div class="form-group">
 
                     <label for="fecha_asignacion">
@@ -423,10 +399,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
 
 
-            <!-- ==================================================
-                 OBSERVACIONES
-            ================================================== -->
-
             <div class="form-group">
 
                 <label for="observaciones">
@@ -446,10 +418,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
             </div>
 
 
-
-            <!-- ==================================================
-                 BOTONES
-            ================================================== -->
 
             <div class="form-actions">
 

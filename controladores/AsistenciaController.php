@@ -37,13 +37,6 @@ if ($id_usuario_empleado <= 0 || $id_obra <= 0) {
     exit;
 }
 
-/*
-|--------------------------------------------------------------------------
-| VERIFICAR QUE EL EMPLEADO PERTENEZCA A ESA OBRA
-| Y QUE ESA OBRA PERTENEZCA AL CAPATAZ
-|--------------------------------------------------------------------------
-*/
-
 $empleado = $asistencia->empleadoPerteneceObraCapataz(
     $id_usuario_empleado,
     $id_usuario_capataz,

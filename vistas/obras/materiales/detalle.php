@@ -45,8 +45,6 @@ $detalle = $detalle ?? [];
     </div>
 
 
-    <!-- INFORMACIÓN DE LA SOLICITUD -->
-
     <div class="card" style="margin-bottom:25px;">
 
         <div style="
@@ -129,8 +127,6 @@ $detalle = $detalle ?? [];
 
     </div>
 
-
-    <!-- MATERIALES SOLICITADOS -->
 
     <div class="card">
 

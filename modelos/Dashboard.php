@@ -12,9 +12,6 @@ class Dashboard
         $this->conexion = $db->conectar();
     }
 
-    // =========================================================
-    // OBTENER CANTIDAD DE OBRAS
-    // =========================================================
     private function contarObras()
     {
         try {
@@ -34,9 +31,6 @@ class Dashboard
     }
 
 
-    // =========================================================
-    // OBTENER CLIENTES ACTIVOS
-    // =========================================================
     private function contarClientes()
     {
         try {
@@ -60,9 +54,6 @@ class Dashboard
     }
 
 
-    // =========================================================
-    // OBTENER EMPLEADOS ACTIVOS
-    // =========================================================
     private function contarEmpleados()
     {
         try {
@@ -86,9 +77,6 @@ class Dashboard
     }
 
 
-    // =========================================================
-    // OBTENER MATERIALES
-    // =========================================================
     private function contarMateriales()
     {
         try {
@@ -108,9 +96,6 @@ class Dashboard
     }
 
 
-    // =========================================================
-    // ESTADÍSTICAS DE UNIDADES DE HERRAMIENTAS
-    // =========================================================
     private function estadisticasHerramientas()
     {
         $resultado = [
@@ -191,16 +176,13 @@ class Dashboard
             }
 
         } catch (Exception $e) {
-            // Si ocurre algún error se mantienen los valores en 0
+            
         }
 
         return $resultado;
     }
 
 
-    // =========================================================
-    // ACTIVIDAD RECIENTE
-    // =========================================================
     public function obtenerActividadReciente($limite = 8)
     {
         try {
@@ -243,9 +225,6 @@ class Dashboard
     }
 
 
-    // =========================================================
-    // ESTADÍSTICAS DE AUDITORÍA
-    // =========================================================
     public function obtenerEstadisticasAuditoria()
     {
         $resultado = [
@@ -257,7 +236,6 @@ class Dashboard
 
         try {
 
-            // Total de acciones
             $sql = "
                 SELECT COUNT(*) AS total
                 FROM auditoria
@@ -270,7 +248,6 @@ class Dashboard
                 ->fetch(PDO::FETCH_ASSOC)["total"];
 
 
-            // Acciones agrupadas
             $sql = "
                 SELECT
                     LOWER(accion) AS accion,
@@ -300,16 +277,12 @@ class Dashboard
             }
 
         } catch (Exception $e) {
-            // Mantener valores en 0
         }
 
         return $resultado;
     }
 
 
-    // =========================================================
-    // OBTENER DATOS PRINCIPALES DEL DASHBOARD
-    // =========================================================
     public function obtenerDatos()
     {
         $herramientas =
@@ -319,10 +292,6 @@ class Dashboard
             $this->obtenerEstadisticasAuditoria();
 
         return [
-
-            // -----------------------------
-            // PERSONAS
-            // -----------------------------
             "obras" =>
                 $this->contarObras(),
 
@@ -332,24 +301,15 @@ class Dashboard
             "empleados" =>
                 $this->contarEmpleados(),
 
-            // -----------------------------
-            // INVENTARIO
-            // -----------------------------
             "materiales" =>
                 $this->contarMateriales(),
 
             "herramientas" =>
                 $herramientas,
 
-            // -----------------------------
-            // AUDITORÍA
-            // -----------------------------
             "auditoria" =>
                 $auditoria,
 
-            // -----------------------------
-            // ACTIVIDAD
-            // -----------------------------
             "actividad" =>
                 $this->obtenerActividadReciente(8)
         ];

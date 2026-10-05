@@ -14,9 +14,6 @@ class SolicitudMaterial
         $this->db = $conexion->conectar();
     }
 
-    /**
-     * Crear una nueva solicitud de materiales.
-     */
     public function crear($id_obra)
     {
         $sql = "INSERT INTO solicitud_material
@@ -35,9 +32,6 @@ class SolicitudMaterial
         return false;
     }
 
-    /**
-     * Agregar un material a una solicitud.
-     */
     public function agregarDetalle($id_solicitud, $id_material, $cantidad)
     {
         $sql = "INSERT INTO detalle_solicitud_material

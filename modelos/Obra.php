@@ -12,11 +12,6 @@ class Obra
         $this->conexion = $db->conectar();
     }
 
-    /*
-    =====================================
-        OBTENER TODAS LAS OBRAS
-    =====================================
-    */
     public function obtenerTodos()
     {
         $sql = "SELECT
@@ -27,11 +22,9 @@ class Obra
                     o.fecha_fin,
                     o.estado,
 
-                    -- Cliente
                     u.nombre AS nombre_cliente,
                     u.apellido AS apellido_cliente,
 
-                    -- Jefe de Obra
                     j.nombre AS nombre_jefe_obra,
                     j.apellido AS apellido_jefe_obra
 
@@ -51,11 +44,6 @@ class Obra
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /*
-    =====================================
-        OBTENER ESTADOS
-    =====================================
-    */
     public function obtenerEstados()
     {
         $sql = "SHOW COLUMNS FROM obra LIKE 'estado'";
@@ -79,15 +67,12 @@ class Obra
         $sql = "SELECT
                     o.*,
 
-                    -- Cliente
                     u.nombre AS nombre_cliente,
                     u.apellido AS apellido_cliente,
 
-                    -- Jefe de Obra
                     j.nombre AS nombre_jefe_obra,
                     j.apellido AS apellido_jefe_obra,
 
-                    -- Capataz
                     c.nombre AS nombre_capataz,
                     c.apellido AS apellido_capataz
 
@@ -181,12 +166,6 @@ class Obra
         return $this->conexion->lastInsertId();
     }
 
-    /*
-    =====================================
-        EDITAR OBRA
-    =====================================
-    */
-
     public function editar($datos)
     {
         $sql = "UPDATE obra
@@ -219,11 +198,6 @@ class Obra
         ]);
     }
 
-    /*
-    =====================================
-        BAJA LÓGICA
-    =====================================
-    */
     public function bajaLogica($id)
     {
         $sql = "UPDATE obra
@@ -241,11 +215,6 @@ class Obra
         return $consulta->execute();
     }
 
-    /*
-    =====================================
-        ACTIVAR OBRA
-    =====================================
-    */
     public function activarObra($id)
     {
         $sql = "UPDATE obra
@@ -263,11 +232,6 @@ class Obra
         return $consulta->execute();
     }
 
-    /*
-    =====================================
-        OBTENER OBRAS ACTIVAS
-    =====================================
-    */
     public function obtenerActivas()
     {
         $sql = "SELECT
@@ -305,19 +269,11 @@ class Obra
 
         if ($id_rol == 2) {
 
-            // Gerente → todas
-
         } elseif ($id_rol == 4) {
-
-            // Jefe de Obra → sus obras
             $sql .= " AND o.id_jefe_obra = :id_usuario";
         } elseif ($id_rol == 7) {
-
-            // Capataz → su única obra
             $sql .= " AND o.id_capataz = :id_usuario";
         } elseif ($id_rol == 6) {
-
-            // Cliente → sus obras
             $sql .= " AND o.id_usuario = :id_usuario";
         } else {
 
@@ -360,15 +316,12 @@ class Obra
                     o.id_jefe_obra,
                     o.id_capataz,
 
-                    -- Cliente
                     u.nombre AS nombre_cliente,
                     u.apellido AS apellido_cliente,
 
-                    -- Jefe de Obra
                     j.nombre AS nombre_jefe_obra,
                     j.apellido AS apellido_jefe_obra,
 
-                    -- Capataz
                     c.nombre AS nombre_capataz,
                     c.apellido AS apellido_capataz
 
@@ -385,13 +338,6 @@ class Obra
 
                 WHERE o.activo = 1";
 
-        /*
-        =====================================
-            GERENTE
-            Puede ver todas las obras
-        =====================================
-        */
-
         if ($id_rol == 2) {
 
             $sql .= "
@@ -403,13 +349,6 @@ class Obra
 
             return $consulta->fetchAll(PDO::FETCH_ASSOC);
         }
-
-        /*
-        =====================================
-            JEFE DE OBRA
-            Solo sus obras
-        =====================================
-        */
 
         if ($id_rol == 4) {
 
@@ -431,13 +370,6 @@ class Obra
             return $consulta->fetchAll(PDO::FETCH_ASSOC);
         }
 
-        /*
-        =====================================
-            CAPATAZ
-            Solo su obra
-        =====================================
-        */
-
         if ($id_rol == 7) {
 
             $sql .= "
@@ -458,13 +390,6 @@ class Obra
             return $consulta->fetchAll(PDO::FETCH_ASSOC);
         }
 
-        /*
-        =====================================
-            CLIENTE
-            Solo sus obras
-        =====================================
-        */
-
         if ($id_rol == 6) {
 
             $sql .= "
@@ -484,13 +409,6 @@ class Obra
 
             return $consulta->fetchAll(PDO::FETCH_ASSOC);
         }
-
-        /*
-        =====================================
-            OTROS ROLES
-            No tienen obras visibles
-        =====================================
-        */
 
         return [];
     }
@@ -602,12 +520,6 @@ WHERE id_capataz = :id_capataz";
         return [];
     }
 
-    /*
-    ==================================================
-    GERENTE
-    ==================================================
-    */
-
     if ($id_rol == 2) {
 
         $sql = "SELECT
@@ -640,12 +552,6 @@ WHERE id_capataz = :id_capataz";
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
-    /*
-    ==================================================
-    JEFE DE OBRA
-    ==================================================
-    */
 
     if ($id_rol == 4) {
 
@@ -684,12 +590,6 @@ WHERE id_capataz = :id_capataz";
     }
 
 
-    /*
-    ==================================================
-    CAPATAZ
-    ==================================================
-    */
-
     if ($id_rol == 7) {
 
         $sql = "SELECT
@@ -726,12 +626,6 @@ WHERE id_capataz = :id_capataz";
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
-    /*
-    ==================================================
-    CLIENTE
-    ==================================================
-    */
 
     if ($id_rol == 6) {
 

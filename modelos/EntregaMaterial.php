@@ -12,9 +12,6 @@ class EntregaMaterial
         $this->db = $conexion->conectar();
     }
 
-    /**
-     * Crear cabecera de entrega
-     */
     public function crear($id_solicitud, $id_usuario, $observaciones = null)
     {
         $sql = "INSERT INTO entrega_material
@@ -56,9 +53,6 @@ class EntregaMaterial
         return false;
     }
 
-    /**
-     * Agregar material a una entrega
-     */
     public function agregarDetalle(
         $id_entrega,
         $id_material,
@@ -99,9 +93,6 @@ class EntregaMaterial
         return $stmt->execute();
     }
 
-    /**
-     * Obtener entrega por solicitud
-     */
     public function obtenerPorSolicitud($id_solicitud)
     {
         $sql = "SELECT
@@ -134,9 +125,6 @@ class EntregaMaterial
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Obtener detalle de una entrega
-     */
     public function obtenerDetalle($id_entrega)
     {
         $sql = "SELECT
@@ -168,9 +156,6 @@ class EntregaMaterial
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Obtener una entrega
-     */
     public function obtenerPorId($id_entrega)
     {
         $sql = "SELECT

@@ -219,12 +219,6 @@ class ClienteController
 
         $this->cliente->editar($datos);
 
-        /*
-    ==========================
-        AUDITORÍA
-    ==========================
-    */
-
         $this->auditoria->registrar([
 
             "id_usuario" => $_SESSION["usuario"]["id"],

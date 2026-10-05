@@ -31,13 +31,6 @@ $id_obra =
 $id_usuario =
     $empleado["id_usuario"];
 
-
-/*
-==========================================================
-    OTRAS OBRAS
-==========================================================
-*/
-
 $otrasObras =
     $empleadoObra->obtenerOtrasObrasActivas(
         $id_usuario,
@@ -51,11 +44,6 @@ require_once "../../../layouts/sidebar.php";
 ?>
 
 <main class="content">
-
-
-    <!-- ==================================================
-         ENCABEZADO
-    ================================================== -->
 
     <div class="page-title no-print">
 
@@ -75,11 +63,6 @@ require_once "../../../layouts/sidebar.php";
     ================================================== -->
 
     <div class="form-card">
-
-
-        <!-- ==================================================
-             INFORMACIÓN
-        ================================================== -->
 
         <div
             style="
@@ -128,11 +111,6 @@ require_once "../../../layouts/sidebar.php";
             </div>
 
         </div>
-
-
-        <!-- ==================================================
-             EMPLEADO
-        ================================================== -->
 
         <div
             style="
@@ -288,11 +266,6 @@ require_once "../../../layouts/sidebar.php";
             </div>
 
         </div>
-
-
-        <!-- ==================================================
-             FORMULARIO
-        ================================================== -->
 
         <form
             id="formRetirarEmpleado"
@@ -472,11 +445,6 @@ require_once "../../../layouts/sidebar.php";
 
 </main>
 
-
-<!-- ======================================================
-     MODAL
-====================================================== -->
-
 <div
     id="modalRetiro"
     class="modal-overlay"
@@ -551,10 +519,6 @@ require_once "../../../layouts/sidebar.php";
 
             </div>
 
-
-            <!-- ==================================================
-                 OPCIONES
-            ================================================== -->
 
             <div class="retiro-opciones">
 
@@ -634,10 +598,6 @@ require_once "../../../layouts/sidebar.php";
             </div>
 
 
-            <!-- ==================================================
-                 OBRAS
-            ================================================== -->
-
             <div
                 id="listaObras"
                 style="display:none;margin-top:20px;">
@@ -688,10 +648,6 @@ require_once "../../../layouts/sidebar.php";
 
             </div>
 
-
-            <!-- ==================================================
-                 RECOMENDACIÓN
-            ================================================== -->
 
             <div
                 id="recomendacionRetiro"
@@ -744,9 +700,6 @@ require_once "../../../layouts/sidebar.php";
 
 
 <style>
-    /* ==========================================================
-   MODAL
-========================================================== */
 
     .modal-overlay {
 
@@ -859,10 +812,6 @@ require_once "../../../layouts/sidebar.php";
     }
 
 
-    /* ==========================================================
-   OPCIONES
-========================================================== */
-
     .retiro-opciones {
 
         display: flex;
@@ -925,10 +874,6 @@ require_once "../../../layouts/sidebar.php";
 
     }
 
-
-    /* ==========================================================
-   OBRAS
-========================================================== */
 
     .obra-checkbox {
 
@@ -1030,24 +975,12 @@ require_once "../../../layouts/sidebar.php";
                 );
 
 
-            /*
-            ======================================================
-                ENVIAR FORMULARIO
-            ======================================================
-            */
-
             formulario.addEventListener(
                 "submit",
                 function(evento) {
 
                     evento.preventDefault();
 
-
-                    /*
-                    ----------------------------------------------
-                        SI NO HAY OTRAS OBRAS
-                    ----------------------------------------------
-                    */
 
                     const cantidadObras =
                         <?= count($otrasObras) ?>;
@@ -1065,24 +998,12 @@ require_once "../../../layouts/sidebar.php";
                     }
 
 
-                    /*
-                    ----------------------------------------------
-                        MOSTRAR MODAL
-                    ----------------------------------------------
-                    */
-
                     modal.style.display =
                         "flex";
 
                 }
             );
 
-
-            /*
-            ======================================================
-                CAMBIO DE OPCIÓN
-            ======================================================
-            */
 
             document
                 .querySelectorAll(
@@ -1100,12 +1021,6 @@ require_once "../../../layouts/sidebar.php";
                 );
 
 
-            /*
-            ======================================================
-                ACTUALIZAR MODAL
-            ======================================================
-            */
-
             function actualizarModal() {
 
                 const seleccionado =
@@ -1117,12 +1032,6 @@ require_once "../../../layouts/sidebar.php";
                 alcance.value =
                     seleccionado;
 
-
-                /*
-                ----------------------------------------------
-                    MOSTRAR / OCULTAR OBRAS
-                ----------------------------------------------
-                */
 
                 if (
                     seleccionado ===
@@ -1139,12 +1048,6 @@ require_once "../../../layouts/sidebar.php";
 
                 }
 
-
-                /*
-                ----------------------------------------------
-                    RECOMENDACIÓN
-                ----------------------------------------------
-                */
 
                 if (
                     motivo.value ===

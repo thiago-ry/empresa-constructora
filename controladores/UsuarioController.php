@@ -21,12 +21,6 @@ class UsuarioController
     }
 
 
-    /*
-    ==========================
-            LOGIN
-    ==========================
-    */
-
     public function login()
     {
         session_start();
@@ -127,12 +121,6 @@ class UsuarioController
     }
 
 
-    /*
-    ==========================
-            AGREGAR
-    ==========================
-    */
-
     public function agregar()
     {
         session_start();
@@ -162,20 +150,8 @@ class UsuarioController
         }
 
 
-        /*
-    ========================================
-    CREAR USUARIO
-    ========================================
-    */
-
         $idUsuario = $this->usuario->agregar($datos);
 
-
-        /*
-    ========================================
-    GUARDAR CARGOS DEL EMPLEADO
-    ========================================
-    */
 
         $idRolEmpleado =
             $this->usuario->obtenerIdRolEmpleado()["id_rol"];
@@ -189,12 +165,6 @@ class UsuarioController
             );
         }
 
-
-        /*
-    ========================================
-    AUDITORÍA
-    ========================================
-    */
 
         $this->auditoria->registrar([
             "id_usuario" => $_SESSION["usuario"]["id"],
@@ -232,12 +202,6 @@ class UsuarioController
         ];
 
 
-        /*
-        ==========================
-        VALIDAR CORREO
-        ==========================
-        */
-
         $usuarioActual = $this->usuario->buscarPorId(
             $datos["id_usuario"]
         );
@@ -266,12 +230,6 @@ class UsuarioController
             exit();
         }
 
-
-        /*
-        ==========================
-        VALIDAR CLIENTE
-        ==========================
-        */
 
         $rolAnterior = $this->usuario->obtenerRolActual(
             $datos["id_usuario"]
@@ -307,19 +265,7 @@ class UsuarioController
         }
 
 
-        /*
-        ==========================
-        ACTUALIZAR USUARIO
-        ==========================
-        */
-
         $this->usuario->editar($datos);
-
-        /*
-========================================
-ACTUALIZAR CARGOS DEL EMPLEADO
-========================================
-*/
 
         $idRolEmpleado = $this->usuario->obtenerIdRolEmpleado()["id_rol"];
 
@@ -341,12 +287,6 @@ ACTUALIZAR CARGOS DEL EMPLEADO
                 []
             );
         }
-        /*
-        ==========================
-        AUDITORÍA
-        ==========================
-        */
-
         $this->auditoria->registrar([
             "id_usuario" => $_SESSION["usuario"]["id"],
             "accion" => "EDITAR",
@@ -360,12 +300,6 @@ ACTUALIZAR CARGOS DEL EMPLEADO
         exit();
     }
 
-
-    /*
-    ==========================
-            ELIMINAR
-    ==========================
-    */
 
     public function eliminar()
     {
@@ -409,12 +343,6 @@ ACTUALIZAR CARGOS DEL EMPLEADO
     }
 
 
-    /*
-    ==========================
-            ACTIVAR
-    ==========================
-    */
-
     public function activar()
     {
         session_start();
@@ -434,20 +362,8 @@ ACTUALIZAR CARGOS DEL EMPLEADO
 }
 
 
-/*
-==========================
-    INSTANCIAR CONTROLADOR
-==========================
-*/
-
 $controlador = new UsuarioController();
 
-
-/*
-==========================
-    ACCIONES POST
-==========================
-*/
 
 if (isset($_POST["accion"])) {
 
@@ -475,12 +391,6 @@ if (isset($_POST["accion"])) {
     }
 }
 
-
-/*
-==========================
-    ACCIONES GET
-==========================
-*/
 
 if (isset($_GET["accion"])) {
 

@@ -13,12 +13,6 @@ class EmpleadoObra
     }
 
 
-    /*
-    ==========================================================
-        LISTAR EMPLEADOS DE UNA OBRA
-    ==========================================================
-    */
-
    public function obtenerPorObra($id_obra)
 {
     $sql = "SELECT
@@ -55,12 +49,6 @@ class EmpleadoObra
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
-
-    /*
-    ==========================================================
-        EMPLEADOS ACTIVOS
-    ==========================================================
-    */
 
     public function obtenerActivos($id_obra)
     {
@@ -100,12 +88,6 @@ class EmpleadoObra
     }
 
 
-    /*
-    ==========================================================
-        EMPLEADOS RETIRADOS
-    ==========================================================
-    */
-
     public function obtenerRetirados($id_obra)
     {
         $sql = "SELECT
@@ -143,11 +125,6 @@ class EmpleadoObra
     }
 
 
-    /*
-    ==========================================================
-        BUSCAR ASIGNACIÓN
-    ==========================================================
-    */
 public function buscarPorId($id)
 {
     $sql = "SELECT
@@ -180,12 +157,6 @@ public function buscarPorId($id)
 }
 
 
-    /*
-    ==========================================================
-        VERIFICAR SI YA ESTÁ EN UNA OBRA
-    ==========================================================
-    */
-
     public function existeEmpleadoActivo($idUsuario, $idObra)
     {
         $sql = "SELECT COUNT(*)
@@ -204,12 +175,6 @@ public function buscarPorId($id)
         return $stmt->fetchColumn() > 0;
     }
 
-
-    /*
-    ==========================================================
-        ASIGNAR
-    ==========================================================
-    */
 
     public function asignar($datos)
     {
@@ -244,12 +209,6 @@ public function buscarPorId($id)
     }
 
 
-    /*
-    ==========================================================
-        EDITAR
-    ==========================================================
-    */
-
     public function editar($datos)
     {
         $sql = "UPDATE empleado_obra
@@ -267,12 +226,6 @@ public function buscarPorId($id)
         ]);
     }
 
-
-    /*
-    ==========================================================
-        RETIRAR DE UNA OBRA
-    ==========================================================
-    */
 
     public function retirar($datos)
     {
@@ -296,12 +249,6 @@ public function buscarPorId($id)
     }
 
 
-    /*
-    ==========================================================
-        ACTIVAR
-    ==========================================================
-    */
-
 public function activar($id)
 {
     $sql = "UPDATE empleado_obra
@@ -318,12 +265,6 @@ public function activar($id)
     ]);
 }
 
-
-    /*
-    ==========================================================
-        RESUMEN
-    ==========================================================
-    */
 
     public function obtenerResumen($id_obra)
     {
@@ -358,12 +299,6 @@ public function activar($id)
     }
 
 
-    /*
-    ==========================================================
-        CARGOS DEL EMPLEADO
-    ==========================================================
-    */
-
     public function obtenerCargosEmpleado($id_usuario)
     {
         $sql = "SELECT
@@ -388,12 +323,6 @@ public function activar($id)
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
-    /*
-    ==========================================================
-        OTRAS OBRAS ACTIVAS DEL EMPLEADO
-    ==========================================================
-    */
 
     public function obtenerOtrasObrasActivas(
         $id_usuario,
@@ -437,12 +366,6 @@ public function activar($id)
     }
 
 
-    /*
-    ==========================================================
-        RETIRAR DE TODAS LAS OBRAS ACTIVAS
-    ==========================================================
-    */
-
     public function retirarDeTodasLasObras(
         $id_usuario,
         $fecha_egreso,
@@ -472,12 +395,6 @@ public function activar($id)
         ]);
     }
 
-
-    /*
-    ==========================================================
-        RETIRAR DE OBRAS SELECCIONADAS
-    ==========================================================
-    */
 
     public function retirarDeObrasSeleccionadas(
         $id_usuario,

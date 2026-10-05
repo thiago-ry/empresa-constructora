@@ -17,12 +17,6 @@ $accion = $_GET["accion"] ?? "listar";
 
 switch ($accion) {
 
-    /*
-    |--------------------------------------------------------------------------
-    | LISTAR SOLICITUDES
-    |--------------------------------------------------------------------------
-    */
-
     case "listar":
 
         $solicitudes = $solicitudModel->obtenerTodas();
@@ -31,12 +25,6 @@ switch ($accion) {
 
         break;
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | VER DETALLE
-    |--------------------------------------------------------------------------
-    */
 
     case "detalle":
 
@@ -65,12 +53,6 @@ switch ($accion) {
         break;
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | APROBAR
-    |--------------------------------------------------------------------------
-    */
-
     case "aprobar":
 
         $id_solicitud = $_GET["id"] ?? 0;
@@ -95,7 +77,6 @@ switch ($accion) {
             exit;
         }
 
-        // Obtener los materiales solicitados
         $detalle = $solicitudModel->obtenerDetalle($id_solicitud);
 
         if (empty($detalle)) {
@@ -108,7 +89,6 @@ switch ($accion) {
             exit;
         }
 
-        // Comprobar stock
         $stockInsuficiente = [];
 
         foreach ($detalle as $material) {
@@ -125,7 +105,6 @@ switch ($accion) {
             }
         }
 
-        // Si falta stock, no aprobar
         if (!empty($stockInsuficiente)) {
 
             $mensaje = "No se puede aprobar la solicitud. Stock insuficiente en:\\n\\n";
@@ -142,7 +121,6 @@ switch ($accion) {
             exit;
         }
 
-        // Aprobar solicitud
         $resultado = $solicitudModel->cambiarEstado(
             $id_solicitud,
             "Aprobada"
@@ -231,12 +209,6 @@ switch ($accion) {
         break;
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | FORMULARIO DE ENTREGA
-    |--------------------------------------------------------------------------
-    */
-
     case "entregar":
 
         $id_solicitud = $_GET["id"] ?? 0;
@@ -276,12 +248,6 @@ switch ($accion) {
         break;
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | GUARDAR ENTREGA
-    |--------------------------------------------------------------------------
-    */
-
     case "guardarEntrega":
 
         if ($_SERVER["REQUEST_METHOD"] !== "POST") {
@@ -318,19 +284,12 @@ switch ($accion) {
 
         $id_usuario = $_SESSION["usuario"]["id"];
 
-        /*
-     * Obtener los materiales originales de la solicitud.
-     */
         $detalleSolicitud = $solicitudModel->obtenerDetalle($id_solicitud);
 
         if (empty($detalleSolicitud)) {
             die("La solicitud no contiene materiales.");
         }
 
-        /*
-     * Crear un índice para validar rápidamente
-     * qué materiales pertenecen a la solicitud.
-     */
         $materialesSolicitados = [];
 
         foreach ($detalleSolicitud as $item) {
@@ -341,10 +300,6 @@ switch ($accion) {
             ];
         }
 
-        /*
-     * Validar todos los materiales y cantidades
-     * antes de modificar la base de datos.
-     */
         $entregas = [];
 
         foreach ($materiales as $indice => $id_material) {
@@ -362,10 +317,6 @@ switch ($accion) {
 
             $cantidad = (float)$cantidad;
 
-            /*
-         * Comprobar que el material pertenece
-         * a esta solicitud.
-         */
             if (!isset($materialesSolicitados[$id_material])) {
                 die("Se intentó entregar un material que no pertenece a la solicitud.");
             }
@@ -373,9 +324,6 @@ switch ($accion) {
             $cantidadSolicitada =
                 $materialesSolicitados[$id_material]["cantidad"];
 
-            /*
-         * No permitir entregar más de lo solicitado.
-         */
             if ($cantidad > $cantidadSolicitada) {
 
                 die("No se puede entregar más de lo solicitado para: " .
@@ -392,9 +340,6 @@ switch ($accion) {
             die("No se indicó ningún material válido para entregar.");
         }
 
-        /*
-     * Comenzar transacción.
-     */
         $conexion = new Conexion();
         $db = $conexion->conectar();
 
@@ -402,10 +347,6 @@ switch ($accion) {
 
             $db->beginTransaction();
 
-            /*
-         * Verificar stock actual y bloquear las filas
-         * mientras se realiza la operación.
-         */
             foreach ($entregas as $entrega) {
 
                 $sqlStock = "SELECT
@@ -435,9 +376,6 @@ switch ($accion) {
                 $stockActual = (float)$materialDB["stock"];
                 $cantidadEntregada = (float)$entrega["cantidad"];
 
-                /*
-             * Verificar stock.
-             */
                 if ($cantidadEntregada > $stockActual) {
 
                     throw new Exception(
@@ -451,9 +389,6 @@ switch ($accion) {
                 }
             }
 
-            /*
-         * Crear encabezado de entrega.
-         */
             $sqlEntrega = "INSERT INTO entrega_material
                        (
                            id_solicitud,
@@ -492,14 +427,8 @@ switch ($accion) {
 
             $id_entrega = $db->lastInsertId();
 
-            /*
-         * Registrar cada detalle y descontar stock.
-         */
             foreach ($entregas as $entrega) {
 
-                /*
-             * Registrar detalle de entrega.
-             */
                 $sqlDetalle = "INSERT INTO detalle_entrega_material
                            (
                                id_entrega,
@@ -538,9 +467,6 @@ switch ($accion) {
                     );
                 }
 
-                /*
-             * Descontar stock.
-             */
                 $sqlStockUpdate = "UPDATE material
                                SET stock = stock - :cantidad
                                WHERE id_material = :id_material";
@@ -565,9 +491,6 @@ switch ($accion) {
                 }
             }
 
-            /*
-         * Cambiar estado de la solicitud.
-         */
             $sqlEstado = "UPDATE solicitud_material
                       SET estado = 'Entregada'
                       WHERE id_solicitud = :id_solicitud";
@@ -586,9 +509,6 @@ switch ($accion) {
                 );
             }
 
-            /*
-         * Confirmar todos los cambios.
-         */
             $db->commit();
 
             $auditoria->registrar([
@@ -607,9 +527,6 @@ switch ($accion) {
             exit;
         } catch (Exception $e) {
 
-            /*
-         * Si algo falla, deshacer todo.
-         */
             if ($db->inTransaction()) {
                 $db->rollBack();
             }

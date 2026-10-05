@@ -1,4 +1,4 @@
-```php
+
 <?php
 
 require_once "../../modelos/Usuario.php";
@@ -30,13 +30,6 @@ $cargos = $cargoModel->obtenerTodos();
 
 $idRolEmpleado = $usuarioModel->obtenerIdRolEmpleado()["id_rol"];
 $idRolCliente = $usuarioModel->obtenerIdRolCliente()["id_rol"];
-
-
-/*
-========================================
-CARGOS ACTUALES DEL EMPLEADO
-========================================
-*/
 
 $cargosEmpleado = [];
 
@@ -92,11 +85,6 @@ require_once "../../layouts/sidebar.php";
                 name="id_usuario"
                 value="<?= $usuario["id_usuario"] ?>">
 
-
-            <!-- =============================
-                 DATOS PERSONALES
-            ============================== -->
-
             <div class="form-row">
 
 
@@ -137,11 +125,6 @@ require_once "../../layouts/sidebar.php";
 
 
             </div>
-
-
-            <!-- =============================
-                 CORREO Y ROL
-            ============================== -->
 
             <div class="form-row">
 
@@ -198,11 +181,6 @@ require_once "../../layouts/sidebar.php";
 
             </div>
 
-
-            <!-- =============================
-                 DOCUMENTO Y TELÉFONO
-            ============================== -->
-
             <div class="form-row">
 
 
@@ -243,10 +221,6 @@ require_once "../../layouts/sidebar.php";
             </div>
 
 
-            <!-- =============================
-                 DATOS EMPLEADO
-            ============================== -->
-
             <div
                 id="datosEmpleado"
                 class="card"
@@ -271,11 +245,6 @@ require_once "../../layouts/sidebar.php";
 
 
                 </div>
-
-
-                <!-- =============================
-                     DIRECCIÓN Y SALARIO
-                ============================== -->
 
                 <div class="form-row">
 
@@ -321,10 +290,6 @@ require_once "../../layouts/sidebar.php";
 
                 </div>
 
-
-                <!-- =============================
-                     CARGOS
-                ============================== -->
 
                 <div class="form-group">
 
@@ -398,10 +363,6 @@ require_once "../../layouts/sidebar.php";
 
             </div>
 
-
-            <!-- =============================
-                 ACCIONES
-            ============================== -->
 
             <div class="form-actions">
 
@@ -479,4 +440,3 @@ rol.addEventListener(
 require_once "../../layouts/footer.php";
 
 ?>
-```

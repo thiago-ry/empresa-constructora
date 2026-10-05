@@ -48,10 +48,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
     </div>
 
 
-    <!-- =====================================================
-     RESUMEN
-====================================================== -->
-
     <div class="retiro-resumen-grid">
 
         <div class="retiro-resumen-card">
@@ -112,10 +108,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
     </div>
 
-
-    <!-- =====================================================
-     INFORMACIÓN GENERAL
-====================================================== -->
 
     <div class="form-card herramienta-card">
 
@@ -234,10 +226,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
     </div>
 
 
-    <!-- =====================================================
-     MÓDULOS RELACIONADOS
-====================================================== -->
-
     <div class="form-card herramienta-card">
 
         <div class="form-card-header">
@@ -260,11 +248,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
 
         <div class="herramienta-modulos-grid">
-
-
-            <!-- =================================================
-             UNIDADES
-        ================================================== -->
 
             <div class="herramienta-module">
 
@@ -295,9 +278,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
             </div>
 
-            <!-- =================================================
-     HISTORIAL DE ASIGNACIONES
-================================================== -->
             <div class="herramienta-module">
 
                 <div class="herramienta-module-icon">
@@ -327,10 +307,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
             </div>
 
-
-            <!-- =================================================
-             MANTENIMIENTOS
-        ================================================== -->
 
             <div class="herramienta-module">
 
@@ -366,10 +342,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
 </main>
 
-<!-- =========================================================
-     MODAL UNIDADES
-========================================================= -->
-
 <div
     id="modalUnidades"
     class="modal-unidades-overlay">
@@ -380,10 +352,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
         aria-modal="true"
         aria-labelledby="modalNombreHerramienta">
 
-
-        <!-- =================================================
-         CABECERA
-    ================================================== -->
 
         <div class="modal-unidades-header">
 
@@ -415,10 +383,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
         </div>
 
-
-        <!-- =================================================
-         RESUMEN
-    ================================================== -->
 
         <div class="modal-unidades-resumen">
 
@@ -479,14 +443,8 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
         </div>
 
 
-        <!-- =================================================
-         CONTENIDO
-    ================================================== -->
-
         <div class="modal-unidades-body">
 
-
-            <!-- CARGANDO -->
 
             <div
                 id="unidadesLoading"
@@ -500,8 +458,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
             </div>
 
-
-            <!-- ERROR -->
 
             <div
                 id="unidadesError"
@@ -526,8 +482,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
             </div>
 
-
-            <!-- TABLA -->
 
             <div
                 id="tablaUnidadesContainer"
@@ -560,8 +514,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
             </div>
 
 
-            <!-- SIN UNIDADES -->
-
             <div
                 id="sinUnidades"
                 class="sin-unidades"
@@ -585,10 +537,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
         </div>
 
 
-        <!-- =================================================
-         FOOTER
-    ================================================== -->
-
         <div class="modal-unidades-footer">
 
             <button
@@ -606,10 +554,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 </div>
 
 
-<!-- =========================================================
-     MODAL HISTORIAL DE ASIGNACIONES
-========================================================= -->
-
 <div
     id="modalHistorial"
     class="modal-historial-overlay">
@@ -619,8 +563,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
         role="dialog"
         aria-modal="true"
         aria-labelledby="modalHistorialTitulo">
-
-        <!-- HEADER -->
 
         <div class="modal-historial-header">
 
@@ -654,8 +596,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
         </div>
 
-
-        <!-- RESUMEN -->
 
         <div class="modal-historial-resumen">
 
@@ -704,8 +644,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
         </div>
 
-
-        <!-- CONTENIDO -->
 
         <div class="modal-historial-body">
 
@@ -875,8 +813,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
         </div>
 
 
-        <!-- FOOTER -->
-
         <div class="modal-historial-footer">
 
             <button
@@ -896,15 +832,7 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 </div>
 
 
-<!-- =========================================================
-     ESTILOS
-========================================================= -->
-
 <style>
-    /* =========================================================
-   RESUMEN
-========================================================= */
-
     .retiro-resumen-grid {
 
         display: grid;
@@ -1020,10 +948,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
     }
 
 
-    /* =========================================================
-   CARD PRINCIPAL
-========================================================= */
-
     .herramienta-card {
 
         margin-top: 20px;
@@ -1081,10 +1005,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
     }
 
 
-    /* =========================================================
-   INFORMACIÓN GENERAL
-========================================================= */
-
     .herramienta-info-grid {
 
         display: grid;
@@ -1134,10 +1054,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
         font-weight: 600;
     }
 
-
-    /* =========================================================
-   MÓDULOS
-========================================================= */
 
     .herramienta-modulos-grid {
 
@@ -1247,10 +1163,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
     }
 
 
-    /* =========================================================
-   MODAL
-========================================================= */
-
     .modal-unidades-overlay {
 
         display: none;
@@ -1332,10 +1244,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
     }
 
-
-    /* =========================================================
-   HEADER MODAL
-========================================================= */
 
     .modal-unidades-header {
 
@@ -1437,10 +1345,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
     }
 
 
-    /* =========================================================
-   RESUMEN DEL MODAL
-========================================================= */
-
     .modal-unidades-resumen {
 
         display: grid;
@@ -1527,10 +1431,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
 
 
-    /* =========================================================
-   BODY
-========================================================= */
-
     .modal-unidades-body {
 
         padding: 24px 28px;
@@ -1566,10 +1466,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
         font-size: 17px;
     }
 
-
-    /* =========================================================
-   ERROR
-========================================================= */
 
     .unidades-error {
 
@@ -1638,10 +1534,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
     }
 
 
-    /* =========================================================
-   TABLA
-========================================================= */
-
     .tabla-unidades-container {
 
         width: 100%;
@@ -1703,10 +1595,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
             rgba(128, 128, 128, 0.045);
     }
 
-
-    /* =========================================================
-   ESTADOS
-========================================================= */
 
     .estado-unidad {
 
@@ -1793,10 +1681,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
     }
 
 
-    /* =========================================================
-   SIN UNIDADES
-========================================================= */
-
     .sin-unidades {
 
         display: flex;
@@ -1858,10 +1742,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
     }
 
 
-    /* =========================================================
-   FOOTER
-========================================================= */
-
     .modal-unidades-footer {
 
         display: flex;
@@ -1875,10 +1755,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
             1px solid rgba(128, 128, 128, 0.18);
     }
 
-
-    /* =========================================================
-   RESPONSIVE
-========================================================= */
 
     @media (max-width: 900px) {
 
@@ -2004,10 +1880,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
         }
 
     }
-
-    /* =========================================================
-   HISTORIAL DE ASIGNACIONES
-   ========================================================= */
 
     .herramienta-history {
         margin-top: 30px;
@@ -2179,10 +2051,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
     }
 
-    /* =========================================================
-   MODAL HISTORIAL
-========================================================= */
-
     .modal-historial-overlay {
         display: none;
         position: fixed;
@@ -2236,8 +2104,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
         }
     }
 
-
-    /* HEADER */
 
     .modal-historial-header {
         display: flex;
@@ -2293,8 +2159,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
     }
 
 
-    /* RESUMEN */
-
     .modal-historial-resumen {
 
         display: grid;
@@ -2343,8 +2207,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
     }
 
 
-    /* BODY */
-
     .modal-historial-body {
 
         padding: 24px 28px;
@@ -2354,8 +2216,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
         min-height: 180px;
     }
 
-
-    /* TABLA */
 
     .historial-table-wrapper {
         width: 100%;
@@ -2403,8 +2263,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
             rgba(128, 128, 128, .04);
     }
 
-
-    /* ESTADOS */
 
     .historial-estado {
 
@@ -2457,8 +2315,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
     }
 
 
-    /* SIN HISTORIAL */
-
     .historial-empty {
 
         min-height: 260px;
@@ -2505,8 +2361,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
     }
 
 
-    /* FOOTER */
-
     .modal-historial-footer {
 
         display: flex;
@@ -2518,8 +2372,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
             1px solid rgba(128, 128, 128, .18);
     }
 
-
-    /* RESPONSIVE */
 
     @media (max-width: 700px) {
 
@@ -2547,18 +2399,10 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
     }
 </style>
 
-<!-- =========================================================
-     JAVASCRIPT
-========================================================= -->
-
 <script>
     document.addEventListener(
         "DOMContentLoaded",
         function() {
-
-            /* =====================================================
-               MODAL HISTORIAL
-            ===================================================== */
 
             const modalHistorial =
                 document.getElementById("modalHistorial");
@@ -2571,7 +2415,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
             const btnCerrarHistorialFooter =
                 document.getElementById("btnCerrarHistorialFooter");
-
 
             function abrirHistorial() {
 
@@ -2700,10 +2543,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
                 <?= (int) $herramienta["id_herramienta"] ?>;
 
 
-            /* =====================================================
-               ABRIR MODAL
-            ====================================================== */
-
             btnAbrir.addEventListener(
                 "click",
                 function() {
@@ -2720,10 +2559,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
                 }
             );
 
-
-            /* =====================================================
-               CERRAR MODAL
-            ====================================================== */
 
             function cerrarModal() {
 
@@ -2749,10 +2584,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
             );
 
 
-            /* =====================================================
-               CLICK FUERA
-            ====================================================== */
-
             modal.addEventListener(
                 "click",
                 function(event) {
@@ -2768,10 +2599,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
                 }
             );
 
-
-            /* =====================================================
-               ESC
-            ====================================================== */
 
             document.addEventListener(
                 "keydown",
@@ -2791,10 +2618,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
                 }
             );
 
-
-            /* =====================================================
-               CARGAR UNIDADES
-            ====================================================== */
 
             function cargarUnidades() {
 
@@ -2859,10 +2682,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
                             }
 
 
-                            /* =================================
-                               HERRAMIENTA
-                            ================================= */
-
                             const herramienta =
                                 data.herramienta;
 
@@ -2917,10 +2736,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
                                 descripcion;
 
 
-                            /* =================================
-                               RESUMEN
-                            ================================= */
-
                             document.getElementById(
                                     "modalTotal"
                                 ).textContent =
@@ -2951,10 +2766,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
                                 data.resumen.fuera_servicio;
 
 
-                            /* =================================
-                               SIN UNIDADES
-                            ================================= */
-
                             if (
                                 !data.unidades ||
                                 data.unidades.length === 0
@@ -2967,10 +2778,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
                             }
 
-
-                            /* =================================
-                               TABLA
-                            ================================= */
 
                             data.unidades.forEach(
                                 function(unidad) {
@@ -3072,10 +2879,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
             }
 
 
-            /* =====================================================
-               ESTADO VISUAL
-            ====================================================== */
-
             function obtenerClaseEstado(
                 estado
             ) {
@@ -3120,10 +2923,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
             }
 
-
-            /* =====================================================
-               ESCAPAR HTML
-            ====================================================== */
 
             function escapeHtml(
                 valor

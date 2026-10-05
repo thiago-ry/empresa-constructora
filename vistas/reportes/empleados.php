@@ -154,10 +154,6 @@ require_once "../../layouts/sidebar.php";
         </div>
 
 
-        <!-- ==================================================
-         BARRA DE HERRAMIENTAS
-    ================================================== -->
-
         <div class="toolbar no-print">
 
             <div class="toolbar-left">
@@ -256,10 +252,6 @@ require_once "../../layouts/sidebar.php";
         </div>
 
 
-        <!-- ==================================================
-         TABLA
-    ================================================== -->
-
         <table
             class="table"
             id="tablaEmpleados">
@@ -325,8 +317,6 @@ require_once "../../layouts/sidebar.php";
                                         $empleado["nombre_cargo"] ?? "Sin cargo"
                                     ) ?>">
 
-                        <!-- EMPLEADO -->
-
                         <td>
 
                             <strong>
@@ -352,8 +342,6 @@ require_once "../../layouts/sidebar.php";
                         </td>
 
 
-                        <!-- DOCUMENTO -->
-
                         <td>
 
                             <?= htmlspecialchars(
@@ -362,8 +350,6 @@ require_once "../../layouts/sidebar.php";
 
                         </td>
 
-
-                        <!-- CARGO -->
 
                         <td>
 
@@ -375,8 +361,6 @@ require_once "../../layouts/sidebar.php";
                         </td>
 
 
-                        <!-- TELEFONO -->
-
                         <td>
 
                             <?= htmlspecialchars(
@@ -385,8 +369,6 @@ require_once "../../layouts/sidebar.php";
 
                         </td>
 
-
-                        <!-- OBRAS -->
 
                         <td>
 
@@ -413,8 +395,6 @@ require_once "../../layouts/sidebar.php";
                         </td>
 
 
-                        <!-- SALARIO -->
-
                         <td>
 
                             <?php if (
@@ -437,8 +417,6 @@ require_once "../../layouts/sidebar.php";
 
                         </td>
 
-
-                        <!-- ESTADO -->
 
                         <td>
 
@@ -475,10 +453,6 @@ require_once "../../layouts/sidebar.php";
     </div>
 
 
-    <!-- ==================================================
-     GRAFICO
-================================================== -->
-
     <div
         class="card"
         style="margin-top:20px;">
@@ -506,15 +480,7 @@ require_once "../../layouts/sidebar.php";
 
 </main>
 
-<!-- ==================================================
-     CHART.JS
-================================================== -->
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<!-- ==================================================
-     BUSCADOR Y FILTROS
-================================================== -->
 
 <script>
     const buscarEmpleado =
@@ -624,10 +590,6 @@ require_once "../../layouts/sidebar.php";
         filtrarEmpleados
     );
 </script>
-
-<!-- ==================================================
-     GRAFICO
-================================================== -->
 
 <script>
     const etiquetasCargos = [

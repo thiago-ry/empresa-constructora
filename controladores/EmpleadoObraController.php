@@ -15,13 +15,6 @@ class EmpleadoObraController
         $this->empleadoObra = new EmpleadoObra();
     }
 
-
-    /*
-    ==========================================================
-        LISTAR
-    ==========================================================
-    */
-
     public function listar()
     {
         session_start();
@@ -34,13 +27,6 @@ class EmpleadoObraController
         require "../vistas/obras/empleados/index.php";
     }
 
-
-    /*
-    ==========================================================
-        CREAR
-    ==========================================================
-    */
-
     public function crear()
     {
         session_start();
@@ -49,13 +35,6 @@ class EmpleadoObraController
 
         require "../vistas/obras/empleados/crear.php";
     }
-
-
-    /*
-    ==========================================================
-        BUSCAR EMPLEADOS
-    ==========================================================
-    */
 
     public function buscarEmpleados()
     {
@@ -96,13 +75,6 @@ class EmpleadoObraController
         exit();
     }
 
-
-    /*
-    ==========================================================
-        OBTENER CARGOS
-    ==========================================================
-    */
-
     public function obtenerCargos()
     {
         session_start();
@@ -139,13 +111,6 @@ class EmpleadoObraController
 
         exit();
     }
-
-
-    /*
-    ==========================================================
-        AGREGAR
-    ==========================================================
-    */
 
     public function agregar()
     {
@@ -249,13 +214,6 @@ class EmpleadoObraController
         exit();
     }
 
-
-    /*
-    ==========================================================
-        EDITAR
-    ==========================================================
-    */
-
     public function editar()
     {
         session_start();
@@ -303,13 +261,6 @@ class EmpleadoObraController
         exit();
     }
 
-
-    /*
-    ==========================================================
-        RETIRAR
-    ==========================================================
-    */
-
     public function retirar()
     {
         session_start();
@@ -339,13 +290,6 @@ class EmpleadoObraController
         $obras_seleccionadas =
             $_POST["obras_seleccionadas"] ?? [];
 
-
-        /*
-        ======================================================
-            VALIDACIONES
-        ======================================================
-        */
-
         if (
             empty($id_empleado_obra) ||
             empty($id_obra_actual) ||
@@ -363,13 +307,6 @@ class EmpleadoObraController
             exit();
         }
 
-
-        /*
-        ======================================================
-            TRANSACCIÓN
-        ======================================================
-        */
-
         $conexion =
             $this->empleadoObra->getConexion();
 
@@ -377,13 +314,6 @@ class EmpleadoObraController
         try {
 
             $conexion->beginTransaction();
-
-
-            /*
-            ==============================================
-                SOLO ESTA OBRA
-            ==============================================
-            */
 
             if ($alcance === "actual") {
 
@@ -412,12 +342,7 @@ class EmpleadoObraController
                 }
             }
 
-
-            /*
-            ==============================================
-                TODAS LAS OBRAS
-            ==============================================
-            */ elseif ($alcance === "todas") {
+            elseif ($alcance === "todas") {
 
                 $resultado =
                     $this->empleadoObra
@@ -437,24 +362,12 @@ class EmpleadoObraController
                 }
             }
 
-
-            /*
-            ==============================================
-                OBRAS SELECCIONADAS
-            ==============================================
-            */ elseif ($alcance === "seleccionadas") {
+            elseif ($alcance === "seleccionadas") {
 
                 $ids = array_map(
                     "intval",
                     $obras_seleccionadas
                 );
-
-
-                /*
-                ------------------------------------------
-                    SIEMPRE INCLUIR LA OBRA ACTUAL
-                ------------------------------------------
-                */
 
                 if (
                     !in_array(
@@ -496,13 +409,6 @@ class EmpleadoObraController
                     "Tipo de retiro inválido."
                 );
             }
-
-
-            /*
-            ==================================================
-                AUDITORÍA
-            ==================================================
-            */
 
             if ($alcance === "actual") {
 
@@ -589,13 +495,6 @@ class EmpleadoObraController
             exit();
         }
 
-
-        /*
-    ==================================================
-        BUSCAR ASIGNACIÓN
-    ==================================================
-    */
-
         $empleado = $this->empleadoObra->buscarPorId(
             $id_empleado_obra
         );
@@ -612,13 +511,6 @@ class EmpleadoObraController
             exit();
         }
 
-
-        /*
-    ==================================================
-        VERIFICAR SI YA ESTÁ ACTIVO
-    ==================================================
-    */
-
         if ((int)$empleado["estado"] === 1) {
 
             header(
@@ -629,13 +521,6 @@ class EmpleadoObraController
 
             exit();
         }
-
-
-        /*
-    ==================================================
-        REACTIVAR
-    ==================================================
-    */
 
         $resultado = $this->empleadoObra->activar(
             $id_empleado_obra
@@ -652,13 +537,6 @@ class EmpleadoObraController
 
             exit();
         }
-
-
-        /*
-    ==================================================
-        AUDITORÍA
-    ==================================================
-    */
 
         $this->auditoria->registrar([
 
@@ -683,12 +561,6 @@ class EmpleadoObraController
 
         ]);
 
-
-        /*
-    ==================================================
-        VOLVER
-    ==================================================
-    */
         header(
             "Location: ../vistas/obras/empleados/index.php?id_obra="
                 . $id_obra

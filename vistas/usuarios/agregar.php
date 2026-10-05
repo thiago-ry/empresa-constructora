@@ -50,10 +50,6 @@ require_once "../../layouts/sidebar.php";
                 value="agregar">
 
 
-            <!-- =============================
-                 DATOS PERSONALES
-            ============================== -->
-
             <div class="form-row">
 
                 <div class="form-group">
@@ -89,10 +85,6 @@ require_once "../../layouts/sidebar.php";
 
             </div>
 
-
-            <!-- =============================
-                 CONTACTO Y ROL
-            ============================== -->
 
             <div class="form-row">
 
@@ -146,10 +138,6 @@ require_once "../../layouts/sidebar.php";
             </div>
 
 
-            <!-- =============================
-                 DOCUMENTO Y TELÉFONO
-            ============================== -->
-
             <div class="form-row">
 
                 <div class="form-group">
@@ -183,10 +171,6 @@ require_once "../../layouts/sidebar.php";
 
             </div>
 
-
-            <!-- =============================
-                 CONTRASEÑA
-            ============================== -->
 
             <div class="form-row">
 
@@ -224,10 +208,6 @@ require_once "../../layouts/sidebar.php";
             </div>
 
 
-            <!-- =============================
-                 DATOS EMPLEADO
-            ============================== -->
-
             <div
                 id="datosEmpleado"
                 class="card"
@@ -249,10 +229,6 @@ require_once "../../layouts/sidebar.php";
 
                 </div>
 
-
-                <!-- =============================
-                     DIRECCIÓN Y SALARIO
-                ============================== -->
 
                 <div class="form-row">
 
@@ -288,10 +264,6 @@ require_once "../../layouts/sidebar.php";
 
                 </div>
 
-
-                <!-- =============================
-                     CARGOS
-                ============================== -->
 
                 <div class="form-group">
 
@@ -344,10 +316,6 @@ require_once "../../layouts/sidebar.php";
 
             </div>
 
-
-            <!-- =============================
-                 ACCIONES
-            ============================== -->
 
             <div class="form-actions">
 

@@ -19,10 +19,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let disponiblesSeleccionados = 0;
 
 
-    // ==================================================
-    // BUSCADOR
-    // ==================================================
-
     buscarHerramienta.addEventListener("input", function () {
 
         const texto = this.value.toLowerCase().trim();

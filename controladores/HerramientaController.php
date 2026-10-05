@@ -24,12 +24,6 @@ class HerramientaController
     }
 
 
-    /*
-    ==================================
-        AGREGAR HERRAMIENTA
-    ==================================
-    */
-
     public function agregar()
     {
         session_start();
@@ -79,22 +73,10 @@ class HerramientaController
         }
 
 
-        /*
-        ==============================
-        Guardar herramienta general
-        ==============================
-        */
-
         $id_herramienta = $this->herramienta->agregar($datos);
 
 
         if ($id_herramienta) {
-
-            /*
-            ==============================
-            Crear unidades automáticamente
-            ==============================
-            */
 
             $unidadesCreadas = $this->unidad->crearUnidades(
                 $id_herramienta,
@@ -109,12 +91,6 @@ class HerramientaController
                 exit;
             }
 
-
-            /*
-            ==============================
-            AUDITORÍA
-            ==============================
-            */
 
             $this->auditoria->registrar([
 
@@ -148,12 +124,6 @@ class HerramientaController
     }
 
 
-    /*
-    ==================================
-        MOSTRAR EDITAR
-    ==================================
-    */
-
     public function editar()
     {
 
@@ -183,12 +153,6 @@ class HerramientaController
         require_once "../vistas/herramientas/editar.php";
     }
 
-
-    /*
-    ==================================
-        ACTUALIZAR
-    ==================================
-    */
 
     public function actualizar()
     {
@@ -249,12 +213,6 @@ class HerramientaController
     }
 
 
-    /*
-    ==================================
-        LISTAR
-    ==================================
-    */
-
     public function listar()
     {
 
@@ -263,12 +221,6 @@ class HerramientaController
         exit;
     }
 
-
-    /*
-    ==================================
-        VER DETALLE
-    ==================================
-    */
 
     public function ver()
     {
@@ -281,17 +233,13 @@ class HerramientaController
             exit();
         }
 
-        // Historial completo de asignaciones
         $historial = $this->herramientaObra
             ->obtenerHistorialPorHerramienta($id);
 
-        // Cantidad total de veces que fue asignada
         $totalAsignaciones = count($historial);
 
-        // Asignaciones que todavía tienen herramientas pendientes
         $asignacionesActivas = 0;
 
-        // Última devolución registrada
         $ultimaDevolucion = null;
 
         foreach ($historial as $registro) {
@@ -315,15 +263,6 @@ class HerramientaController
     }
 
 
-    /*
-    ==================================
-        OBTENER UNIDADES
-    ==================================
-    
-    Esta acción se utiliza mediante AJAX
-    desde el modal de unidades.
-    */
-
     public function unidades()
     {
 
@@ -335,12 +274,6 @@ class HerramientaController
             : 0;
 
 
-        /*
-        ==============================
-        Validar ID
-        ==============================
-        */
-
         if ($id <= 0) {
 
             echo json_encode([
@@ -351,12 +284,6 @@ class HerramientaController
             exit;
         }
 
-
-        /*
-        ==============================
-        Verificar herramienta
-        ==============================
-        */
 
         $herramienta =
             $this->herramienta->obtenerDetalle($id);
@@ -373,21 +300,8 @@ class HerramientaController
         }
 
 
-        /*
-        ==============================
-        Obtener unidades
-        ==============================
-        */
-
         $unidades =
             $this->unidad->obtenerPorHerramienta($id);
-
-
-        /*
-        ==============================
-        Contadores
-        ==============================
-        */
 
         $total = count($unidades);
 
@@ -437,12 +351,6 @@ class HerramientaController
         }
 
 
-        /*
-        ==============================
-        Respuesta JSON
-        ==============================
-        */
-
         echo json_encode([
 
             "success" => true,
@@ -487,12 +395,6 @@ class HerramientaController
 }
 
 
-/*
-=========================================================
-ROUTER
-=========================================================
-*/
-
 $controller = new HerramientaController();
 
 
@@ -535,12 +437,6 @@ switch ($accion) {
 
         break;
 
-
-    /*
-    =====================================================
-    VER UNIDADES
-    =====================================================
-    */
 
     case "unidades":
 

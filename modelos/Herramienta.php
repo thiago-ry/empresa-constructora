@@ -14,10 +14,6 @@ class Herramienta
     }
 
 
-    // =========================================================
-    // OBTENER TODAS
-    // =========================================================
-
     public function obtenerTodos()
     {
         $sql = "
@@ -42,10 +38,6 @@ class Herramienta
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
-    // =========================================================
-    // BUSCAR POR ID
-    // =========================================================
 
     public function buscarPorId($id)
     {
@@ -72,10 +64,6 @@ class Herramienta
     }
 
 
-    // =========================================================
-    // BUSCAR
-    // =========================================================
-
     public function buscar($id)
     {
         $sql = "
@@ -97,10 +85,6 @@ class Herramienta
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-
-    // =========================================================
-    // AGREGAR HERRAMIENTA
-    // =========================================================
 
     public function agregar($datos)
     {
@@ -163,10 +147,6 @@ class Herramienta
     }
 
 
-    // =========================================================
-    // EDITAR HERRAMIENTA
-    // =========================================================
-
     public function editar($datos)
     {
         $sql = "
@@ -200,10 +180,6 @@ class Herramienta
     }
 
 
-    // =========================================================
-    // ELIMINAR
-    // =========================================================
-
     public function eliminar($id)
     {
         $sql = "
@@ -216,10 +192,6 @@ class Herramienta
         return $stmt->execute([$id]);
     }
 
-
-    // =========================================================
-    // OBTENER HERRAMIENTAS DISPONIBLES
-    // =========================================================
 
     public function obtenerDisponibles()
     {
@@ -247,10 +219,6 @@ class Herramienta
     }
 
 
-    // =========================================================
-    // OBTENER CANTIDAD TOTAL
-    // =========================================================
-
     public function obtenerCantidadTotal($id_herramienta)
     {
         $sql = "
@@ -270,22 +238,6 @@ class Herramienta
         return (int)$stmt->fetchColumn();
     }
 
-
-    // =========================================================
-    // OBTENER CANTIDAD ACTUALMENTE ASIGNADA
-    //
-    // IMPORTANTE:
-    //
-    // Ya NO usamos:
-    //     cantidad
-    //
-    // Usamos:
-    //     cantidad_asignada
-    //     cantidad_devuelta
-    //
-    // Una herramienta sigue ocupada solamente por la cantidad
-    // que fue asignada y todavía no fue devuelta.
-    // =========================================================
 
     public function obtenerCantidadAsignada($id_herramienta)
     {
@@ -317,16 +269,6 @@ class Herramienta
     }
 
 
-    // =========================================================
-    // OBTENER CANTIDAD DISPONIBLE
-    //
-    // STOCK TOTAL
-    // -
-    // HERRAMIENTAS ACTUALMENTE EN OBRAS
-    // =
-    // STOCK DISPONIBLE
-    // =========================================================
-
     public function obtenerCantidadDisponible($id_herramienta)
     {
         $total =
@@ -351,10 +293,6 @@ class Herramienta
         return $disponible;
     }
 
-
-    // =========================================================
-    // OBTENER DETALLE
-    // =========================================================
 
     public function obtenerDetalle($id_herramienta)
     {

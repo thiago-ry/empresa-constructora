@@ -12,10 +12,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
 <main class="content">
 
-    <!-- =====================================================
-         ENCABEZADO
-    ====================================================== -->
-
     <div class="page-header">
 
         <div>
@@ -67,10 +63,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
     </div>
 
 
-    <!-- =====================================================
-         INFORMACIÓN DE LA HERRAMIENTA
-    ====================================================== -->
-
     <div class="form-card historial-card">
 
         <div class="form-card-header">
@@ -96,10 +88,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
         </div>
 
-
-        <!-- =================================================
-             RESUMEN
-        ================================================== -->
 
         <div class="historial-resumen">
 
@@ -141,10 +129,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
         </div>
 
-
-        <!-- =================================================
-             HISTORIAL
-        ================================================== -->
 
         <?php if (empty($historial)): ?>
 
@@ -228,11 +212,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
                             $asignada =
                                 (int) $registro["cantidad_asignada"];
 
-                            /*
-                             * El estado visual se determina
-                             * principalmente por las cantidades.
-                             */
-
                             if ($pendiente <= 0) {
 
                                 $estadoTexto = "Devuelta";
@@ -254,8 +233,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
                             <tr>
 
-                                <!-- OBRA -->
-
                                 <td>
 
                                     <strong>
@@ -268,8 +245,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
                                 </td>
 
-
-                                <!-- FECHA ASIGNACIÓN -->
 
                                 <td>
 
@@ -286,8 +261,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
                                 </td>
 
 
-                                <!-- ASIGNADAS -->
-
                                 <td>
 
                                     <span class="cantidad-historial">
@@ -298,8 +271,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
                                 </td>
 
-
-                                <!-- DEVUELTAS -->
 
                                 <td>
 
@@ -312,8 +283,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
                                 </td>
 
 
-                                <!-- PENDIENTES -->
-
                                 <td>
 
                                     <span class="cantidad-historial">
@@ -324,8 +293,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
                                 </td>
 
-
-                                <!-- ESTADO -->
 
                                 <td>
 
@@ -338,8 +305,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
                                 </td>
 
-
-                                <!-- ÚLTIMA DEVOLUCIÓN -->
 
                                 <td>
 
@@ -362,8 +327,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
                                 </td>
 
-
-                                <!-- ACCIÓN -->
 
                                 <td>
 

@@ -11,11 +11,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
 <main class="content">
 
-
-    <!-- =========================================================
-         TÍTULO
-    ========================================================== -->
-
     <div class="page-title no-print">
 
         <h1>
@@ -28,18 +23,7 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
     </div>
 
-
-
-    <!-- =========================================================
-         CONTENEDOR
-    ========================================================== -->
-
     <div class="table-container">
-
-
-        <!-- =====================================================
-             ENCABEZADO
-        ====================================================== -->
 
         <div class="table-header">
 
@@ -58,18 +42,7 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
         </div>
 
-
-
-        <!-- =====================================================
-             REPORTES
-        ====================================================== -->
-
         <div class="card-grid reportes-grid">
-
-
-            <!-- =================================================
-                 REPORTE DE OBRAS
-            ================================================== -->
 
             <a
                 href="/empresa_constructora/vistas/reportes/obras.php"
@@ -109,12 +82,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
             </a>
 
-
-
-            <!-- =================================================
-                 REPORTE DE EMPLEADOS
-            ================================================== -->
-
             <a
                 href="/empresa_constructora/vistas/reportes/empleados.php"
                 class="card reporte-card"
@@ -152,12 +119,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
                 </div>
 
             </a>
-
-
-
-            <!-- =================================================
-                 REPORTE DE MATERIALES
-            ================================================== -->
 
             <a
                 href="/empresa_constructora/vistas/reportes/materiales.php"
@@ -197,12 +158,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
             </a>
 
-
-
-            <!-- =================================================
-                 REPORTE DE HERRAMIENTAS
-            ================================================== -->
-
             <a
                 href="/empresa_constructora/vistas/reportes/herramientas.php"
                 class="card reporte-card"
@@ -240,12 +195,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
                 </div>
 
             </a>
-
-
-
-            <!-- =================================================
-                 REPORTE DE CLIENTES
-            ================================================== -->
 
             <a
                 href="/empresa_constructora/vistas/reportes/clientes.php"
@@ -285,12 +234,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
             </a>
 
-
-
-            <!-- =================================================
-                 REPORTE DE USUARIOS
-            ================================================== -->
-
             <a
                 href="/empresa_constructora/vistas/reportes/usuarios.php"
                 class="card reporte-card"
@@ -329,12 +272,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
             </a>
 
-
-
-            <!-- =================================================
-                 REPORTE DE AUDITORÍA
-            ================================================== -->
-
             <a
                 href="/empresa_constructora/vistas/reportes/auditoria.php"
                 class="card reporte-card"
@@ -372,12 +309,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
                 </div>
 
             </a>
-
-
-
-            <!-- =================================================
-                 REPORTE DE ASIGNACIONES
-            ================================================== -->
 
             <a
                 href="/empresa_constructora/vistas/reportes/asignaciones.php"
@@ -426,13 +357,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
 
 </main>
-
-
-
-<!-- =============================================================
-     ESTILOS ESPECÍFICOS DE REPORTES
-============================================================= -->
-
 <style>
 
     .reportes-grid {

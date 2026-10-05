@@ -12,11 +12,6 @@ class Asistencia
         $this->conexion = $db->conectar();
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | OBTENER ASISTENCIA DE UN EMPLEADO EN UNA OBRA Y FECHA
-    |--------------------------------------------------------------------------
-    */
 public function obtenerPorUsuarioFecha($id_usuario, $id_obra, $fecha)
 {
     $sql = "SELECT
@@ -45,11 +40,6 @@ public function obtenerPorUsuarioFecha($id_usuario, $id_obra, $fecha)
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-    /*
-    |--------------------------------------------------------------------------
-    | VERIFICAR QUE EL EMPLEADO PERTENEZCA A UNA OBRA DEL CAPATAZ
-    |--------------------------------------------------------------------------
-    */
     public function empleadoPerteneceObraCapataz(
         $id_usuario_empleado,
         $id_usuario_capataz,
@@ -93,11 +83,6 @@ public function obtenerPorUsuarioFecha($id_usuario, $id_obra, $fecha)
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | MARCAR ENTRADA
-    |--------------------------------------------------------------------------
-    */
     public function marcarEntrada($id_usuario, $id_obra, $fecha, $hora)
     {
         $asistencia = $this->obtenerPorUsuarioFecha(
@@ -106,10 +91,6 @@ public function obtenerPorUsuarioFecha($id_usuario, $id_obra, $fecha)
             $fecha
         );
 
-        /*
-         * Si ya existe una ausencia, se puede convertir
-         * en una asistencia porque el empleado finalmente llegó.
-         */
         if ($asistencia) {
 
             if ($asistencia["estado"] === "Ausente") {
@@ -171,11 +152,6 @@ public function obtenerPorUsuarioFecha($id_usuario, $id_obra, $fecha)
         ];
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | MARCAR AUSENCIA
-    |--------------------------------------------------------------------------
-    */
     public function marcarAusencia($id_usuario, $id_obra, $fecha, $observacion = null)
     {
         $asistencia = $this->obtenerPorUsuarioFecha(
@@ -235,11 +211,6 @@ public function obtenerPorUsuarioFecha($id_usuario, $id_obra, $fecha)
         ];
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | MARCAR SALIDA
-    |--------------------------------------------------------------------------
-    */
     public function marcarSalida($id_usuario, $id_obra, $fecha, $hora)
     {
         $asistencia = $this->obtenerPorUsuarioFecha(
@@ -293,11 +264,6 @@ public function obtenerPorUsuarioFecha($id_usuario, $id_obra, $fecha)
         ];
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | HISTORIAL DEL CAPATAZ
-    |--------------------------------------------------------------------------
-    */
     public function obtenerHistorialPorCapataz(
         $id_usuario_capataz,
         $id_usuario_empleado = "",
@@ -368,11 +334,6 @@ public function obtenerPorUsuarioFecha($id_usuario, $id_obra, $fecha)
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | EMPLEADOS DEL CAPATAZ
-    |--------------------------------------------------------------------------
-    */
     public function obtenerEmpleadosCapataz($id_usuario_capataz)
     {
         $sql = "SELECT DISTINCT
@@ -400,11 +361,6 @@ public function obtenerPorUsuarioFecha($id_usuario, $id_obra, $fecha)
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | OBRAS DEL CAPATAZ
-    |--------------------------------------------------------------------------
-    */
     public function obtenerObrasCapataz($id_usuario_capataz)
     {
         $sql = "SELECT
@@ -424,11 +380,6 @@ public function obtenerPorUsuarioFecha($id_usuario, $id_obra, $fecha)
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | RESUMEN DEL CAPATAZ
-    |--------------------------------------------------------------------------
-    */
     public function obtenerResumenPorCapataz(
         $id_usuario_capataz,
         $id_usuario_empleado = "",

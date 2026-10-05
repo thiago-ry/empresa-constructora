@@ -45,10 +45,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
     <div class="form-card">
 
 
-        <!-- ==================================================
-             BUSCADOR Y FILTROS
-        ================================================== -->
-
         <div class="form-group">
 
             <label for="buscarMaterial">
@@ -119,10 +115,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
         </div>
 
-
-        <!-- ==================================================
-             FILTRO
-        ================================================== -->
 
         <div
             style="
@@ -209,10 +201,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
         </div>
 
-
-        <!-- ==================================================
-             TABLA DE MATERIALES
-        ================================================== -->
 
         <div
             class="table-container"
@@ -368,8 +356,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
             </div>
 
 
-            <!-- SIN RESULTADOS -->
-
             <div
                 id="sinResultados"
                 style="
@@ -388,10 +374,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
         </div>
 
-
-        <!-- ==================================================
-             MATERIALES SELECCIONADOS
-        ================================================== -->
 
         <div
             id="materialesSeleccionados"
@@ -451,10 +433,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
         </div>
 
 
-        <!-- ==================================================
-             FORMULARIO
-        ================================================== -->
-
         <form
             method="POST"
             action="/empresa_constructora/controladores/SolicitudMaterialController.php?accion=guardar"
@@ -471,10 +449,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
                 id="inputsMateriales">
             </div>
 
-
-            <!-- ==================================================
-                 BOTONES
-            ================================================== -->
 
             <div
                 class="form-actions"
@@ -548,10 +522,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
     const sinResultados = document.getElementById("sinResultados");
 
 
-    /* ==========================================================
-       BUSCAR Y FILTRAR
-    ========================================================== */
-
     function filtrarMateriales() {
 
         const texto = buscarMaterial.value
@@ -611,10 +581,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
     }
 
 
-    /* ==========================================================
-       SELECCIONAR MATERIAL
-    ========================================================== */
-
     document.querySelectorAll(".btn-seleccionar-material")
         .forEach(function(boton) {
 
@@ -657,10 +623,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
         });
 
-
-    /* ==========================================================
-       MOSTRAR SELECCIONADOS
-    ========================================================== */
 
     function actualizarSeleccionados() {
 
@@ -820,10 +782,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
         });
 
 
-        /* ======================================================
-           EVENTOS CANTIDAD
-        ====================================================== */
-
         document.querySelectorAll(".cantidad-material")
             .forEach(function(input) {
 
@@ -865,10 +823,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
             });
 
 
-        /* ======================================================
-           EVENTOS QUITAR
-        ====================================================== */
-
         document.querySelectorAll(".btn-quitar-material")
             .forEach(function(boton) {
 
@@ -891,10 +845,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
     }
 
-
-    /* ==========================================================
-       ACTUALIZAR TABLA
-    ========================================================== */
 
     function actualizarTabla() {
 
@@ -928,10 +878,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
     }
 
-
-    /* ==========================================================
-       VALIDAR FORMULARIO
-    ========================================================== */
 
     function validarFormulario() {
 
@@ -971,10 +917,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
     }
 
 
-    /* ==========================================================
-       LIMPIAR TODO
-    ========================================================== */
-
     btnLimpiarTodo.addEventListener("click", function() {
 
         if (materialesSeleccionados.size > 0) {
@@ -1001,10 +943,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
     });
 
 
-    /* ==========================================================
-       LIMPIAR BUSCADOR
-    ========================================================== */
-
     btnLimpiarBusqueda.addEventListener("click", function() {
 
         buscarMaterial.value = "";
@@ -1016,10 +954,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
     });
 
 
-    /* ==========================================================
-       EVENTOS DE FILTRO
-    ========================================================== */
-
     buscarMaterial.addEventListener(
         "input",
         filtrarMateriales
@@ -1030,10 +964,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
         filtrarMateriales
     );
 
-
-    /* ==========================================================
-       EVITAR CANTIDADES MAYORES AL STOCK
-    ========================================================== */
 
     document
         .getElementById("formSolicitud")
@@ -1073,10 +1003,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
         });
 
 
-    /* ==========================================================
-       ESCAPAR HTML
-    ========================================================== */
-
     function escapeHtml(texto) {
 
         const div = document.createElement("div");
@@ -1087,10 +1013,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
     }
 
-
-    /* ==========================================================
-       INICIALIZAR
-    ========================================================== */
 
     filtrarMateriales();
 

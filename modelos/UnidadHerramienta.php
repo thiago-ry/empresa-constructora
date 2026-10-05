@@ -13,10 +13,6 @@ class UnidadHerramienta
         $this->conexion = $db->conectar();
     }
 
-    // =========================================================
-    // OBTENER TODAS LAS UNIDADES
-    // =========================================================
-
     public function obtenerTodas()
     {
         $sql = "
@@ -42,10 +38,6 @@ class UnidadHerramienta
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-    // =========================================================
-    // OBTENER UNIDADES DE UNA HERRAMIENTA ESPECÍFICA
-    // =========================================================
 
     public function obtenerPorHerramienta($id_herramienta)
     {
@@ -76,19 +68,11 @@ class UnidadHerramienta
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // =========================================================
-    // CREAR UNIDADES AL REGISTRAR UNA HERRAMIENTA
-    // =========================================================
-
     public function crearUnidades($id_herramienta, $cantidad)
     {
         try {
 
             $this->conexion->beginTransaction();
-
-            // Buscamos el ID del estado "Disponible"
-            // De esta manera no dependemos de que sea necesariamente
-            // el ID 1.
 
             $sqlEstado = "
                 SELECT id_estado_herramienta
@@ -110,8 +94,6 @@ class UnidadHerramienta
 
             $id_estado_disponible =
                 $estadoDisponible["id_estado_herramienta"];
-
-            // Insertamos las unidades
 
             $sql = "
                 INSERT INTO unidad_herramienta
@@ -158,10 +140,6 @@ class UnidadHerramienta
         }
     }
 
-    // =========================================================
-    // OBTENER UNIDADES DISPONIBLES
-    // =========================================================
-
     public function obtenerDisponibles($id_herramienta)
     {
         $sql = "
@@ -189,10 +167,6 @@ class UnidadHerramienta
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // =========================================================
-    // CAMBIAR ESTADO
-    // =========================================================
-
     public function cambiarEstado($id_unidad, $estado)
     {
         $sql = "
@@ -208,10 +182,6 @@ class UnidadHerramienta
             $id_unidad
         ]);
     }
-
-    // =========================================================
-    // BUSCAR POR ID
-    // =========================================================
 
     public function buscarPorId($id)
     {
@@ -243,10 +213,6 @@ class UnidadHerramienta
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // =========================================================
-    // CONTAR UNIDADES DE UNA HERRAMIENTA
-    // =========================================================
-
     public function contarPorHerramienta($id_herramienta)
     {
         $sql = "
@@ -266,17 +232,6 @@ class UnidadHerramienta
         return (int)$resultado["total"];
     }
 
-    // =========================================================
-    // LIBERAR UNIDADES AL REALIZAR UNA DEVOLUCIÓN
-    // =========================================================
-    //
-    // Busca unidades ASIGNADAS de una herramienta y cambia
-    // la cantidad indicada al estado DISPONIBLE.
-    //
-    // No depende de que Disponible sea el ID 1.
-    //
-    // =========================================================
-
     public function liberarUnidades($id_herramienta, $cantidad)
     {
         try {
@@ -288,10 +243,6 @@ class UnidadHerramienta
             }
 
             $this->conexion->beginTransaction();
-
-            // -------------------------------------------------
-            // BUSCAR ESTADO DISPONIBLE
-            // -------------------------------------------------
 
             $sqlDisponible = "
                 SELECT id_estado_herramienta
@@ -316,11 +267,6 @@ class UnidadHerramienta
 
             $id_estado_disponible =
                 $estadoDisponible["id_estado_herramienta"];
-
-
-            // -------------------------------------------------
-            // BUSCAR UNIDADES ASIGNADAS
-            // -------------------------------------------------
 
             $sqlAsignadas = "
                 SELECT
@@ -355,22 +301,12 @@ class UnidadHerramienta
             $unidadesAsignadas =
                 $stmtAsignadas->fetchAll(PDO::FETCH_ASSOC);
 
-
-            // -------------------------------------------------
-            // VERIFICAR QUE HAYA SUFICIENTES UNIDADES
-            // -------------------------------------------------
-
             if (count($unidadesAsignadas) < $cantidad) {
 
                 throw new Exception(
                     "No hay suficientes unidades asignadas para realizar la devolución."
                 );
             }
-
-
-            // -------------------------------------------------
-            // CAMBIAR LAS UNIDADES A DISPONIBLE
-            // -------------------------------------------------
 
             $sqlActualizar = "
                 UPDATE unidad_herramienta
@@ -388,11 +324,6 @@ class UnidadHerramienta
                     $unidad["id_unidad"]
                 ]);
             }
-
-
-            // -------------------------------------------------
-            // CONFIRMAR
-            // -------------------------------------------------
 
             $this->conexion->commit();
 

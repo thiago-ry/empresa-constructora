@@ -7,11 +7,6 @@ error_reporting(E_ALL);
 
 require_once "../../modelos/Usuario.php";
 
-
-// ============================================================
-// SESIÓN
-// ============================================================
-
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -26,24 +21,9 @@ if (!isset($_SESSION["usuario"])) {
     exit;
 }
 
-
-// ============================================================
-// ID DEL USUARIO
-// ============================================================
-
 $id_usuario = $_SESSION["usuario"]["id"];
 
-
-// ============================================================
-// MODELO
-// ============================================================
-
 $usuario = new Usuario();
-
-
-// ============================================================
-// BUSCAR USUARIO
-// ============================================================
 
 $perfil = $usuario->buscarPorId($id_usuario);
 
@@ -57,11 +37,6 @@ if (!$perfil) {
 
 }
 
-
-// ============================================================
-// LAYOUT
-// ============================================================
-
 require_once "../../layouts/header.php";
 
 require_once "../../layouts/sidebar.php";
@@ -70,11 +45,6 @@ require_once "../../layouts/sidebar.php";
 
 
 <main class="content">
-
-
-    <!-- ==================================================
-         TÍTULO
-    ================================================== -->
 
     <div class="page-title no-print">
 
@@ -87,11 +57,6 @@ require_once "../../layouts/sidebar.php";
         </p>
 
     </div>
-
-
-    <!-- ==================================================
-         FORMULARIO
-    ================================================== -->
 
     <div class="form-card">
 
@@ -111,28 +76,16 @@ require_once "../../layouts/sidebar.php";
 
             </p>
 
-
             <form
                 action="../../controladores/PerfilController.php"
                 method="POST">
-
-
-                <!-- ACCIÓN -->
 
                 <input
                     type="hidden"
                     name="accion"
                     value="cambiarContraseña">
 
-
-                <!-- ==================================================
-                     CAMPOS
-                ================================================== -->
-
                 <div class="form-grid">
-
-
-                    <!-- CONTRASEÑA ACTUAL -->
 
                     <div class="form-group form-group-full">
 
@@ -154,9 +107,6 @@ require_once "../../layouts/sidebar.php";
 
                     </div>
 
-
-
-                    <!-- NUEVA CONTRASEÑA -->
 
                     <div class="form-group">
 
@@ -187,9 +137,6 @@ require_once "../../layouts/sidebar.php";
                     </div>
 
 
-
-                    <!-- CONFIRMAR -->
-
                     <div class="form-group">
 
                         <label for="confirmar_contraseña">
@@ -214,11 +161,6 @@ require_once "../../layouts/sidebar.php";
 
                 </div>
 
-
-
-                <!-- ==================================================
-                     BOTONES
-                ================================================== -->
 
                 <div class="form-actions">
 

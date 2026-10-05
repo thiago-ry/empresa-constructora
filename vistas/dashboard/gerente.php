@@ -16,9 +16,6 @@ $actividad = $datos["actividad"];
 
 <main class="content">
 
-    <!-- =====================================================
-         ENCABEZADO
-    ====================================================== -->
     <div class="page-title">
         <div>
             <h1>Dashboard</h1>
@@ -29,12 +26,8 @@ $actividad = $datos["actividad"];
         </div>
     </div>
 
-    <!-- =====================================================
-         INDICADORES PRINCIPALES (KPIs)
-    ====================================================== -->
     <section class="card-grid">
 
-        <!-- OBRAS -->
         <div class="dashboard-card">
             <i class="fa-solid fa-helmet-safety"></i>
             <h3>Obras</h3>
@@ -42,7 +35,6 @@ $actividad = $datos["actividad"];
             <p>Obras registradas en el sistema</p>
         </div>
 
-        <!-- CLIENTES -->
         <div class="dashboard-card">
             <i class="fa-solid fa-user-group"></i>
             <h3>Clientes</h3>
@@ -50,7 +42,6 @@ $actividad = $datos["actividad"];
             <p>Clientes activos</p>
         </div>
 
-        <!-- EMPLEADOS -->
         <div class="dashboard-card">
             <i class="fa-solid fa-users"></i>
             <h3>Empleados</h3>
@@ -58,7 +49,6 @@ $actividad = $datos["actividad"];
             <p>Personal activo</p>
         </div>
 
-        <!-- MATERIALES -->
         <div class="dashboard-card">
             <i class="fa-solid fa-boxes-stacked"></i>
             <h3>Materiales</h3>
@@ -68,9 +58,6 @@ $actividad = $datos["actividad"];
 
     </section>
 
-    <!-- =====================================================
-         SECCIÓN INVENTARIO DE HERRAMIENTAS
-    ====================================================== -->
     <section class="dashboard-section">
         <div class="section-heading">
             <h2>Estado de herramientas</h2>
@@ -112,12 +99,8 @@ $actividad = $datos["actividad"];
         </div>
     </section>
 
-    <!-- =====================================================
-         DOS COLUMNAS: ACTIVIDAD Y RESUMEN
-    ====================================================== -->
     <div class="dashboard-columns">
 
-        <!-- ACTIVIDAD DEL SISTEMA -->
         <section class="dashboard-panel">
             <div class="panel-header">
                 <div>
@@ -146,7 +129,6 @@ $actividad = $datos["actividad"];
             </div>
         </section>
 
-        <!-- RESUMEN DE INVENTARIO -->
         <section class="dashboard-panel">
             <div class="panel-header">
                 <div>
@@ -212,9 +194,6 @@ $actividad = $datos["actividad"];
 
     </div>
 
-    <!-- =====================================================
-         ÚLTIMAS OPERACIONES (TABLA)
-    ====================================================== -->
     <section class="dashboard-panel">
         <div class="panel-header">
             <div>
@@ -286,10 +265,6 @@ $actividad = $datos["actividad"];
 </main>
 
 <style>
-    /* =====================================================
-       ESTILOS DEL DASHBOARD (BUILDPRO UI v2.0 INTEGRADO)
-    ====================================================== */
-
     .page-title {
         display: flex;
         justify-content: space-between;
@@ -345,7 +320,6 @@ $actividad = $datos["actividad"];
         margin-top: 4px;
     }
 
-    /* GRID Y TARJETAS DE INVENTARIO */
     .inventory-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -391,7 +365,6 @@ $actividad = $datos["actividad"];
     .inventory-card.repair { border-left: 4px solid #f97316; }
     .inventory-card.disabled { border-left: 4px solid var(--danger); }
 
-    /* LAYOUT COLUMNAS */
     .dashboard-columns {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -456,7 +429,6 @@ $actividad = $datos["actividad"];
         color: var(--text-secondary);
     }
 
-    /* BARRAS DE PROGRESO */
     .progress-item {
         margin-bottom: 20px;
     }
@@ -496,7 +468,6 @@ $actividad = $datos["actividad"];
     .repair-bar { background: #f97316; }
     .disabled-bar { background: var(--danger); }
 
-    /* TABLA DE AUDITORÍA */
     .audit-table-wrapper {
         width: 100%;
         overflow-x: auto;
@@ -618,7 +589,6 @@ $actividad = $datos["actividad"];
         margin-bottom: 6px;
     }
 
-    /* RESPONSIVE */
     @media (max-width: 900px) {
         .dashboard-columns {
             grid-template-columns: 1fr;

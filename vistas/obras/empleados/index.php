@@ -23,11 +23,6 @@ $id_obra = $_GET["id_obra"] ?? 0;
 
 <main class="content">
 
-
-    <!-- =========================================================
-         TÍTULO
-    ========================================================== -->
-
     <div class="page-title no-print">
 
         <h1>
@@ -40,18 +35,7 @@ $id_obra = $_GET["id_obra"] ?? 0;
 
     </div>
 
-
-
-    <!-- =========================================================
-         CONTENEDOR
-    ========================================================== -->
-
     <div class="table-container">
-
-
-        <!-- =====================================================
-             MENSAJES
-        ====================================================== -->
 
         <?php if (isset($_GET["success"])): ?>
 
@@ -111,12 +95,6 @@ $id_obra = $_GET["id_obra"] ?? 0;
 
         <?php endif; ?>
 
-
-
-        <!-- =====================================================
-             ENCABEZADO DE IMPRESIÓN
-        ====================================================== -->
-
         <div class="print-header">
 
             <h1>
@@ -150,23 +128,9 @@ $id_obra = $_GET["id_obra"] ?? 0;
 
         </div>
 
-
-
-        <!-- =====================================================
-             TOOLBAR
-        ====================================================== -->
-
         <div class="toolbar no-print">
 
-
-            <!-- ================================================
-                 IZQUIERDA
-            ================================================= -->
-
             <div class="toolbar-left">
-
-
-                <!-- BUSCADOR -->
 
                 <input
                     type="text"
@@ -175,9 +139,6 @@ $id_obra = $_GET["id_obra"] ?? 0;
                     placeholder="Buscar empleado..."
                     autocomplete="off"
                 >
-
-
-                <!-- FILTRO ESTADO -->
 
                 <select
                     class="filter"
@@ -198,14 +159,7 @@ $id_obra = $_GET["id_obra"] ?? 0;
 
                 </select>
 
-
             </div>
-
-
-
-            <!-- ================================================
-                 DERECHA
-            ================================================= -->
 
             <div
                 style="
@@ -215,9 +169,6 @@ $id_obra = $_GET["id_obra"] ?? 0;
                     margin:20px;
                 "
             >
-
-
-                <!-- IMPRIMIR -->
 
                 <button
                     type="button"
@@ -231,9 +182,6 @@ $id_obra = $_GET["id_obra"] ?? 0;
 
                 </button>
 
-
-                <!-- AGREGAR -->
-
                 <a
                     href="/empresa_constructora/controladores/EmpleadoObraController.php?accion=crear&id_obra=<?= htmlspecialchars($id_obra) ?>"
                     class="btn btn-primary"
@@ -245,17 +193,9 @@ $id_obra = $_GET["id_obra"] ?? 0;
 
                 </a>
 
-
             </div>
 
-
         </div>
-
-
-
-        <!-- =====================================================
-             TABLA
-        ====================================================== -->
 
         <div style="overflow-x:auto;">
 
@@ -300,38 +240,22 @@ $id_obra = $_GET["id_obra"] ?? 0;
 
                 </thead>
 
-
                 <tbody>
-
 
                     <?php if (count($empleados) > 0): ?>
 
-
                         <?php foreach ($empleados as $empleado): ?>
 
-
                             <?php
-
-                            /*
-                            ==================================================
-                                ESTADO
-                            ==================================================
-                            */
 
                             $activo =
                                 ((int)($empleado["estado"] ?? 0) === 1);
 
                             ?>
 
-
                             <tr
                                 data-estado="<?= $activo ? "activo" : "retirado" ?>"
                             >
-
-
-                                <!-- ==========================================
-                                     EMPLEADO
-                                =========================================== -->
 
                                 <td>
 
@@ -347,12 +271,6 @@ $id_obra = $_GET["id_obra"] ?? 0;
 
                                 </td>
 
-
-
-                                <!-- ==========================================
-                                     DOCUMENTO
-                                =========================================== -->
-
                                 <td>
 
                                     <?= htmlspecialchars(
@@ -361,12 +279,6 @@ $id_obra = $_GET["id_obra"] ?? 0;
 
                                 </td>
 
-
-
-                                <!-- ==========================================
-                                     TELÉFONO
-                                =========================================== -->
-
                                 <td>
 
                                     <?= htmlspecialchars(
@@ -374,12 +286,6 @@ $id_obra = $_GET["id_obra"] ?? 0;
                                     ) ?>
 
                                 </td>
-
-
-
-                                <!-- ==========================================
-                                     CARGO
-                                =========================================== -->
 
                                 <td>
 
@@ -411,12 +317,6 @@ $id_obra = $_GET["id_obra"] ?? 0;
 
                                 </td>
 
-
-
-                                <!-- ==========================================
-                                     FECHA INGRESO
-                                =========================================== -->
-
                                 <td>
 
                                     <?php if (!empty($empleado["fecha_ingreso"])): ?>
@@ -437,12 +337,6 @@ $id_obra = $_GET["id_obra"] ?? 0;
                                     <?php endif; ?>
 
                                 </td>
-
-
-
-                                <!-- ==========================================
-                                     ESTADO
-                                =========================================== -->
 
                                 <td>
 
@@ -476,23 +370,11 @@ $id_obra = $_GET["id_obra"] ?? 0;
 
                                 </td>
 
-
-
-                                <!-- ==========================================
-                                     ACCIONES
-                                =========================================== -->
-
                                 <td class="no-print">
 
                                     <div class="table-actions">
 
-
                                         <?php if ($activo): ?>
-
-
-                                            <!-- =================================
-                                                 EDITAR
-                                            ================================== -->
 
                                             <a
                                                 href="/empresa_constructora/vistas/obras/empleados/editar.php?id=<?= htmlspecialchars($empleado["id_empleado_obra"]) ?>"
@@ -504,12 +386,6 @@ $id_obra = $_GET["id_obra"] ?? 0;
 
                                             </a>
 
-
-
-                                            <!-- =================================
-                                                 RETIRAR
-                                            ================================== -->
-
                                             <a
                                                 href="/empresa_constructora/vistas/obras/empleados/retirar.php?id=<?= htmlspecialchars($empleado["id_empleado_obra"]) ?>"
                                                 class="btn btn-danger"
@@ -520,13 +396,7 @@ $id_obra = $_GET["id_obra"] ?? 0;
 
                                             </a>
 
-
                                         <?php else: ?>
-
-
-                                            <!-- =================================
-                                                 REACTIVAR
-                                            ================================== -->
 
                                             <a
                                                 href="/empresa_constructora/controladores/EmpleadoObraController.php?accion=activar&id=<?= htmlspecialchars($empleado["id_empleado_obra"]) ?>&id_obra=<?= htmlspecialchars($id_obra) ?>"
@@ -546,27 +416,17 @@ $id_obra = $_GET["id_obra"] ?? 0;
 
                                             </a>
 
-
                                         <?php endif; ?>
-
 
                                     </div>
 
                                 </td>
 
-
                             </tr>
-
 
                         <?php endforeach; ?>
 
-
                     <?php else: ?>
-
-
-                        <!-- =================================================
-                             SIN EMPLEADOS
-                        ================================================== -->
 
                         <tr>
 
@@ -615,9 +475,7 @@ $id_obra = $_GET["id_obra"] ?? 0;
 
                         </tr>
 
-
                     <?php endif; ?>
-
 
                 </tbody>
 
@@ -625,59 +483,37 @@ $id_obra = $_GET["id_obra"] ?? 0;
 
         </div>
 
-
     </div>
 
 </main>
-
-
-
-<!-- =========================================================
-     BUSCADOR Y FILTROS
-========================================================== -->
 
 <script>
 
 document.addEventListener("DOMContentLoaded", function() {
 
-
     const buscador =
         document.getElementById("buscarEmpleadoObra");
-
 
     const filtroEstado =
         document.getElementById("filtroEstadoEmpleado");
 
-
     const tabla =
         document.getElementById("tablaEmpleadosObra");
-
 
     const filas =
         tabla.querySelectorAll("tbody tr");
 
-
     function filtrarEmpleados() {
-
 
         const texto =
             buscador.value
                 .toLowerCase()
                 .trim();
 
-
         const estado =
             filtroEstado.value;
 
-
         filas.forEach(function(fila) {
-
-
-            /*
-            ==========================================
-                FILAS ESPECIALES
-            ==========================================
-            */
 
             if (!fila.dataset.estado) {
 
@@ -685,24 +521,19 @@ document.addEventListener("DOMContentLoaded", function() {
 
             }
 
-
             const contenido =
                 fila.textContent.toLowerCase();
-
 
             const estadoFila =
                 fila.dataset.estado;
 
-
             const coincideTexto =
                 contenido.includes(texto);
-
 
             const coincideEstado =
                 estado === ""
                 ||
                 estadoFila === estado;
-
 
             if (
                 coincideTexto &&
@@ -721,28 +552,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
     }
 
-
     buscador.addEventListener(
         "input",
         filtrarEmpleados
     );
-
 
     filtroEstado.addEventListener(
         "change",
         filtrarEmpleados
     );
 
-
 });
-
-
-
-/*
-=========================================================
-    CONFIRMAR REACTIVACIÓN
-=========================================================
-*/
 
 function confirmarReactivacion(nombre)
 {
@@ -759,8 +579,6 @@ function confirmarReactivacion(nombre)
 }
 
 </script>
-
-
 
 <?php
 

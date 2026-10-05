@@ -13,8 +13,6 @@ $obra = $obra ?? [];
 
 <main class="content">
 
-    <!-- ENCABEZADO -->
-
     <div class="page-header">
 
         <div>
@@ -55,8 +53,6 @@ $obra = $obra ?? [];
 
     </div>
 
-
-    <!-- LISTADO -->
 
     <div class="card">
 
@@ -107,8 +103,6 @@ $obra = $obra ?? [];
 
                             <tr>
 
-                                <!-- ID -->
-
                                 <td>
 
                                     <strong>
@@ -120,8 +114,6 @@ $obra = $obra ?? [];
                                 </td>
 
 
-                                <!-- FECHA -->
-
                                 <td>
 
                                     <?= date(
@@ -131,8 +123,6 @@ $obra = $obra ?? [];
 
                                 </td>
 
-
-                                <!-- CANTIDAD DE MATERIALES -->
 
                                 <td>
 
@@ -147,8 +137,6 @@ $obra = $obra ?? [];
 
                                 </td>
 
-
-                                <!-- ESTADO -->
 
                                 <td>
 
@@ -186,9 +174,6 @@ $obra = $obra ?? [];
                                     </span>
 
                                 </td>
-
-
-                                <!-- ACCIONES -->
 
                                 <td>
 

@@ -64,10 +64,6 @@ require_once "../../layouts/sidebar.php";
                 value="<?= $empleado["id_usuario"]; ?>">
 
 
-            <!-- ==========================
-                 NOMBRE Y APELLIDO
-            =========================== -->
-
             <div class="form-row">
 
                 <div class="form-group">
@@ -106,10 +102,6 @@ require_once "../../layouts/sidebar.php";
             </div>
 
 
-            <!-- ==========================
-                 CORREO Y ROL
-            =========================== -->
-
             <div class="form-row">
 
                 <div class="form-group">
@@ -143,10 +135,6 @@ require_once "../../layouts/sidebar.php";
 
             </div>
 
-
-            <!-- ==========================
-                 DOCUMENTO Y TELÉFONO
-            =========================== -->
 
             <div class="form-row">
 
@@ -185,10 +173,6 @@ require_once "../../layouts/sidebar.php";
             </div>
 
 
-            <!-- ==========================
-                 DIRECCIÓN Y SALARIO
-            =========================== -->
-
             <div class="form-row">
 
                 <div class="form-group">
@@ -226,10 +210,6 @@ require_once "../../layouts/sidebar.php";
 
             </div>
 
-
-            <!-- ==========================
-                 CARGOS
-            =========================== -->
 
             <div class="form-row">
 
@@ -273,10 +253,6 @@ require_once "../../layouts/sidebar.php";
 
             </div>
 
-
-            <!-- ==========================
-                 BOTONES
-            =========================== -->
 
             <div class="form-actions">
 

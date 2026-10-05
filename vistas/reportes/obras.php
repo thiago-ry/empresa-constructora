@@ -11,10 +11,6 @@ $obras = $reporte->obras();
 
 $etapaModel = new Etapa();
 
-/* ==================================================
-   ESTADÍSTICAS GENERALES
-================================================== */
-
 $totalObras = count($obras);
 
 $obrasActivas = 0;
@@ -29,10 +25,6 @@ $obraMayorAvance = "Sin datos";
 $menorAvance = 101;
 $obraMenorAvance = "Sin datos";
 
-/* ==================================================
-   CALCULAR ESTADÍSTICAS
-================================================== */
-
 foreach ($obras as $obra) {
 
     $avance = $etapaModel->calcularAvance(
@@ -43,8 +35,6 @@ foreach ($obras as $obra) {
 
     $avanceTotal += $avance;
 
-    /* Mayor avance */
-
     if ($avance > $mayorAvance) {
 
         $mayorAvance = $avance;
@@ -53,8 +43,6 @@ foreach ($obras as $obra) {
             $obra["nombre_obra"];
     }
 
-    /* Menor avance */
-
     if ($avance < $menorAvance) {
 
         $menorAvance = $avance;
@@ -62,8 +50,6 @@ foreach ($obras as $obra) {
         $obraMenorAvance =
             $obra["nombre_obra"];
     }
-
-    /* Estados */
 
     if ($obra["estado"] == "Activa") {
 
@@ -81,15 +67,9 @@ foreach ($obras as $obra) {
     }
 }
 
-/* ==================================================
-   PROMEDIO DE AVANCE
-================================================== */
-
 $promedioAvance = $totalObras > 0
     ? round($avanceTotal / $totalObras)
     : 0;
-
-/* Si no existen obras */
 
 if ($totalObras === 0) {
 
@@ -100,22 +80,12 @@ if ($totalObras === 0) {
     $obraMenorAvance = "Sin datos";
 }
 
-
-/* ==================================================
-   LAYOUT
-================================================== */
-
 require_once "../../layouts/header.php";
 require_once "../../layouts/sidebar.php";
 
 ?>
 
 <main class="content">
-
-
-    <!-- ==================================================
-         TITULO
-    ================================================== -->
 
     <div class="page-title no-print">
 
@@ -134,15 +104,8 @@ require_once "../../layouts/sidebar.php";
 
     </div>
 
-
-    <!-- ==================================================
-         ESTADÍSTICAS PRINCIPALES
-    ================================================== -->
-
     <div class="alert-container no-print">
 
-
-        <!-- TOTAL -->
 
         <div class="alert alert-primary">
 
@@ -156,9 +119,6 @@ require_once "../../layouts/sidebar.php";
 
         </div>
 
-
-        <!-- PROMEDIO -->
-
         <div class="alert alert-warning">
 
             <p>
@@ -171,9 +131,6 @@ require_once "../../layouts/sidebar.php";
 
         </div>
 
-
-        <!-- MAYOR AVANCE -->
-
         <div class="alert alert-success">
 
             <p>
@@ -185,9 +142,6 @@ require_once "../../layouts/sidebar.php";
             </h3>
 
         </div>
-
-
-        <!-- PAUSADAS -->
 
         <div class="alert alert-danger">
 
@@ -203,17 +157,8 @@ require_once "../../layouts/sidebar.php";
 
     </div>
 
-
-    <!-- ==================================================
-         TABLA
-    ================================================== -->
-
     <div class="table-container">
 
-
-        <!-- ==================================================
-             ENCABEZADO PARA IMPRESIÓN
-        ================================================== -->
 
         <div class="print-header">
 
@@ -243,18 +188,10 @@ require_once "../../layouts/sidebar.php";
 
         </div>
 
-
-        <!-- ==================================================
-             BARRA DE HERRAMIENTAS
-        ================================================== -->
-
         <div class="toolbar no-print">
 
 
             <div class="toolbar-left">
-
-
-                <!-- BUSCADOR -->
 
                 <input
                     type="text"
@@ -262,8 +199,6 @@ require_once "../../layouts/sidebar.php";
                     class="search-box"
                     placeholder="Buscar obra...">
 
-
-                <!-- FILTRO ESTADO -->
 
                 <select
                     id="filtroEstado"
@@ -289,11 +224,6 @@ require_once "../../layouts/sidebar.php";
 
 
             </div>
-
-
-            <!-- ==================================================
-                 BOTONES
-            ================================================== -->
 
             <div class="toolbar-right">
 
@@ -334,11 +264,6 @@ require_once "../../layouts/sidebar.php";
             </div>
 
         </div>
-
-
-        <!-- ==================================================
-             TABLA DE OBRAS
-        ================================================== -->
 
         <table
             class="table"
@@ -403,9 +328,6 @@ require_once "../../layouts/sidebar.php";
                                             $obra["estado"]
                                         ) ?>">
 
-
-                        <!-- OBRA -->
-
                         <td>
 
                             <strong>
@@ -418,9 +340,6 @@ require_once "../../layouts/sidebar.php";
 
                         </td>
 
-
-                        <!-- CLIENTE -->
-
                         <td>
 
                             <?= htmlspecialchars(
@@ -430,9 +349,6 @@ require_once "../../layouts/sidebar.php";
 
                         </td>
 
-
-                        <!-- DIRECCIÓN -->
-
                         <td>
 
                             <?= htmlspecialchars(
@@ -440,9 +356,6 @@ require_once "../../layouts/sidebar.php";
                             ) ?>
 
                         </td>
-
-
-                        <!-- INICIO -->
 
                         <td>
 
@@ -452,9 +365,6 @@ require_once "../../layouts/sidebar.php";
 
                         </td>
 
-
-                        <!-- FIN -->
-
                         <td>
 
                             <?= htmlspecialchars(
@@ -462,9 +372,6 @@ require_once "../../layouts/sidebar.php";
                             ) ?>
 
                         </td>
-
-
-                        <!-- AVANCE -->
 
                         <td
                             style="min-width:220px;">
@@ -481,9 +388,6 @@ require_once "../../layouts/sidebar.php";
                             </div>
 
                         </td>
-
-
-                        <!-- ESTADO -->
 
                         <td>
 
@@ -551,11 +455,6 @@ require_once "../../layouts/sidebar.php";
 
     </div>
 
-
-    <!-- ==================================================
-         RESUMEN ADICIONAL
-    ================================================== -->
-
     <div
         class="alert-container no-print"
         style="margin-top:20px;">
@@ -595,11 +494,6 @@ require_once "../../layouts/sidebar.php";
 
     </div>
 
-
-    <!-- ==================================================
-         GRÁFICO DE AVANCE
-    ================================================== -->
-
     <div
         class="card no-print"
         style="margin-top:20px;">
@@ -623,8 +517,6 @@ require_once "../../layouts/sidebar.php";
         </div>
 
 
-        <!-- CONTENEDOR DEL GRÁFICO -->
-
         <div
             style="
                 width:100%;
@@ -644,17 +536,7 @@ require_once "../../layouts/sidebar.php";
 
 </main>
 
-
-<!-- ==================================================
-     CHART.JS
-================================================== -->
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
-<!-- ==================================================
-     BUSCADOR Y FILTRO
-================================================== -->
 
 <script>
     const buscarObra =
@@ -732,11 +614,6 @@ require_once "../../layouts/sidebar.php";
     );
 </script>
 
-
-<!-- ==================================================
-     GRÁFICO DE AVANCE
-================================================== -->
-
 <script>
     document.addEventListener(
         "DOMContentLoaded",
@@ -770,10 +647,6 @@ require_once "../../layouts/sidebar.php";
                 return;
             }
 
-
-            /* ==================================================
-               DATOS DESDE PHP
-            ================================================== */
 
             const etiquetasObras =
                 <?= json_encode(
@@ -813,11 +686,6 @@ require_once "../../layouts/sidebar.php";
                 "Avances:",
                 avancesObras
             );
-
-
-            /* ==================================================
-               CREAR GRÁFICO
-            ================================================== */
 
             new Chart(
                 canvas, {

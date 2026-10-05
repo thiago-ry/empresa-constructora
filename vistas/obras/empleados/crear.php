@@ -28,11 +28,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
     <div class="form-card">
 
-
-        <!-- ==================================================
-             BUSCADOR
-        ================================================== -->
-
         <div class="form-group">
 
             <label for="buscarEmpleado">
@@ -76,12 +71,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
             </small>
 
         </div>
-
-
-
-        <!-- ==================================================
-             TABLA DE EMPLEADOS
-        ================================================== -->
 
         <div
             class="table-container"
@@ -160,12 +149,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
         </div>
 
-
-
-        <!-- ==================================================
-             EMPLEADO SELECCIONADO
-        ================================================== -->
-
         <div
             id="empleadoSeleccionado"
             style="
@@ -179,9 +162,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
                     border-radius:10px;
                     border:1px solid rgba(255,255,255,.1);
                 ">
-
-
-                <!-- INFORMACIÓN DEL EMPLEADO -->
 
                 <div
                     style="
@@ -237,12 +217,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
                 </div>
 
-
-
-                <!-- ==================================================
-                     CARGO PARA LA OBRA
-                ================================================== -->
-
                 <div
                     id="contenedorCargo"
                     class="form-group"
@@ -290,12 +264,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
         </div>
 
-
-
-        <!-- ==================================================
-             FORMULARIO
-        ================================================== -->
-
         <form
             class="form"
             id="formAsignarEmpleado"
@@ -331,11 +299,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
             <div class="form-row">
 
-
-                <!-- ==================================================
-                     FECHA DE INGRESO
-                ================================================== -->
-
                 <div class="form-group">
 
                     <label for="fecha_ingreso">
@@ -357,12 +320,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
             </div>
 
-
-
-            <!-- ==================================================
-                 OBSERVACIONES
-            ================================================== -->
-
             <div class="form-group">
 
                 <label for="observaciones">
@@ -380,12 +337,6 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
                     placeholder="Ingrese observaciones sobre la asignación"></textarea>
 
             </div>
-
-
-
-            <!-- ==================================================
-                 BOTONES
-            ================================================== -->
 
             <div class="form-actions">
 

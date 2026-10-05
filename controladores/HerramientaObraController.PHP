@@ -33,10 +33,6 @@ class HerramientaObraController
     }
 
 
-    // =========================================================
-    // LISTAR
-    // =========================================================
-
     public function listar()
     {
         $id_obra = $_GET["id_obra"] ?? 0;
@@ -84,10 +80,6 @@ class HerramientaObraController
             "../vistas/herramientas/historial.php";
     }
 
-    // =========================================================
-    // CREAR
-    // =========================================================
-
     public function crear()
     {
         $id_obra = $_GET["id_obra"] ?? 0;
@@ -98,10 +90,6 @@ class HerramientaObraController
         require_once "../vistas/obras/herramientas/agregar.php";
     }
 
-
-    // =========================================================
-    // GUARDAR ASIGNACIÓN
-    // =========================================================
 
     public function guardar()
     {
@@ -129,10 +117,6 @@ class HerramientaObraController
         ];
 
 
-        // =====================================================
-        // VALIDAR CANTIDAD
-        // =====================================================
-
         if ($datos["cantidad"] <= 0) {
 
             $_SESSION["error"] =
@@ -146,10 +130,6 @@ class HerramientaObraController
             exit();
         }
 
-
-        // =====================================================
-        // VERIFICAR STOCK DISPONIBLE
-        // =====================================================
 
         $disponibles =
             $this->herramienta
@@ -174,20 +154,7 @@ class HerramientaObraController
         }
 
 
-        // =====================================================
-        // GUARDAR ASIGNACIÓN
-        // =====================================================
-
         if ($this->herramientaObra->agregar($datos)) {
-
-
-            // =================================================
-            // MARCAR UNIDADES COMO ASIGNADAS
-            // =================================================
-            //
-            // Estado 2 = Asignada
-            //
-            // =================================================
 
             $unidadesDisponibles =
                 $this->unidad->obtenerDisponibles(
@@ -214,10 +181,6 @@ class HerramientaObraController
                 );
             }
 
-
-            // =================================================
-            // AUDITORÍA
-            // =================================================
 
             $this->auditoria->registrar([
 
@@ -248,10 +211,6 @@ class HerramientaObraController
     }
 
 
-    // =========================================================
-    // EDITAR
-    // =========================================================
-
     public function editar()
     {
         $id = $_GET["id"] ?? 0;
@@ -263,15 +222,6 @@ class HerramientaObraController
         require_once "../vistas/obras/herramientas/editar.php";
     }
 
-
-    // =========================================================
-    // ACTUALIZAR ASIGNACIÓN
-    // =========================================================
-    //
-    // IMPORTANTE:
-    // Ya NO registra devoluciones.
-    //
-    // =========================================================
 
     public function actualizar()
     {
@@ -314,10 +264,6 @@ class HerramientaObraController
                 $_POST["observaciones"] ?? null
         ];
 
-
-        // =====================================================
-        // NO PERMITIR REDUCIR POR DEBAJO DE LO YA DEVUELTO
-        // =====================================================
 
         if (
             $datos["cantidad_asignada"]
@@ -371,10 +317,6 @@ class HerramientaObraController
     }
 
 
-    // =========================================================
-    // FORMULARIO DE DEVOLUCIÓN
-    // =========================================================
-
     public function devolver()
     {
         $id =
@@ -410,10 +352,6 @@ class HerramientaObraController
     }
 
 
-    // =========================================================
-    // GUARDAR DEVOLUCIÓN
-    // =========================================================
-
     public function guardarDevolucion()
     {
         if ($_SERVER["REQUEST_METHOD"] != "POST") {
@@ -424,10 +362,6 @@ class HerramientaObraController
         $id =
             $_POST["id_herramienta_obra"];
 
-
-        // =====================================================
-        // OBTENER ASIGNACIÓN
-        // =====================================================
 
         $asignacion =
             $this->herramientaObra
@@ -451,18 +385,10 @@ class HerramientaObraController
             (int)$_POST["cantidad"];
 
 
-        // =====================================================
-        // CANTIDAD PENDIENTE
-        // =====================================================
-
         $pendiente =
             $this->herramientaObra
             ->obtenerCantidadPendiente($id);
 
-
-        // =====================================================
-        // VALIDACIONES
-        // =====================================================
 
         if ($cantidad <= 0) {
 
@@ -496,10 +422,6 @@ class HerramientaObraController
         }
 
 
-        // =====================================================
-        // REGISTRAR DEVOLUCIÓN
-        // =====================================================
-
         $datos = [
 
             "id_herramienta_obra" =>
@@ -527,20 +449,6 @@ class HerramientaObraController
         ) {
 
 
-            // =================================================
-            // LIBERAR UNIDADES INDIVIDUALES
-            // =================================================
-            //
-            // La devolución ya fue registrada.
-            //
-            // Ahora buscamos las unidades ASIGNADAS de esa
-            // herramienta y las cambiamos a DISPONIBLE.
-            //
-            // Estado Disponible se busca por nombre dentro
-            // de UnidadHerramienta.php.
-            //
-            // =================================================
-
             $liberadas =
                 $this->unidad->liberarUnidades(
                     $asignacion["id_herramienta"],
@@ -548,20 +456,12 @@ class HerramientaObraController
                 );
 
 
-            // =================================================
-            // VERIFICAR SI LAS UNIDADES FUERON LIBERADAS
-            // =================================================
-
             if (!$liberadas) {
 
                 $_SESSION["error"] =
                     "La devolución fue registrada, pero no se pudieron liberar las unidades de la herramienta.";
 
             } else {
-
-                // =================================================
-                // VERIFICAR SI LA ASIGNACIÓN TERMINÓ
-                // =================================================
 
                 $pendienteFinal =
                     $this->herramientaObra
@@ -574,10 +474,6 @@ class HerramientaObraController
                         ->marcarComoDevuelta($id);
                 }
 
-
-                // =================================================
-                // AUDITORÍA
-                // =================================================
 
                 $this->auditoria->registrar([
 
@@ -606,10 +502,6 @@ class HerramientaObraController
         }
 
 
-        // =====================================================
-        // VOLVER AL LISTADO
-        // =====================================================
-
         header(
             "Location: /empresa_constructora/controladores/HerramientaObraController.php?accion=listar&id_obra="
             . $asignacion["id_obra"]
@@ -618,10 +510,6 @@ class HerramientaObraController
         exit();
     }
 
-
-    // =========================================================
-    // ELIMINAR
-    // =========================================================
 
     public function eliminar()
     {
@@ -669,10 +557,6 @@ class HerramientaObraController
     }
 }
 
-
-// =========================================================
-// EJECUCIÓN
-// =========================================================
 
 $controller =
     new HerramientaObraController();

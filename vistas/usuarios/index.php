@@ -37,8 +37,6 @@ require_once "../../layouts/sidebar.php";
     <div class="table-container">
 
 
-        <!-- SOLO SE MUESTRA AL IMPRIMIR -->
-
         <div class="print-header">
 
 

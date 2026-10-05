@@ -1,7 +1,3 @@
-//==============================
-// Navbar al hacer scroll
-//==============================
-
 const header = document.querySelector(".header");
 
 window.addEventListener("scroll", () => {
@@ -19,10 +15,6 @@ window.addEventListener("scroll", () => {
     }
 
 });
-
-//==============================
-// Animaciones al aparecer
-//==============================
 
 const elementos = document.querySelectorAll(
 
@@ -59,10 +51,6 @@ elementos.forEach((item) => {
 
 });
 
-//==============================
-// Botón volver arriba
-//==============================
-
 const backTop = document.querySelector(".back-top");
 
 window.addEventListener("scroll", () => {
@@ -81,10 +69,6 @@ window.addEventListener("scroll", () => {
 
 });
 
-//==============================
-// Scroll suave
-//==============================
-
 document.querySelectorAll('a[href^="#"]').forEach(link => {
 
     link.addEventListener("click", function(e){
@@ -102,10 +86,6 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
     });
 
 });
-
-//==============================
-// Excavadora Hero
-//==============================
 
 const excavadora = document.getElementById("excavadora");
 
@@ -159,7 +139,5 @@ window.addEventListener(
     "resize",
     animarExcavadora
 );
-
-// Ejecutar al cargar para evitar el salto
 
 animarExcavadora();

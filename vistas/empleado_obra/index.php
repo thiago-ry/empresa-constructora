@@ -19,21 +19,9 @@ $id_obra = isset($_GET["id_obra"])
     ? (int)$_GET["id_obra"]
     : 0;
 
-/*
-|--------------------------------------------------------------------------
-| Si el capataz tiene una sola obra, se selecciona automáticamente
-|--------------------------------------------------------------------------
-*/
-
 if ($id_obra <= 0 && count($obras) === 1) {
     $id_obra = (int)$obras[0]["id_obra"];
 }
-
-/*
-|--------------------------------------------------------------------------
-| Buscar la obra seleccionada dentro de las obras permitidas
-|--------------------------------------------------------------------------
-*/
 
 $obraSeleccionada = null;
 
@@ -44,12 +32,6 @@ foreach ($obras as $obraActual) {
         break;
     }
 }
-
-/*
-|--------------------------------------------------------------------------
-| Obtener empleados de la obra
-|--------------------------------------------------------------------------
-*/
 
 $empleados = [];
 
@@ -117,8 +99,6 @@ require_once "../../layouts/sidebar.php";
 
     <?php else: ?>
 
-        <!-- INFORMACIÓN DE LA OBRA -->
-
         <div
             class="table-container"
             style="margin-top: 0; margin-bottom: 25px;"
@@ -157,8 +137,6 @@ require_once "../../layouts/sidebar.php";
             </div>
 
         </div>
-
-        <!-- MENSAJES -->
 
         <?php if (isset($_GET["mensaje"])): ?>
 
@@ -237,8 +215,6 @@ require_once "../../layouts/sidebar.php";
 
         <?php endif; ?>
 
-
-        <!-- TABLA DE EMPLEADOS -->
 
         <div class="table-container">
 
@@ -354,8 +330,6 @@ require_once "../../layouts/sidebar.php";
 
                             <tr>
 
-                                <!-- NOMBRE -->
-
                                 <td>
 
                                     <strong>
@@ -383,8 +357,6 @@ require_once "../../layouts/sidebar.php";
                                 </td>
 
 
-                                <!-- CARGO -->
-
                                 <td>
 
                                     <?php if (
@@ -411,8 +383,6 @@ require_once "../../layouts/sidebar.php";
 
                                 </td>
 
-
-                                <!-- ENTRADA -->
 
                                 <td>
 
@@ -446,8 +416,6 @@ require_once "../../layouts/sidebar.php";
                                 </td>
 
 
-                                <!-- SALIDA -->
-
                                 <td>
 
                                     <?php if ($salida): ?>
@@ -479,8 +447,6 @@ require_once "../../layouts/sidebar.php";
 
                                 </td>
 
-
-                                <!-- ESTADO -->
 
                                 <td>
 
@@ -560,8 +526,6 @@ require_once "../../layouts/sidebar.php";
                                 </td>
 
 
-                                <!-- ACCIONES -->
-
                                 <td class="no-print">
 
                                     <div class="table-actions">
@@ -569,7 +533,6 @@ require_once "../../layouts/sidebar.php";
 
                                         <?php if (!$estado): ?>
 
-                                            <!-- ENTRADA -->
 
                                             <a
                                                 href="../../controladores/AsistenciaController.php?accion=entrada&id_usuario=<?= $empleadoActual["id_usuario"]; ?>&id_obra=<?= $id_obra; ?>"
@@ -583,8 +546,6 @@ require_once "../../layouts/sidebar.php";
 
                                             </a>
 
-
-                                            <!-- AUSENCIA -->
 
                                             <a
                                                 href="../../controladores/AsistenciaController.php?accion=ausencia&id_usuario=<?= $empleadoActual["id_usuario"]; ?>&id_obra=<?= $id_obra; ?>"
@@ -604,8 +565,6 @@ require_once "../../layouts/sidebar.php";
                                             $estado === "Ausente"
                                         ): ?>
 
-
-                                            <!-- CORREGIR AUSENCIA / ENTRADA -->
 
                                             <a
                                                 href="../../controladores/AsistenciaController.php?accion=entrada&id_usuario=<?= $empleadoActual["id_usuario"]; ?>&id_obra=<?= $id_obra; ?>"
@@ -627,8 +586,6 @@ require_once "../../layouts/sidebar.php";
                                         ): ?>
 
 
-                                            <!-- SALIDA -->
-
                                             <a
                                                 href="../../controladores/AsistenciaController.php?accion=salida&id_usuario=<?= $empleadoActual["id_usuario"]; ?>&id_obra=<?= $id_obra; ?>"
                                                 class="btn btn-secondary"
@@ -644,8 +601,6 @@ require_once "../../layouts/sidebar.php";
 
                                         <?php else: ?>
 
-
-                                            <!-- JORNADA COMPLETA -->
 
                                             <span
                                                 class="badge badge-info"

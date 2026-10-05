@@ -1,11 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    /*
-    ==================================================
-        VARIABLES
-    ==================================================
-    */
-
     const inputBusqueda =
         document.getElementById("buscarEmpleado");
 
@@ -23,12 +17,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const idCargo =
         document.getElementById("id_cargo");
-
-    /*
-    ==================================================
-        ID CARGO QUE SE ENVÍA AL FORMULARIO
-    ==================================================
-    */
 
     const idCargoForm =
         document.getElementById("id_cargo_form");
@@ -61,26 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const form =
         document.getElementById("formAsignarEmpleado");
 
-
-    /*
-    ==================================================
-        ID DE LA OBRA
-    ==================================================
-
-        idObra viene definido desde la vista PHP.
-
-    ==================================================
-    */
-
-
     let temporizador = null;
-
-
-    /*
-    ==================================================
-        BUSCAR EMPLEADOS
-    ==================================================
-    */
 
     function buscarEmpleados() {
 
@@ -172,12 +141,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
-
-    /*
-    ==================================================
-        MOSTRAR EMPLEADOS
-    ==================================================
-    */
 
     function mostrarEmpleados(empleados) {
 
@@ -292,12 +255,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
 
-        /*
-        ==============================================
-            BOTONES SELECCIONAR
-        ==============================================
-        */
-
         document
             .querySelectorAll(".btn-seleccionar")
             .forEach(boton => {
@@ -326,23 +283,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    /*
-    ==================================================
-        SELECCIONAR EMPLEADO
-    ==================================================
-    */
-
     function seleccionarEmpleado(empleado) {
 
         idUsuario.value =
             empleado.id;
-
-
-        /*
-        ==============================================
-            LIMPIAR CARGO ANTERIOR
-        ==============================================
-        */
 
         idCargo.value = "";
 
@@ -364,21 +308,8 @@ document.addEventListener("DOMContentLoaded", function () {
             "block";
 
 
-        /*
-        ==============================================
-            DESHABILITAR BUSCADOR
-        ==============================================
-        */
-
         inputBusqueda.disabled =
             true;
-
-
-        /*
-        ==============================================
-            DESHABILITAR BOTONES
-        ==============================================
-        */
 
         document
             .querySelectorAll(".btn-seleccionar")
@@ -389,32 +320,13 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
 
-        /*
-        ==============================================
-            CARGAR CARGOS
-        ==============================================
-        */
-
         cargarCargos(empleado.id);
-
-
-        /*
-        ==============================================
-            TODAVÍA NO HABILITAR ASIGNAR
-        ==============================================
-        */
 
         btnAsignar.disabled =
             true;
 
     }
 
-
-    /*
-    ==================================================
-        CARGAR CARGOS DEL EMPLEADO
-    ==================================================
-    */
 
     function cargarCargos(idEmpleado) {
 
@@ -464,12 +376,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         .then(data => {
 
-            /*
-            ==========================================
-                ERROR DEL SERVIDOR
-            ==========================================
-            */
-
             if (!data.success) {
 
                 idCargo.innerHTML = `
@@ -493,12 +399,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-
-            /*
-            ==========================================
-                SIN CARGOS
-            ==========================================
-            */
 
             if (
                 !data.cargos ||
@@ -525,12 +425,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-
-            /*
-            ==========================================
-                CARGOS ENCONTRADOS
-            ==========================================
-            */
 
             idCargo.innerHTML = `
 
@@ -598,31 +492,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    /*
-    ==================================================
-        CAMBIO DE CARGO
-    ==================================================
-    */
-
     idCargo.addEventListener(
         "change",
         function () {
 
-            /*
-            ==========================================
-                COPIAR CARGO AL FORMULARIO
-            ==========================================
-            */
-
             idCargoForm.value =
                 idCargo.value;
-
-
-            /*
-            ==========================================
-                HABILITAR ASIGNAR
-            ==========================================
-            */
 
             if (
                 idUsuario.value &&
@@ -643,21 +518,9 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
 
-    /*
-    ==================================================
-        CAMBIAR EMPLEADO
-    ==================================================
-    */
-
     quitarEmpleado.addEventListener(
         "click",
         function () {
-
-            /*
-            ==============================================
-                LIMPIAR EMPLEADO
-            ==============================================
-            */
 
             idUsuario.value = "";
 
@@ -667,12 +530,6 @@ document.addEventListener("DOMContentLoaded", function () {
             empleadoSeleccionado.style.display =
                 "none";
 
-
-            /*
-            ==============================================
-                LIMPIAR CARGO
-            ==============================================
-            */
 
             idCargo.value = "";
 
@@ -695,21 +552,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 "none";
 
 
-            /*
-            ==============================================
-                DESHABILITAR ASIGNAR
-            ==============================================
-            */
-
             btnAsignar.disabled =
                 true;
-
-
-            /*
-            ==============================================
-                MOSTRAR TODOS LOS EMPLEADOS
-            ==============================================
-            */
 
             inputBusqueda.disabled =
                 false;
@@ -720,12 +564,6 @@ document.addEventListener("DOMContentLoaded", function () {
             buscarEmpleados();
 
 
-            /*
-            ==============================================
-                ENFOCAR BUSCADOR
-            ==============================================
-            */
-
             setTimeout(function () {
 
                 inputBusqueda.focus();
@@ -735,12 +573,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     );
 
-
-    /*
-    ==================================================
-        BUSCADOR CON DELAY
-    ==================================================
-    */
 
     inputBusqueda.addEventListener(
         "input",
@@ -757,12 +589,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     );
 
-
-    /*
-    ==================================================
-        LIMPIAR FORMULARIO
-    ==================================================
-    */
 
     btnLimpiar.addEventListener(
         "click",
@@ -850,21 +676,9 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
 
-    /*
-    ==================================================
-        PROTEGER ENVÍO
-    ==================================================
-    */
-
     form.addEventListener(
         "submit",
         function (evento) {
-
-            /*
-            ==========================================
-                SIN EMPLEADO
-            ==========================================
-            */
 
             if (!idUsuario.value) {
 
@@ -881,12 +695,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
-            /*
-            ==========================================
-                SIN CARGO
-            ==========================================
-            */
-
             if (!idCargo.value) {
 
                 evento.preventDefault();
@@ -902,24 +710,12 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
-            /*
-            ==========================================
-                ASEGURAR CARGO EN EL FORMULARIO
-            ==========================================
-            */
-
             idCargoForm.value =
                 idCargo.value;
 
         }
     );
 
-
-    /*
-    ==================================================
-        ESCAPAR HTML
-    ==================================================
-    */
 
     function escapeHtml(valor) {
 
@@ -947,12 +743,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
-
-    /*
-    ==================================================
-        MOSTRAR MENSAJE
-    ==================================================
-    */
 
     function mostrarMensaje(icono, mensaje) {
 
@@ -983,12 +773,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
-
-    /*
-    ==================================================
-        CARGAR EMPLEADOS AL INICIAR
-    ==================================================
-    */
 
     buscarEmpleados();
 

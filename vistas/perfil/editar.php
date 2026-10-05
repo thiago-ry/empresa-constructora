@@ -2,67 +2,30 @@
 
 require_once "../../modelos/Usuario.php";
 
-
-// ============================================================
-// SESIÓN
-// ============================================================
-
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-
 if (!isset($_SESSION["usuario"])) {
-
     header("Location: /empresa_constructora/vistas/login.php");
-
     exit;
 }
 
-
-// ============================================================
-// ID DEL USUARIO LOGUEADO
-// ============================================================
-
 $id_usuario = $_SESSION["usuario"]["id"];
-
-
-// ============================================================
-// MODELO
-// ============================================================
 
 $usuario = new Usuario();
 
-
-// ============================================================
-// OBTENER DATOS DEL USUARIO
-// ============================================================
-
 $perfil = $usuario->buscarPorId($id_usuario);
 
-
 if (!$perfil) {
-
     die("No se encontró el usuario.");
 }
 
-
-// ============================================================
-// LAYOUT
-// ============================================================
-
 require_once "../../layouts/header.php";
 require_once "../../layouts/sidebar.php";
-
 ?>
 
-
 <main class="content">
-
-
-    <!-- ==================================================
-         TÍTULO
-    ================================================== -->
 
     <div class="page-title">
 
@@ -74,11 +37,6 @@ require_once "../../layouts/sidebar.php";
 
     </div>
 
-
-    <!-- ==================================================
-         FORMULARIO
-    ================================================== -->
-
     <div class="form-card">
 
 
@@ -86,28 +44,17 @@ require_once "../../layouts/sidebar.php";
             action="../../controladores/PerfilController.php"
             method="POST">
 
-
-            <!-- ==================================================
-                 ACCIÓN
-            ================================================== -->
-
             <input
                 type="hidden"
                 name="accion"
                 value="editar"
                 class="input">
 
-
             <input
                 type="hidden"
                 name="id_usuario"
                 value="<?= $perfil["id_usuario"]; ?>"
                 class="input">
-
-
-            <!-- ==================================================
-                 INFORMACIÓN PERSONAL
-            ================================================== -->
 
             <div class="form-section">
 
@@ -121,9 +68,6 @@ require_once "../../layouts/sidebar.php";
 
 
                 <div class="form-grid">
-
-
-                    <!-- NOMBRE -->
 
                     <div class="form-group">
 
@@ -140,9 +84,6 @@ require_once "../../layouts/sidebar.php";
                             class="input">
 
                     </div>
-
-
-                    <!-- APELLIDO -->
 
                     <div class="form-group">
 
@@ -161,9 +102,6 @@ require_once "../../layouts/sidebar.php";
 
                     </div>
 
-
-                    <!-- DOCUMENTO -->
-
                     <div class="form-group">
 
                         <label for="documento">
@@ -181,9 +119,6 @@ require_once "../../layouts/sidebar.php";
 
                     </div>
 
-
-                    <!-- TELÉFONO -->
-
                     <div class="form-group">
 
                         <label for="telefono">
@@ -200,9 +135,6 @@ require_once "../../layouts/sidebar.php";
 
                     </div>
 
-
-                    <!-- DIRECCIÓN -->
-
                     <div class="form-group form-group-full">
 
                         <label for="direccion">
@@ -217,9 +149,6 @@ require_once "../../layouts/sidebar.php";
                             value="<?= htmlspecialchars($perfil["direccion"] ?? ""); ?>">
 
                     </div>
-
-
-                    <!-- CORREO -->
 
                     <div class="form-group form-group-full">
 
@@ -242,11 +171,6 @@ require_once "../../layouts/sidebar.php";
 
             </div>
 
-
-            <!-- ==================================================
-                 INFORMACIÓN DEL SISTEMA
-            ================================================== -->
-
             <div class="form-section">
 
 
@@ -261,9 +185,6 @@ require_once "../../layouts/sidebar.php";
 
                 <div class="form-grid">
 
-
-                    <!-- ROL -->
-
                     <div class="form-group">
 
                         <label>
@@ -276,9 +197,6 @@ require_once "../../layouts/sidebar.php";
                             disabled>
 
                     </div>
-
-
-                    <!-- ESTADO -->
 
                     <div class="form-group">
 
@@ -297,11 +215,6 @@ require_once "../../layouts/sidebar.php";
                 </div>
 
             </div>
-
-
-            <!-- ==================================================
-                 BOTONES
-            ================================================== -->
 
             <div class="form-actions">
 

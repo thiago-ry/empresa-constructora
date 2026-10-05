@@ -2,15 +2,9 @@
 
 require_once "../../modelos/Usuario.php";
 
-
-// ============================================================
-// SESIÓN
-// ============================================================
-
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
 
 if (!isset($_SESSION["usuario"])) {
 
@@ -19,38 +13,17 @@ if (!isset($_SESSION["usuario"])) {
     exit;
 }
 
-
-// ============================================================
-// ID DEL USUARIO LOGUEADO
-// ============================================================
-
 $id_usuario = $_SESSION["usuario"]["id"];
-
-
-// ============================================================
-// MODELO
-// ============================================================
 
 $usuario = new Usuario();
 
-
-// ============================================================
-// OBTENER PERFIL
-// ============================================================
-
 $perfil = $usuario->buscarPorId($id_usuario);
-
 
 if (!$perfil) {
 
     die("No se encontró el usuario con ID: "
         . $id_usuario);
 }
-
-
-// ============================================================
-// CARGOS DEL EMPLEADO
-// ============================================================
 
 $cargos = [];
 
@@ -64,14 +37,8 @@ if (
     );
 }
 
-
-// ============================================================
-// DATOS PARA LA VISTA
-// ============================================================
-
 $nombreCompleto =
     $perfil["nombre"] . " " . $perfil["apellido"];
-
 
 $iniciales =
     strtoupper(
@@ -79,14 +46,8 @@ $iniciales =
             substr($perfil["apellido"], 0, 1)
     );
 
-
 $estadoActivo =
     $perfil["estado"] == 1;
-
-
-// ============================================================
-// LAYOUT
-// ============================================================
 
 require_once "../../layouts/header.php";
 require_once "../../layouts/sidebar.php";
@@ -94,11 +55,6 @@ require_once "../../layouts/sidebar.php";
 ?>
 
 <main class="content">
-
-
-    <!-- =====================================================
-         TÍTULO
-    ====================================================== -->
 
     <div class="page-title no-print">
 
@@ -113,17 +69,7 @@ require_once "../../layouts/sidebar.php";
     </div>
 
 
-
-    <!-- =====================================================
-         PERFIL PRINCIPAL
-    ====================================================== -->
-
     <div class="table-container perfil-container">
-
-
-        <!-- =================================================
-             CABECERA
-        ================================================== -->
 
         <div class="perfil-header">
 
@@ -174,12 +120,6 @@ require_once "../../layouts/sidebar.php";
 
 
         </div>
-
-
-
-        <!-- =================================================
-             INFORMACIÓN PERSONAL
-        ================================================== -->
 
         <div class="perfil-section">
 
@@ -319,12 +259,6 @@ require_once "../../layouts/sidebar.php";
 
         </div>
 
-
-
-        <!-- =================================================
-             INFORMACIÓN DE CUENTA
-        ================================================== -->
-
         <div class="perfil-section">
 
 
@@ -422,12 +356,6 @@ require_once "../../layouts/sidebar.php";
 
         </div>
 
-
-
-        <!-- =================================================
-             INFORMACIÓN LABORAL
-        ================================================== -->
-
         <?php if (
             !empty($perfil["salario"]) ||
             !empty($cargos)
@@ -505,12 +433,6 @@ require_once "../../layouts/sidebar.php";
 
                 </div>
 
-
-
-                <!-- =========================================
-                     CARGOS DEL EMPLEADO
-                ========================================== -->
-
                 <?php if (!empty($cargos)) { ?>
 
 
@@ -551,12 +473,6 @@ require_once "../../layouts/sidebar.php";
 
 
         <?php } ?>
-
-
-
-        <!-- =================================================
-             SEGURIDAD
-        ================================================== -->
 
         <div class="perfil-section">
 
@@ -615,13 +531,6 @@ require_once "../../layouts/sidebar.php";
 
 
 </main>
-
-
-<!-- =========================================================
-     ESTILOS ESPECÍFICOS DEL PERFIL
-========================================================== -->
-
-
 <?php
 
 $script = "perfil";

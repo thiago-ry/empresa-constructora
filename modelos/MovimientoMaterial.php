@@ -13,12 +13,6 @@ class MovimientoMaterial
         $this->conexion = $db->conectar();
     }
 
-    /*
-    ==========================
-        OBTENER TODOS
-    ==========================
-    */
-
     public function obtenerTodos()
     {
 
@@ -41,12 +35,6 @@ class MovimientoMaterial
 
     }
 
-    /*
-    ==========================
-        OBTENER POR MATERIAL
-    ==========================
-    */
-
     public function obtenerPorMaterial($id_material)
     {
 
@@ -67,12 +55,6 @@ class MovimientoMaterial
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     }
-
-    /*
-    ==========================
-        AGREGAR MOVIMIENTO
-    ==========================
-    */
 
     public function agregar($datos)
     {
@@ -108,12 +90,6 @@ class MovimientoMaterial
 
     }
 
-    /*
-    ==========================
-        BUSCAR POR ID
-    ==========================
-    */
-
     public function buscar($id)
     {
 
@@ -128,12 +104,6 @@ class MovimientoMaterial
         return $stmt->fetch(PDO::FETCH_ASSOC);
 
     }
-
-    /*
-    ==========================
-        ACTUALIZAR STOCK
-    ==========================
-    */
 
     public function actualizarStock($id_material, $stock)
     {

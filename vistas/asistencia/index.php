@@ -31,11 +31,6 @@ if ($id_usuario_capataz <= 0) {
     exit;
 }
 
-/*
- * Verificar que el empleado pertenece
- * a la obra indicada y que esa obra
- * pertenece al Capataz actual.
- */
 $empleado = $asistenciaModel->empleadoPerteneceObraCapataz(
     $id_usuario_empleado,
     $id_usuario_capataz,
@@ -132,8 +127,6 @@ require_once "../../layouts/sidebar.php";
 
     <div class="asistencia-grid">
 
-        <!-- INFORMACIÓN DEL EMPLEADO -->
-
         <div class="employee-card">
 
             <div class="employee-icon">
@@ -176,8 +169,6 @@ require_once "../../layouts/sidebar.php";
 
         </div>
 
-
-        <!-- ASISTENCIA -->
 
         <div class="attendance-card">
 

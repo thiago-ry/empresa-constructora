@@ -18,12 +18,6 @@ class MovimientoMaterialController
         $this->auditoria = new Auditoria();
     }
 
-    /*
-    ==========================
-        AGREGAR MOVIMIENTO
-    ==========================
-    */
-
     public function agregar()
     {
 

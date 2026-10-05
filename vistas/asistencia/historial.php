@@ -35,17 +35,14 @@ $id_obra = trim($id_obra);
 $fecha_desde = trim($fecha_desde);
 $fecha_hasta = trim($fecha_hasta);
 
-/* Empleados disponibles para el filtro */
 $empleados = $asistenciaModel->obtenerEmpleadosCapataz(
     $id_usuario_capataz
 );
 
-/* Obras disponibles para el filtro */
 $obras = $asistenciaModel->obtenerObrasCapataz(
     $id_usuario_capataz
 );
 
-/* Historial */
 $historial = $asistenciaModel->obtenerHistorialPorCapataz(
     $id_usuario_capataz,
     $id_usuario_empleado,
@@ -54,7 +51,6 @@ $historial = $asistenciaModel->obtenerHistorialPorCapataz(
     $fecha_hasta
 );
 
-/* Resumen */
 $resumen = $asistenciaModel->obtenerResumenPorCapataz(
     $id_usuario_capataz,
     $id_usuario_empleado,
@@ -103,8 +99,6 @@ require_once "../../layouts/sidebar.php";
         </a>
 
     </div>
-
-    <!-- FILTROS -->
 
     <div class="filter-card">
 

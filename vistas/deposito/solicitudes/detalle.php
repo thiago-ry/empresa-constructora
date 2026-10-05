@@ -89,8 +89,6 @@ switch ($estado) {
     </div>
 
 
-    <!-- INFORMACIÓN DE LA SOLICITUD -->
-
     <div class="stats-grid">
 
         <div class="card info-card">
@@ -167,8 +165,6 @@ switch ($estado) {
 
     </div>
 
-
-    <!-- MATERIALES -->
 
     <div class="card">
 
@@ -285,9 +281,6 @@ switch ($estado) {
         <?php endif; ?>
 
     </div>
-
-
-    <!-- AVISO DE STOCK -->
 
     <?php if ($estado === "Pendiente" && !empty($detalle)): ?>
 

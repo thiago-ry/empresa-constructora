@@ -51,11 +51,6 @@ class ObraController
         exit();
     }
 
-    /*
-    ==========================
-        EDITAR
-    ==========================
-    */
     public function editar()
     {
         session_start();

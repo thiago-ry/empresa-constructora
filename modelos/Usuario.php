@@ -13,12 +13,6 @@ class Usuario
         $this->conexion = $db->conectar();
     }
 
-    /*
-    ==========================
-        LOGIN
-    ==========================
-    */
-
     public function buscarPorCorreo($correo)
     {
 
@@ -47,12 +41,6 @@ class Usuario
 
         return $consulta->fetch(PDO::FETCH_ASSOC);
     }
-
-    /*
-    ==========================
-        ACCESOS
-    ==========================
-    */
 
     public function registrarIngreso($id_usuario)
     {
@@ -94,12 +82,6 @@ class Usuario
 
         ]);
     }
-
-    /*
-    ==========================
-        USUARIOS
-    ==========================
-    */
 
     public function obtenerTodos()
     {
@@ -477,12 +459,6 @@ class Usuario
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /*
-    ==========================
-        CONSULTAS POR ROL
-    ==========================
-    */
-
     public function obtenerClientes($soloActivos = false)
     {
         $sql = "SELECT
@@ -542,9 +518,7 @@ public function obtenerEmpleados()
 
                     u.*,
 
-                    r.nombre_rol,
-
-                    -- c.nombre AS cargo
+                    r.nombre_rol
 
                 FROM usuario u
 
@@ -636,12 +610,6 @@ public function obtenerEmpleados()
                 AND eo.estado = 1
             )";
 
-        /*
-    ==========================================
-        BUSCADOR
-    ==========================================
-    */
-
         if (!empty(trim($busqueda))) {
 
             $sql .= " AND (
@@ -654,15 +622,6 @@ public function obtenerEmpleados()
         }
 
         $sql .= " ORDER BY u.apellido ASC, u.nombre ASC";
-
-        /*
-    ==========================================
-        LIMITAR RESULTADOS
-    ==========================================
-        
-        Evitamos mostrar cientos de registros
-        de una sola vez.
-    */
 
         $sql .= " LIMIT 50";
 

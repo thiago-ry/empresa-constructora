@@ -24,20 +24,8 @@ if (!$empleado || $empleado["nombre_rol"] != "Empleado") {
 }
 
 
-/*
-==========================================================
-    CARGOS DEL EMPLEADO
-==========================================================
-*/
-
 $cargos = $usuarioModel->obtenerCargosEmpleado($id);
 
-
-/*
-==========================================================
-    OBRAS DEL EMPLEADO
-==========================================================
-*/
 
 $conexion = $empleadoObraModel->getConexion();
 
@@ -68,12 +56,6 @@ $stmt->execute([$id]);
 $obras = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
-/*
-==========================================================
-    RESUMEN DE OBRAS
-==========================================================
-*/
-
 $totalObras = count($obras);
 
 $obrasActivas = 0;
@@ -101,10 +83,6 @@ require_once "../../layouts/sidebar.php";
 <main class="content">
 
 
-    <!-- ==================================================
-        TÍTULO
-    ================================================== -->
-
     <div class="page-title no-print">
 
         <h1>
@@ -121,10 +99,6 @@ require_once "../../layouts/sidebar.php";
 
     </div>
 
-
-    <!-- ==================================================
-        RESUMEN
-    ================================================== -->
 
     <div class="alert-container">
 
@@ -168,10 +142,6 @@ require_once "../../layouts/sidebar.php";
 
     </div>
 
-
-    <!-- ==================================================
-        DATOS DEL EMPLEADO
-    ================================================== -->
 
     <div class="table-container">
 
@@ -345,10 +315,6 @@ require_once "../../layouts/sidebar.php";
     </div>
 
 
-    <!-- ==================================================
-        CARGOS
-    ================================================== -->
-
     <div class="table-container">
 
         <div class="toolbar">
@@ -417,10 +383,6 @@ require_once "../../layouts/sidebar.php";
 
     </div>
 
-
-    <!-- ==================================================
-        OBRAS ASIGNADAS
-    ================================================== -->
 
     <div class="table-container">
 
@@ -505,8 +467,6 @@ require_once "../../layouts/sidebar.php";
                         <tr>
 
 
-                            <!-- OBRA -->
-
                             <td>
 
                                 <?= htmlspecialchars(
@@ -515,8 +475,6 @@ require_once "../../layouts/sidebar.php";
 
                             </td>
 
-
-                            <!-- FECHA INGRESO -->
 
                             <td>
 
@@ -534,8 +492,6 @@ require_once "../../layouts/sidebar.php";
                             </td>
 
 
-                            <!-- FECHA EGRESO -->
-
                             <td>
 
                                 <?=
@@ -551,8 +507,6 @@ require_once "../../layouts/sidebar.php";
 
                             </td>
 
-
-                            <!-- ESTADO -->
 
                             <td>
 
@@ -576,8 +530,6 @@ require_once "../../layouts/sidebar.php";
 
                             </td>
 
-
-                            <!-- ACCIONES -->
 
                             <td>
 

@@ -12,10 +12,6 @@ class HerramientaObra
         $this->conexion = $db->conectar();
     }
 
-    // =========================================================
-    // OBTENER TODAS LAS ASIGNACIONES
-    // =========================================================
-
     public function obtenerTodos()
     {
         $sql = "
@@ -62,10 +58,6 @@ class HerramientaObra
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // =========================================================
-    // OBTENER ASIGNACIÓN POR ID
-    // =========================================================
-
     public function obtenerPorId($id)
     {
         $sql = "
@@ -108,10 +100,6 @@ class HerramientaObra
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // =========================================================
-    // OBTENER ASIGNACIÓN SIMPLE
-    // =========================================================
-
     public function obtenerAsignacion($id)
     {
         $sql = "
@@ -125,10 +113,6 @@ class HerramientaObra
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
-    // =========================================================
-    // AGREGAR ASIGNACIÓN
-    // =========================================================
 
     public function agregar($datos)
     {
@@ -163,10 +147,6 @@ class HerramientaObra
         ]);
     }
 
-    // =========================================================
-    // EDITAR ASIGNACIÓN
-    // =========================================================
-
     public function editar($datos)
     {
         $sql = "
@@ -190,10 +170,6 @@ class HerramientaObra
 
         ]);
     }
-        // =========================================================
-    // ELIMINAR ASIGNACIÓN
-    // =========================================================
-
     public function eliminar($id)
     {
         $sql = "
@@ -205,10 +181,6 @@ class HerramientaObra
 
         return $stmt->execute([$id]);
     }
-
-    // =========================================================
-    // OBTENER HERRAMIENTAS DE UNA OBRA
-    // =========================================================
 
     public function obtenerPorObra($id_obra)
     {
@@ -254,10 +226,6 @@ class HerramientaObra
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // =========================================================
-    // REGISTRAR DEVOLUCIÓN
-    // =========================================================
-
     public function registrarDevolucion($datos)
     {
         $sql = "
@@ -287,10 +255,6 @@ class HerramientaObra
 
         ]);
     }
-
-    // =========================================================
-    // OBTENER HISTORIAL DE DEVOLUCIONES
-    // =========================================================
 
     public function obtenerDevoluciones($id_herramienta_obra)
     {
@@ -325,10 +289,6 @@ class HerramientaObra
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // =========================================================
-    // OBTENER CANTIDAD PENDIENTE
-    // =========================================================
-
     public function obtenerCantidadPendiente($id_herramienta_obra)
     {
         $sql = "
@@ -355,10 +315,6 @@ class HerramientaObra
             : 0;
     }
 
-    // =========================================================
-    // ACTUALIZAR CANTIDAD DEVUELTA
-    // =========================================================
-
     public function actualizarCantidadDevuelta(
         $id_herramienta_obra,
         $cantidad
@@ -382,10 +338,6 @@ class HerramientaObra
         ]);
     }
 
-    // =========================================================
-    // MARCAR COMO DEVUELTA
-    // =========================================================
-
     public function marcarComoDevuelta($id_herramienta_obra)
     {
         $sql = "
@@ -403,9 +355,6 @@ class HerramientaObra
         ]);
     }
 
-    // =========================================================
-// OBTENER HISTORIAL DE UNA HERRAMIENTA
-// =========================================================
 public function obtenerHistorialPorHerramienta($id_herramienta)
 {
     $sql = "

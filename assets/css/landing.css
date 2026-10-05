@@ -130,21 +130,7 @@ HEADER
 LOGO
 ========================================================== */
 
-.logo{
 
-    display:flex;
-
-    align-items:center;
-
-    gap:12px;
-
-    font-size:1.4rem;
-
-    font-weight:700;
-
-    color:white;
-
-}
 
 .logo img{
     width: 100px;
@@ -1511,4 +1497,145 @@ EXCAVADORA HERO
 .btn-login:hover{
     border-color:var(--accent);
     color:var(--accent);
+}
+.ubicacion {
+    padding: 110px 0;
+    background: var(--bg);
+}
+
+.ubicacion-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+/* MAPA */
+
+.map-container {
+    width: 100%;
+    height: 450px;
+    overflow: hidden;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+}
+
+.map-container iframe {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border: 0;
+}
+
+/* INFORMACIÓN */
+
+.ubicacion-info {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.ubicacion-info .section-title {
+    display: inline-block;
+    color: var(--accent);
+    font-size: .9rem;
+    letter-spacing: 2px;
+    font-weight: 700;
+}
+
+.ubicacion-info h2 {
+    font-size: 2.6rem;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.ubicacion-info > p {
+    color: var(--text-light);
+    font-size: 1rem;
+    line-height: 1.8;
+    margin: 0;
+}
+
+.ubicacion-dato {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+}
+
+.ubicacion-dato > i {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 183, 3, .10);
+    color: var(--accent);
+    font-size: 1.2rem;
+}
+
+.ubicacion-dato h3 {
+    margin: 0 0 6px;
+    font-size: 1.1rem;
+}
+
+.ubicacion-dato p {
+    margin: 0;
+    color: var(--text-light);
+    line-height: 1.7;
+}
+
+.ubicacion-info .btn-primary {
+    width: max-content;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 900px) {
+
+    .ubicacion-grid {
+        grid-template-columns: 1fr;
+        gap: 45px;
+    }
+
+    .ubicacion-info {
+        text-align: center;
+        align-items: center;
+    }
+
+    .ubicacion-dato {
+        text-align: left;
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .map-container {
+        height: 400px;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .ubicacion {
+        padding: 80px 0;
+    }
+
+    .ubicacion-info h2 {
+        font-size: 2rem;
+    }
+
+    .map-container {
+        height: 350px;
+    }
+
 }

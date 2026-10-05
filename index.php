@@ -39,8 +39,6 @@ $proyectos = $landingPageController->obtenerTodos();
 
 <body>
 
-    <!--================ HEADER ================-->
-
     <header class="header">
 
         <div class="container">
@@ -56,6 +54,8 @@ $proyectos = $landingPageController->obtenerTodos();
                 <a href="#nosotros">Quiénes Somos</a>
 
                 <a href="#servicios">Servicios</a>
+
+                <a href="#ubicacion">Ubicación</a>
 
                 <a href="#ventajas">Ventajas</a>
 
@@ -75,8 +75,6 @@ $proyectos = $landingPageController->obtenerTodos();
         </div>
 
     </header>
-
-    <!--================ HERO ================-->
 
     <section class="hero" id="inicio">
 
@@ -110,13 +108,18 @@ $proyectos = $landingPageController->obtenerTodos();
             </p>
 
             <div class="hero-buttons">
-                <a href="#contacto" class="btn-primary">
-                    Solicitar presupuesto
+                <a href="https://wa.me/5493704753338?text=Hola%20BUILDPRO,%20quiero%20hacer%20una%20consulta."
+                    target="_blank"
+                    class="btn-primary">
+                    <i class="fa-brands fa-whatsapp"></i>
+
+                    ⠀Solicitar presupuesto
                 </a>
 
-                <a href="#proyectos" class="btn-secondary">
+                <a href="#galeria" class="btn-secondary">
                     Ver proyectos
                 </a>
+
             </div>
 
         </div>
@@ -124,8 +127,6 @@ $proyectos = $landingPageController->obtenerTodos();
         </div>
 
     </section>
-
-    <!--================ NOSOTROS ================-->
 
     <section class="about" id="nosotros">
 
@@ -168,19 +169,11 @@ $proyectos = $landingPageController->obtenerTodos();
                     clientes en espacios funcionales, modernos y
                     duraderos que generen valor a largo plazo.
                 </p>
-                <a href="#servicios" class="btn-primary">
-
-                    Nuestros servicios
-
-                </a>
-
             </div>
 
         </div>
 
     </section>
-
-    <!--================ SERVICIOS ================-->
 
     <section class="services" id="servicios">
 
@@ -337,7 +330,85 @@ $proyectos = $landingPageController->obtenerTodos();
 
     </section>
 
-    <!--================ GALERÍA ================-->
+    <section class="ubicacion" id="ubicacion">
+
+        <div class="container">
+
+            <div class="section-header">
+                <span>UBICACIÓN</span>
+                <h2>¿Dónde nos encontramos?</h2>
+            </div>
+
+            <div class="ubicacion-grid">
+
+                <div class="map-container">
+
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3003.3033171282714!2d-58.159272525393966!3d-26.145262877112945!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x945ca5a793027157%3A0x4258abecc260dc62!2sEPET%20N%C2%B07%20%22Arcadio%20Salemi%22!5e1!3m2!1ses-419!2sar!4v1790942685087!5m2!1ses-419!2sar"
+                        width="100%"
+                        height="450"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="strict-origin-when-cross-origin">
+                    </iframe>
+
+                </div>
+
+                <!-- DESCRIPCIÓN A LA DERECHA -->
+                <div class="ubicacion-info">
+
+                    <span class="section-title">NUESTRA UBICACIÓN</span>
+
+                    <h2>
+                        Estamos en Formosa
+                    </h2>
+
+                    <p>
+                        Nuestra empresa se encuentra ubicada en la ciudad de
+                        Formosa, Argentina, en una zona de fácil acceso para
+                        nuestros clientes y colaboradores.
+                    </p>
+
+                    <div class="ubicacion-dato">
+                        <i class="fa-solid fa-location-dot"></i>
+
+                        <div>
+                            <h3>Dirección</h3>
+                            <p>
+                                Av. Raúl Alfonsín 1612-1698,
+                                P3600JQA Formosa, Argentina.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="ubicacion-dato">
+                        <i class="fa-solid fa-clock"></i>
+
+                        <div>
+                            <h3>Horario de atención</h3>
+                            <p>
+                                Lunes a Viernes<br>
+                                08:00 - 18:00
+                            </p>
+                        </div>
+                    </div>
+
+                    <a
+                        href="https://www.google.com/maps/search/?api=1&query=Av.+Raúl+Alfonsín+1612-1698,+Formosa,+Argentina"
+                        target="_blank"
+                        class="btn-primary">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                        Ver en Google Maps
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
 
     <section class="gallery" id="galeria">
 
@@ -371,8 +442,6 @@ $proyectos = $landingPageController->obtenerTodos();
         </div>
 
     </section>
-
-    <!--================ CONTACTO ================-->
 
     <section class="contact" id="contacto">
 
@@ -408,7 +477,12 @@ $proyectos = $landingPageController->obtenerTodos();
 
                     <p>
 
-                        Formosa, Argentina
+                        <a
+                            href="https://www.google.com/maps/search/?api=1&query=Av.+Raúl+Alfonsín+1612-1698,+Formosa,+Argentina"
+                            target="_blank"
+                            style="color: #ffb703; text-decoration: none;">
+                            Av. Raúl Alfonsín, Formosa, Argentina
+                        </a>
 
                     </p>
 
@@ -426,7 +500,7 @@ $proyectos = $landingPageController->obtenerTodos();
 
                     <p>
 
-                        +54 370 XXX-XXXX
+                        +54 370 475-3338
 
                     </p>
 
@@ -444,7 +518,7 @@ $proyectos = $landingPageController->obtenerTodos();
 
                     <p>
 
-                        contacto@buildpro.com
+                        rohaly1310thiago@gmail.com
 
                     </p>
 
@@ -475,8 +549,6 @@ $proyectos = $landingPageController->obtenerTodos();
         </div>
 
     </section>
-    <!--================ FOOTER ================-->
-
     <footer class="footer">
 
         <div class="container">
@@ -660,15 +732,11 @@ $proyectos = $landingPageController->obtenerTodos();
 
     </footer>
 
-    <!--================ BOTÓN VOLVER ARRIBA ================-->
-
     <a href="#inicio" class="back-top">
 
         <i class="fa-solid fa-arrow-up"></i>
 
     </a>
-
-    <!--================ SCRIPTS ================-->
 
     <script src="assets/js/landing.js"></script>
 

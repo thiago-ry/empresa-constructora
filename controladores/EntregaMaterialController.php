@@ -468,8 +468,8 @@ switch ($accion) {
                 }
 
                 $sqlStockUpdate = "UPDATE material
-                               SET stock = stock - :cantidad
-                               WHERE id_material = :id_material";
+                   SET stock = stock - :cantidad
+                   WHERE id_material = :id_material";
 
                 $stmtStockUpdate = $db->prepare($sqlStockUpdate);
 
@@ -487,6 +487,64 @@ switch ($accion) {
                 if (!$stmtStockUpdate->execute()) {
                     throw new Exception(
                         "No se pudo actualizar el stock."
+                    );
+                }
+           
+
+
+                /*
+ * ==========================================
+ * REGISTRAR MOVIMIENTO AUTOMÁTICO
+ * ==========================================
+ */
+
+                $sqlMovimiento = "INSERT INTO movimiento_material
+                  (
+                      id_material,
+                      id_usuario,
+                      tipo,
+                      cantidad,
+                      observacion
+                  )
+                  VALUES
+                  (
+                      :id_material,
+                      :id_usuario,
+                      'EGRESO',
+                      :cantidad,
+                      :observacion
+                  )";
+
+                $stmtMovimiento = $db->prepare($sqlMovimiento);
+
+                $observacionMovimiento =
+                    "Egreso por entrega de solicitud #" . $id_solicitud;
+
+                $stmtMovimiento->bindParam(
+                    ":id_material",
+                    $entrega["id_material"],
+                    PDO::PARAM_INT
+                );
+
+                $stmtMovimiento->bindParam(
+                    ":id_usuario",
+                    $id_usuario,
+                    PDO::PARAM_INT
+                );
+
+                $stmtMovimiento->bindParam(
+                    ":cantidad",
+                    $entrega["cantidad"]
+                );
+
+                $stmtMovimiento->bindParam(
+                    ":observacion",
+                    $observacionMovimiento
+                );
+
+                if (!$stmtMovimiento->execute()) {
+                    throw new Exception(
+                        "No se pudo registrar el movimiento del material."
                     );
                 }
             }

@@ -56,7 +56,7 @@ $menu = [
     "Empleado" => [
         ["fa-solid fa-house", "Dashboard", "/empresa_constructora/vistas/dashboard/empleado.php"],
         ["fa-solid fa-list-check", "Mis tareas", "/empresa_constructora/vistas/tareas/"],
-        ["fa-solid fa-clock", "Asistencia", "/empresa_constructora/vistas/asistencia/"],
+        ["fa-solid fa-clock", "Asistencia", "/empresa_constructora/vistas/asistencia/asistencia_personal.php"],
         ["fa-solid fa-user", "Perfil", "/empresa_constructora/vistas/perfil/"]
     ],
 

@@ -12,9 +12,9 @@ class Asistencia
         $this->conexion = $db->conectar();
     }
 
-public function obtenerPorUsuarioFecha($id_usuario, $id_obra, $fecha)
-{
-    $sql = "SELECT
+    public function obtenerPorUsuarioFecha($id_usuario, $id_obra, $fecha)
+    {
+        $sql = "SELECT
                 id_asistencia,
                 id_usuario,
                 id_obra,
@@ -29,16 +29,16 @@ public function obtenerPorUsuarioFecha($id_usuario, $id_obra, $fecha)
               AND fecha = :fecha
             LIMIT 1";
 
-    $stmt = $this->conexion->prepare($sql);
+        $stmt = $this->conexion->prepare($sql);
 
-    $stmt->execute([
-        ":id_usuario" => $id_usuario,
-        ":id_obra" => $id_obra,
-        ":fecha" => $fecha
-    ]);
+        $stmt->execute([
+            ":id_usuario" => $id_usuario,
+            ":id_obra" => $id_obra,
+            ":fecha" => $fecha
+        ]);
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
     public function empleadoPerteneceObraCapataz(
         $id_usuario_empleado,
@@ -333,7 +333,74 @@ public function obtenerPorUsuarioFecha($id_usuario, $id_obra, $fecha)
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function obtenerHistorialPorEmpleado(
+        $id_usuario_empleado,
+        $id_obra = "",
+        $fecha_desde = "",
+        $fecha_hasta = ""
+    ) {
+        $sql = "SELECT
+                a.id_asistencia,
+                a.id_usuario,
+                a.id_obra,
+                a.fecha,
+                a.estado,
+                a.hora_entrada,
+                a.hora_salida,
+                a.observacion,
+                o.nombre_obra
+            FROM asistencia a
+            INNER JOIN obra o
+                ON o.id_obra = a.id_obra
+            WHERE a.id_usuario = :id_usuario";
 
+        $params = [
+            ":id_usuario" => $id_usuario_empleado
+        ];
+
+        if (!empty($id_obra)) {
+            $sql .= " AND a.id_obra = :id_obra";
+            $params[":id_obra"] = $id_obra;
+        }
+
+        if (!empty($fecha_desde)) {
+            $sql .= " AND a.fecha >= :fecha_desde";
+            $params[":fecha_desde"] = $fecha_desde;
+        }
+
+        if (!empty($fecha_hasta)) {
+            $sql .= " AND a.fecha <= :fecha_hasta";
+            $params[":fecha_hasta"] = $fecha_hasta;
+        }
+
+        $sql .= " ORDER BY a.fecha DESC, a.hora_entrada DESC";
+
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    public function obtenerObrasPorEmpleado($id_usuario_empleado)
+    {
+        $sql = "SELECT DISTINCT
+                o.id_obra,
+                o.nombre_obra
+            FROM empleado_obra eo
+            INNER JOIN obra o
+                ON o.id_obra = eo.id_obra
+            WHERE eo.id_usuario = :id_usuario
+              AND o.activo = 1
+            ORDER BY o.nombre_obra ASC";
+
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute([
+            ":id_usuario" => $id_usuario_empleado
+        ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
     public function obtenerEmpleadosCapataz($id_usuario_capataz)
     {
         $sql = "SELECT DISTINCT

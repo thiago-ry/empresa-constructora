@@ -354,11 +354,17 @@ require_once "../../layouts/sidebar.php";
                     Incidencias
                 </h3>
 
-                <a
-                    href="#"
-                    class="btn btn-secondary">
+                <p>
+                    Registro y seguimiento de problemas de la obra.
+                </p>
 
-                    Próximamente
+                <a
+                    href="../../controladores/IncidenciaController.php?accion=listar&id_obra=<?= $detalle["id_obra"] ?>"
+                    class="btn btn-primary">
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                    Ingresar
 
                 </a>
 

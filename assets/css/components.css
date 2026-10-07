@@ -2124,4 +2124,270 @@ select:focus {
 
     }
 
-    
+    /*==================================================
+=        BUILDPRO V2 - VISTA INCIDENCIAS PROFESIONAL
+==================================================*/
+
+/* Encabezado especial */
+.header-title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.badge-id {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--primary);
+  background: rgba(244, 180, 0, 0.12);
+  border: 1px solid rgba(244, 180, 0, 0.25);
+  padding: 3px 10px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Grid Principal de 2 Columnas */
+.incidencia-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 25px;
+  align-items: start;
+}
+
+.incidencia-main {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* Estilos de Tarjetas Limpias */
+.card-detail {
+  padding: 0 !important;
+  border-radius: 16px;
+  background: #111c2a;
+}
+
+.card-detail::before {
+  display: none; /* Elimina la barra amarilla genérica en la vista de detalle */
+}
+
+.card-header-clean {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.card-header-clean.space-between {
+  justify-content: space-between;
+}
+
+.card-header-clean .title-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.card-header-clean h2 {
+  font-size: 17px !important;
+  font-weight: 600 !important;
+  color: var(--white) !important;
+  margin: 0 !important;
+}
+
+.card-header-clean i {
+  font-size: 18px;
+}
+
+.description-text,
+.solution-text {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: #cbd5e1;
+}
+
+/* Solución vacía */
+.empty-solution {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px dashed var(--border);
+  font-size: 13.5px;
+}
+
+.border-success {
+  border-color: rgba(34, 197, 94, 0.3) !important;
+}
+
+/* Columna Lateral */
+.incidencia-sidebar .card-sidebar {
+  padding: 0 !important;
+  border-radius: 16px;
+}
+
+.incidencia-sidebar .card-sidebar::before {
+  display: none;
+}
+
+.compact-body {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sidebar-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sidebar-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-value {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.sidebar-value-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.block-link {
+  display: block;
+  font-size: 12px;
+  color: var(--primary);
+  text-decoration: none;
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+.block-link:hover {
+  text-decoration: underline;
+}
+
+.badge-lg {
+  padding: 8px 16px;
+  font-size: 13px;
+  gap: 8px;
+  border-radius: 8px;
+}
+
+.divider-sm {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.05);
+  margin: 2px 0;
+}
+
+/* Galería Fotografica Flotante / Premium */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.gallery-item {
+  position: relative;
+  height: 160px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--surface-light);
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.06);
+}
+
+.gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(11, 19, 32, 0.88) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 12px;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.gallery-item:hover .gallery-overlay {
+  opacity: 1;
+}
+
+.gallery-info small {
+  color: #cbd5e1;
+  font-size: 11px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.gallery-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--white);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 13px;
+  backdrop-filter: blur(4px);
+  transition: background 0.2s ease;
+}
+
+.btn-icon:hover {
+  background: var(--primary);
+  color: #0b1320;
+}
+
+.btn-icon-danger:hover {
+  background: var(--danger);
+  color: var(--white);
+}
+
+.text-primary { color: var(--primary); }
+.text-success { color: var(--success); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted { color: #64748b; }
+
+/* Adaptación Móvil */
+@media (max-width: 992px) {
+  .incidencia-grid {
+    grid-template-columns: 1fr;
+  }
+}

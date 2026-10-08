@@ -318,6 +318,57 @@ if ($accion === "actualizar") {
     }
 
 
+    /* =====================================================
+   INCIDENCIAS DEL CAPATAZ
+   ===================================================== */
+
+if ($accion === "incidenciasCapataz") {
+
+    require_once __DIR__ . "/../modelos/Obra.php";
+
+    // Verificar que haya usuario iniciado
+    if (!isset($_SESSION["usuario"])) {
+        header("Location: /empresa_constructora/vistas/login.php");
+        exit;
+    }
+
+    $usuario = $_SESSION["usuario"];
+
+    // Verificar que sea Capataz
+    if ((int)$usuario["id_rol"] !== 7) {
+        header("Location: /empresa_constructora/vistas/dashboard.php");
+        exit;
+    }
+
+    $obraModel = new Obra();
+
+    // ID del capataz
+    $idCapataz = $usuario["id_usuario"]
+        ?? $usuario["id"]
+        ?? null;
+
+    if ($idCapataz === null) {
+        header("Location: /empresa_constructora/vistas/dashboard/capataz.php?error=usuario");
+        exit;
+    }
+
+    // Buscar la obra asignada al capataz
+    $obra = $obraModel->obtenerObraPorCapataz($idCapataz);
+
+    // Si no tiene obra asignada
+    if (!$obra) {
+        header("Location: /empresa_constructora/vistas/dashboard/capataz.php?error=sin_obra");
+        exit;
+    }
+
+    // Entrar directamente al listado de incidencias
+    header(
+        "Location: /empresa_constructora/controladores/IncidenciaController.php?accion=listar&id_obra="
+        . $obra["id_obra"]
+    );
+
+    exit;
+}
     /* =============================================
        AUDITORÍA
        ============================================= */

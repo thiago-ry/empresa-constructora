@@ -259,6 +259,25 @@ class Obra
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
     }
 
+public function obtenerObraPorCapataz($idCapataz)
+{
+    $sql = "SELECT *
+            FROM obra
+            WHERE id_capataz = :id_capataz
+            LIMIT 1";
+
+    $stmt = $this->conexion->prepare($sql);
+
+    $stmt->bindValue(
+        ":id_capataz",
+        $idCapataz,
+        PDO::PARAM_INT
+    );
+
+    $stmt->execute();
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
     public function usuarioPuedeVerObra($id_obra, $id_usuario, $id_rol)
     {

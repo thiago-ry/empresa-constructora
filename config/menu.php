@@ -33,14 +33,14 @@ $menu = [
         ["fa-solid fa-user", "Perfil", "/empresa_constructora/vistas/perfil/"]
     ],
 
-"Capataz" => [
+    "Capataz" => [
     ["fa-solid fa-house", "Dashboard", "/empresa_constructora/vistas/dashboard/capataz.php"],
     ["fa-solid fa-building", "Mi Obra", "/empresa_constructora/vistas/obras/"],
     ["fa-solid fa-users", "Empleados", "/empresa_constructora/vistas/empleado_obra/"],
     ["fa-solid fa-clock-rotate-left", "Historial", "/empresa_constructora/vistas/asistencia/historial.php"],
-    ["fa-solid fa-chart-line", "Avances", "/empresa_constructora/vistas/avances/"],
+    ["fa-solid fa-chart-line", "Avances", "/empresa_constructora/controladores/AvanceController.php?accion=listar"],
     ["fa-solid fa-list-check", "Tareas", "/empresa_constructora/vistas/tareas/"],
-    ["fa-solid fa-triangle-exclamation", "Incidencias", "/empresa_constructora/vistas/incidencias/"],
+    ["fa-solid fa-triangle-exclamation", "Incidencias", "/empresa_constructora/vistas/incidencias/capataz.php"],
     ["fa-solid fa-user", "Perfil", "/empresa_constructora/vistas/perfil/"]
 ],
 

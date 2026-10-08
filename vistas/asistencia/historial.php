@@ -218,7 +218,7 @@ require_once "../../layouts/sidebar.php";
 
     <!-- RESUMEN -->
 
-    <div class="summary-grid">
+    <div class="summary-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
 
         <div class="summary-card">
 
@@ -305,46 +305,6 @@ require_once "../../layouts/sidebar.php";
                 </strong>
 
             </div>
-
-        </div>
-
-        <div class="summary-card">
-
-            <div class="summary-icon late">
-
-                <i class="fa-solid fa-person-circle-exclamation"></i>
-
-            </div>
-
-            <div>
-
-                <span>
-                    Tardes
-                </span>
-
-                <strong>
-                    <?= $tardes ?>
-                </strong>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- TABLA -->
-
-    <div class="table-header">
-
-        <div>
-
-            <h2>
-                Registros
-            </h2>
-
-            <p>
-                <?= count($historial) ?> registros encontrados
-            </p>
 
         </div>
 

@@ -9,95 +9,97 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-require_once 'conexion.php';
+$host = "localhost";
+$user = "root";
+$pass = "";
+$dbname = "constructora";
 
-if (!$conexion) {
-    echo json_encode(["status" => "error", "message" => "Error de conexión."]);
+$conexion = new mysqli($host, $user, $pass, $dbname);
+
+if ($conexion->connect_error) {
+    echo json_encode(["status" => "error", "message" => "Error de conexión: " . $conexion->connect_error]);
     exit();
 }
 
 $conexion->set_charset("utf8mb4");
 $metodo = $_SERVER['REQUEST_METHOD'];
 
-// 📥 GET: Traer la lista de obreros/empleados y obras activas
+// 📥 GET: Cargar la lista de usuarios/empleados reales
 if ($metodo === 'GET') {
-    // Intentamos obtener los empleados de la tabla empleado (o usuario según tu estructura)
-    $sqlEmpleados = "SELECT id_empleado, nombre, apellido, cargo FROM empleado WHERE activo = 1 ORDER BY apellido, nombre ASC";
-    $resEmp = $conexion->query($sqlEmpleados);
-
-    // Si la tabla se llama distinto, adaptamos el fallback
-    if (!$resEmp) {
-        $sqlEmpleados = "SELECT id_usuario AS id_empleado, nombre, apellido, rol AS cargo FROM usuario WHERE activo = 1 ORDER BY apellido, nombre ASC";
-        $resEmp = $conexion->query($sqlEmpleados);
-    }
-
-    $sqlObras = "SELECT id_obra, nombre_obra FROM obra WHERE activo = 1 ORDER BY nombre_obra ASC";
-    $resObras = $conexion->query($sqlObras);
+    // Obtenemos los usuarios con su rol traducido
+    $sql = "SELECT u.id_usuario, u.nombre, u.apellido, u.id_rol, 
+                   IFNULL(c.nombre_cargo, CONCAT('Rol ID ', u.id_rol)) AS cargo
+            FROM usuario u
+            LEFT JOIN cargo c ON u.id_rol = c.id_cargo
+            ORDER BY u.apellido, u.nombre ASC";
+            
+    $res = $conexion->query($sql);
 
     $empleados = [];
-    if ($resEmp) {
-        while ($row = $resEmp->fetch_assoc()) {
-            $empleados[] = $row;
-        }
-    }
-
-    $obras = [];
-    if ($resObras) {
-        while ($row = $resObras->fetch_assoc()) {
-            $obras[] = $row;
+    if ($res && $res->num_rows > 0) {
+        while ($row = $res->fetch_assoc()) {
+            $empleados[] = [
+                'id_usuario' => intval($row['id_usuario']),
+                'nombre' => $row['nombre'] . ' ' . $row['apellido'],
+                'cargo' => $row['cargo'],
+                'presente' => true // Por defecto lo dejamos marcado como presente
+            ];
         }
     }
 
     echo json_encode([
         "status" => "success",
         "empleados" => $empleados,
-        "obras" => $obras,
         "fecha_hoy" => date('Y-m-d')
     ]);
     exit();
 }
 
-// 📤 POST: Registrar o actualizar la asistencia del día
+// 📤 POST: Guardar asistencia en la tabla 'asistencia'
 if ($metodo === 'POST') {
     $inputJSON = file_get_contents("php://input");
     $datos = json_decode($inputJSON, true);
 
-    $id_obra = $datos['id_obra'] ?? null;
     $fecha = $datos['fecha'] ?? date('Y-m-d');
-    $asistencias = $datos['asistencias'] ?? []; // Array: [{id_empleado: 1, estado: 'Presente'}, ...]
+    $asistencias = $datos['asistencias'] ?? []; // Array: [{id_usuario: 8, presente: true}, ...]
 
-    if (!$id_obra || empty($asistencias)) {
-        echo json_encode(["status" => "error", "message" => "Faltan datos requeridos (obra o asistencias)."]);
+    if (empty($asistencias)) {
+        echo json_encode(["status" => "error", "message" => "No se recibieron registros de asistencia."]);
         exit();
     }
 
     $conexion->begin_transaction();
 
     try {
-        foreach ($asistencias as $ast) {
-            $id_emp = $ast['id_empleado'];
-            $estado = $ast['estado']; // 'Presente', 'Ausente', 'Justificado', 'Tarde'
-            $obs = $ast['observacion'] ?? '';
+        $horaActual = date('H:i:s');
 
-            // Borramos registro previo si existía para evitar duplicados en el mismo día/obra
-            $stmtDel = $conexion->prepare("DELETE FROM asistencia WHERE id_empleado = ? AND id_obra = ? AND fecha = ?");
-            $stmtDel->bind_param("iis", $id_emp, $id_obra, $fecha);
+        foreach ($asistencias as $ast) {
+            $id_usuario = intval($ast['id_usuario']);
+            $presente = $ast['presente'];
+
+            // Eliminamos registro previo del usuario para el mismo día (evita duplicados)
+            $stmtDel = $conexion->prepare("DELETE FROM asistencia WHERE id_usuario = ? AND fecha = ?");
+            $stmtDel->bind_param("is", $id_usuario, $fecha);
             $stmtDel->execute();
             $stmtDel->close();
 
-            // Insertamos la nueva asistencia
-            $stmtIns = $conexion->prepare("INSERT INTO asistencia (id_empleado, id_obra, fecha, estado, observacion) VALUES (?, ?, ?, ?, ?)");
-            $stmtIns->bind_param("iisss", $id_emp, $id_obra, $fecha, $estado, $obs);
-            $stmtIns->execute();
-            $stmtIns->close();
+            // Si el empleado asistió, insertamos en la tabla 'asistencia'
+            if ($presente) {
+                $stmtIns = $conexion->prepare("INSERT INTO asistencia (id_usuario, fecha, hora_entrada) VALUES (?, ?, ?)");
+                $stmtIns->bind_param("iss", $id_usuario, $fecha, $horaActual);
+                $stmtIns->execute();
+                $stmtIns->close();
+            }
         }
 
         $conexion->commit();
-        echo json_encode(["status" => "success", "message" => "Asistencia registrada correctamente."]);
+        echo json_encode(["status" => "success", "message" => "Control de asistencia registrado en la base de datos."]);
     } catch (Exception $e) {
         $conexion->rollback();
-        echo json_encode(["status" => "error", "message" => "Error al guardar asistencia: " . $e->getMessage()]);
+        echo json_encode(["status" => "error", "message" => "Error al registrar asistencia: " . $e->getMessage()]);
     }
     exit();
 }
+
+$conexion->close();
 ?>

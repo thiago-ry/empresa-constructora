@@ -51,17 +51,18 @@ try {
     if ($resultado->num_rows > 0) {
         $user = $resultado->fetch_assoc();
 
-        // VALIDACIÓN DE ROL: id_rol = 4 es Jefe de Obra
-        if ((int)$user['id_rol'] !== 4) {
+        // PERMITIR TANTO JEFE DE OBRA (4) COMO CAPATAZ (7)
+        $rolesPermitidos = [4, 7];
+        if (!in_array((int)$user['id_rol'], $rolesPermitidos)) {
             $stmt->close();
             echo json_encode([
                 "status" => "error",
-                "message" => "Acceso denegado. Esta aplicación es únicamente para Jefes de Obra."
+                "message" => "Acceso denegado. Esta aplicación es únicamente para Jefes de Obra y Capataces."
             ]);
             exit();
         }
 
-        // Registrar acceso SOLO si es Jefe de Obra
+        // Registrar acceso
         $stmtAcceso = $conexion->prepare("INSERT INTO acceso_usuario (id_usuario, fecha_hora_ingreso) VALUES (?, NOW())");
         if ($stmtAcceso) {
             $stmtAcceso->bind_param("i", $user['id_usuario']);
@@ -79,7 +80,7 @@ try {
                 "nombre"     => $user['nombre'],
                 "apellido"   => $user['apellido'],
                 "correo"     => $user['correo'],
-                "id_rol"     => $user['id_rol']
+                "id_rol"     => (int)$user['id_rol']
             ]
         ]);
         exit();

@@ -11,6 +11,7 @@ $menu = [
         ["fa-solid fa-boxes-stacked", "Materiales", "/empresa_constructora/vistas/materiales/"],
         ["fa-solid fa-clipboard-list", "Solicitudes", "/empresa_constructora/controladores/SolicitudMaterialController.php?accion=gerente"],
         ["fa-solid fa-screwdriver-wrench", "Herramientas", "/empresa_constructora/vistas/herramientas/"],
+        ["fa-solid fa-clipboard-list", "Solicitudes de herramientas", "/empresa_constructora/controladores/SolicitudHerramientaController.php?accion=gestionar"],
         ["fa-solid fa-chart-column", "Reportes", "/empresa_constructora/vistas/reportes/"],
         ["fa-solid fa-user", "Perfil", "/empresa_constructora/vistas/perfil/"]
     ],
@@ -41,6 +42,8 @@ $menu = [
         ["fa-solid fa-chart-line", "Avances", "/empresa_constructora/controladores/AvanceController.php?accion=listar"],
         ["fa-solid fa-list-check","Tareas", "/empresa_constructora/vistas/tareas/index.php"],
         ["fa-solid fa-triangle-exclamation", "Incidencias", "/empresa_constructora/vistas/incidencias/capataz.php"],
+["fa-solid fa-screwdriver-wrench", "Solicitar herramientas", "/empresa_constructora/controladores/SolicitudHerramientaController.php?accion=listar"],
+
         ["fa-solid fa-user", "Perfil", "/empresa_constructora/vistas/perfil/"]
     ],
 
@@ -50,6 +53,7 @@ $menu = [
         ["fa-solid fa-clipboard-list", "Solicitudes", "/empresa_constructora/controladores/EntregaMaterialController.php?accion=listar"],
         ["fa-solid fa-screwdriver-wrench", "Herramientas", "/empresa_constructora/vistas/herramientas/"],
         ["fa-solid fa-warehouse", "Inventario", "/empresa_constructora/vistas/inventario/"],
+["fa-solid fa-screwdriver-wrench", "Solicitudes de herramientas", "/empresa_constructora/controladores/SolicitudHerramientaController.php?accion=gestionar"],
         ["fa-solid fa-user", "Perfil", "/empresa_constructora/vistas/perfil/"]
     ],
 

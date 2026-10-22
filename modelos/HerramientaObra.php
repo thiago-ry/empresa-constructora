@@ -6,11 +6,17 @@ class HerramientaObra
 {
     private $conexion;
 
-    public function __construct()
-    {
+
+public function __construct($conexion = null)
+{
+    if ($conexion instanceof PDO) {
+        $this->conexion = $conexion;
+    } else {
         $db = new Conexion();
         $this->conexion = $db->conectar();
     }
+}
+
 
     public function obtenerTodos()
     {
@@ -114,38 +120,37 @@ class HerramientaObra
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function agregar($datos)
-    {
-        $sql = "
-            INSERT INTO herramienta_obra
-            (
-                id_herramienta,
-                id_obra,
-                cantidad_asignada,
-                cantidad_devuelta,
-                fecha_asignacion,
-                observaciones,
-                id_estado_herramienta
-            )
-            VALUES
-            (
-                ?, ?, ?, 0, ?, ?, ?
-            )
-        ";
 
-        $stmt = $this->conexion->prepare($sql);
+public function agregar($datos)
+{
+    $sql = "
+        INSERT INTO herramienta_obra
+        (
+            id_herramienta,
+            id_obra,
+            id_solicitud,
+            cantidad_asignada,
+            cantidad_devuelta,
+            fecha_asignacion,
+            observaciones,
+            id_estado_herramienta
+        )
+        VALUES (?, ?, ?, ?, 0, ?, ?, ?)
+    ";
 
-        return $stmt->execute([
+    $stmt = $this->conexion->prepare($sql);
 
-            $datos["id_herramienta"],
-            $datos["id_obra"],
-            $datos["cantidad"],
-            $datos["fecha_asignacion"],
-            $datos["observaciones"],
-            $datos["id_estado_herramienta"]
+    return $stmt->execute([
+        $datos["id_herramienta"],
+        $datos["id_obra"],
+        $datos["id_solicitud"] ?? null,
+        $datos["cantidad"],
+        $datos["fecha_asignacion"],
+        $datos["observaciones"] ?? null,
+        $datos["id_estado_herramienta"]
+    ]);
+}
 
-        ]);
-    }
 
     public function editar($datos)
     {

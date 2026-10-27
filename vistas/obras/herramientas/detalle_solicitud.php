@@ -43,7 +43,7 @@ $claseEstado = $clasesEstado[$estado] ?? "estado-pendiente";
         </div>
 
         <a
-            href="/empresa_constructora/controladores/SolicitudHerramientaController.php?accion=listar"
+            href="/empresa_constructora/controladores/SolicitudHerramientaController.php?accion=gestionar"
             class="btn btn-secondary">
             <i class="fa-solid fa-arrow-left"></i>
             Volver a solicitudes

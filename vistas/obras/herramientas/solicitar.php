@@ -5,9 +5,16 @@
  * @var array $herramientas
  * @var array $obra
  */
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-require_once __DIR__ . "/../../../config/permisos.php";
-verificarPermiso("obras");
+$rol = (int)($_SESSION["usuario"]["id_rol"] ?? 0);
+
+if ($rol !== 7) {
+    http_response_code(403);
+    exit("No tenés permiso para solicitar herramientas.");
+}
 
 $titulo = "Solicitar herramientas";
 

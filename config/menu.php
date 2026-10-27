@@ -42,8 +42,7 @@ $menu = [
         ["fa-solid fa-chart-line", "Avances", "/empresa_constructora/controladores/AvanceController.php?accion=listar"],
         ["fa-solid fa-list-check","Tareas", "/empresa_constructora/vistas/tareas/index.php"],
         ["fa-solid fa-triangle-exclamation", "Incidencias", "/empresa_constructora/vistas/incidencias/capataz.php"],
-["fa-solid fa-screwdriver-wrench", "Solicitar herramientas", "/empresa_constructora/controladores/SolicitudHerramientaController.php?accion=listar"],
-
+["fa-solid fa-screwdriver-wrench", "Solicitar herramientas", "/empresa_constructora/controladores/SolicitudHerramientaController.php?accion=crear"],
         ["fa-solid fa-user", "Perfil", "/empresa_constructora/vistas/perfil/"]
     ],
 

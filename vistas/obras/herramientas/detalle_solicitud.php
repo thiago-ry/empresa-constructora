@@ -224,15 +224,6 @@ $claseEstado = $clasesEstado[$estado] ?? "estado-pendiente";
 
             <?php endif; ?>
 
-            <div class="detalle-acciones">
-                <a
-                    href="/empresa_constructora/controladores/SolicitudHerramientaController.php?accion=listar"
-                    class="btn btn-secondary">
-                    <i class="fa-solid fa-arrow-left"></i>
-                    Volver a mis solicitudes
-                </a>
-            </div>
-
         </section>
 
     </div>

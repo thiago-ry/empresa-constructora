@@ -1,44 +1,32 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: *");
-header("Access-Control-Allow-Methods: GET, OPTIONS");
-header("Content-Type: application/json; charset=UTF-8");
+require __DIR__ . '/bootstrap.php';
+iniciar_api(['GET']);
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
+$usuario = usuario_actual();
+$idObra = (int) ($_GET['id_obra'] ?? 0);
+exigir_acceso_obra($usuario, $idObra);
+$limite = max(1, min(100, (int) ($_GET['limite'] ?? 30)));
 
-require_once 'conexion.php';
+// La foto de un avance se enlaza por obra + fecha + descripción (así se guarda en foto_obra).
+$filas = consultar(
+    'SELECT a.id_avance_diario, a.id_obra, a.fecha, a.descripcion,
+            (SELECT f.ruta_imagen FROM foto_obra f
+              WHERE f.id_obra = a.id_obra AND f.fecha = a.fecha AND f.descripcion = a.descripcion
+              LIMIT 1) AS foto
+     FROM avance_diario a
+     WHERE a.id_obra = ?
+     ORDER BY a.fecha DESC, a.id_avance_diario DESC
+     LIMIT ?',
+    'ii',
+    [$idObra, $limite]
+);
 
-if (!$conexion) {
-    echo json_encode(["status" => "error", "message" => "Error de conexión con la BD."]);
-    exit();
-}
+$avances = array_map(static fn(array $f): array => [
+    'id_avance' => (int) $f['id_avance_diario'],
+    'id_obra' => (int) $f['id_obra'],
+    'fecha' => $f['fecha'],
+    'descripcion' => $f['descripcion'],
+    'foto' => $f['foto'],
+], $filas);
 
-$conexion->set_charset("utf8mb4");
-
-$id_obra = isset($_GET['id_obra']) ? (int)$_GET['id_obra'] : 9;
-
-// Seleccionamos id_avance_diario en lugar de id_avance
-$sql = "SELECT id_avance_diario, id_obra, fecha, descripcion FROM avance_diario WHERE id_obra = ? ORDER BY fecha DESC";
-$stmt = $conexion->prepare($sql);
-$stmt->bind_param("i", $id_obra);
-$stmt->execute();
-$resultado = $stmt->get_result();
-
-$avances = [];
-if ($resultado) {
-    while ($row = $resultado->fetch_assoc()) {
-        $avances[] = [
-            'id_avance' => (int)$row['id_avance_diario'],
-            'id_obra' => (int)$row['id_obra'],
-            'descripcion' => $row['descripcion'],
-            'fecha' => $row['fecha'],
-            'foto' => null // Por si las fotos están en otra tabla
-        ];
-    }
-}
-
-echo json_encode(["status" => "success", "avances" => $avances]);
-?>
+responder_ok(['avances' => $avances]);

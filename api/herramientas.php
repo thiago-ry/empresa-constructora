@@ -1,112 +1,153 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: *");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-header("Content-Type: application/json; charset=UTF-8");
+require __DIR__ . '/bootstrap.php';
+iniciar_api(['GET', 'POST']);
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
+/** Estado "Devuelta" en la tabla estado_herramienta. */
+const ESTADO_HERRAMIENTA_DEVUELTA = 5;
 
-$host = "localhost";
-$user = "root";
-$pass = "";
-$dbname = "constructora";
+$usuario = usuario_actual();
 
-$conexion = new mysqli($host, $user, $pass, $dbname);
+/* ------------------------------ GET --------------------------------------- */
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $idObra = (int) ($_GET['id_obra'] ?? 0);
+    exigir_acceso_obra($usuario, $idObra);
 
-if ($conexion->connect_error) {
-    echo json_encode(["status" => "error", "message" => "Error de conexión a la base de datos."]);
-    exit();
-}
+    // ?historial=1 → últimas devoluciones registradas en la obra
+    if (!empty($_GET['historial'])) {
+        $limite = max(1, min(50, (int) ($_GET['limite'] ?? 10)));
+        $devoluciones = consultar(
+            "SELECT d.cantidad, d.fecha_devolucion AS fecha, d.observaciones, h.nombre,
+                    TRIM(CONCAT(IFNULL(u.nombre, ''), ' ', IFNULL(u.apellido, ''))) AS usuario
+             FROM devolucion_herramienta d
+             INNER JOIN herramienta_obra ho ON ho.id_herramienta_obra = d.id_herramienta_obra
+             INNER JOIN herramienta h ON h.id_herramienta = ho.id_herramienta
+             LEFT JOIN usuario u ON u.id_usuario = d.id_usuario
+             WHERE ho.id_obra = ?
+             ORDER BY d.fecha_devolucion DESC, d.id_devolucion DESC
+             LIMIT ?",
+            'ii',
+            [$idObra, $limite]
+        );
+        foreach ($devoluciones as &$dev) {
+            $dev['cantidad'] = (int) $dev['cantidad'];
+        }
+        unset($dev);
+        responder_ok(['devoluciones' => $devoluciones]);
+    }
 
-$conexion->set_charset("utf8mb4");
-$metodo = $_SERVER['REQUEST_METHOD'];
-
-// 📥 GET: Listar herramientas con su stock
-if ($metodo === 'GET') {
-    $sql = "SELECT h.id_herramienta, h.nombre, h.tipo, h.marca, h.modelo, h.cantidad_total
-            FROM herramienta h
-            ORDER BY h.nombre ASC";
-
-    $res = $conexion->query($sql);
-    $herramientas = [];
-
-    if ($res && $res->num_rows > 0) {
-        while ($row = $res->fetch_assoc()) {
-            $herramientas[] = [
-                'id_herramienta' => intval($row['id_herramienta']),
-                'nombre' => $row['nombre'],
-                'tipo' => $row['tipo'],
-                'marca' => $row['marca'],
-                'modelo' => $row['modelo'],
-                'cantidad_total' => intval($row['cantidad_total'])
+    // ?asignadas=1 → todo lo que se asignó alguna vez a la obra (lo que sigue acá y lo ya devuelto).
+    if (!empty($_GET['asignadas'])) {
+        $filas = consultar(
+            "SELECT ho.id_herramienta_obra, h.nombre, h.tipo, h.marca, h.modelo,
+                    ho.cantidad_asignada, ho.cantidad_devuelta, ho.fecha_asignacion, ho.fecha_devolucion,
+                    IFNULL(e.nombre, '') AS estado
+             FROM herramienta_obra ho
+             INNER JOIN herramienta h ON h.id_herramienta = ho.id_herramienta
+             LEFT JOIN estado_herramienta e ON e.id_estado_herramienta = ho.id_estado_herramienta
+             WHERE ho.id_obra = ?
+             ORDER BY (ho.cantidad_asignada > ho.cantidad_devuelta) DESC, ho.fecha_asignacion DESC, h.nombre ASC
+             LIMIT 200",
+            'i',
+            [$idObra]
+        );
+        $asignadas = array_map(static function (array $f): array {
+            $asig = (int) $f['cantidad_asignada'];
+            $devueltas = (int) $f['cantidad_devuelta'];
+            return [
+                'id_herramienta_obra' => (int) $f['id_herramienta_obra'],
+                'nombre' => $f['nombre'],
+                'tipo' => $f['tipo'],
+                'marca' => $f['marca'],
+                'modelo' => $f['modelo'],
+                'asignadas' => $asig,
+                'devueltas' => $devueltas,
+                'pendientes' => max(0, $asig - $devueltas),
+                'fecha_asignacion' => $f['fecha_asignacion'],
+                'fecha_devolucion' => $f['fecha_devolucion'],
+                'estado' => $f['estado'],
             ];
-        }
+        }, $filas);
+        responder_ok(['herramientas' => $asignadas]);
     }
 
-    echo json_encode([
-        "status" => "success",
-        "herramientas" => $herramientas
-    ]);
-    exit();
+    // Herramientas asignadas a la obra que todavía no volvieron al pañol.
+    $filas = consultar(
+        'SELECT ho.id_herramienta_obra, h.nombre, h.tipo, h.marca, h.modelo,
+                ho.cantidad_asignada, ho.cantidad_devuelta, ho.fecha_asignacion
+         FROM herramienta_obra ho
+         INNER JOIN herramienta h ON h.id_herramienta = ho.id_herramienta
+         WHERE ho.id_obra = ? AND ho.cantidad_asignada > ho.cantidad_devuelta
+         ORDER BY h.nombre ASC, ho.fecha_asignacion DESC',
+        'i',
+        [$idObra]
+    );
+    $herramientas = array_map(static fn(array $f): array => [
+        'id_herramienta_obra' => (int) $f['id_herramienta_obra'],
+        'nombre' => $f['nombre'],
+        'tipo' => $f['tipo'],
+        'marca' => $f['marca'],
+        'modelo' => $f['modelo'],
+        'asignadas' => (int) $f['cantidad_asignada'],
+        'devueltas' => (int) $f['cantidad_devuelta'],
+        'pendientes' => (int) $f['cantidad_asignada'] - (int) $f['cantidad_devuelta'],
+        'fecha_asignacion' => $f['fecha_asignacion'],
+    ], $filas);
+
+    responder_ok(['herramientas' => $herramientas]);
 }
 
-// 📤 POST: Registrar la Devolución de Herramienta
-if ($metodo === 'POST') {
-    $inputJSON = file_get_contents("php://input");
-    $datos = json_decode($inputJSON, true);
+/* ------------------------------ POST: devolución -------------------------- */
+$datos = leer_json();
+$idAsignacion = (int) ($datos['id_herramienta_obra'] ?? 0);
+$cantidad = (int) ($datos['cantidad'] ?? 0);
+$observaciones = mb_substr(trim((string) ($datos['observaciones'] ?? '')), 0, 500);
 
-    $id_herramienta = intval($datos['id_herramienta'] ?? 0);
-    $cantidad = intval($datos['cantidad'] ?? 0);
-    $observaciones = $datos['observaciones'] ?? '';
-    $id_usuario = intval($datos['id_usuario'] ?? 27);
+if ($idAsignacion <= 0 || $cantidad <= 0) {
+    throw new ErrorValidacion('Elegí una herramienta e indicá una cantidad válida.');
+}
 
-    if ($id_herramienta <= 0 || $cantidad <= 0) {
-        echo json_encode(["status" => "error", "message" => "Seleccione una herramienta y especifique una cantidad válida."]);
-        exit();
+try {
+    db()->begin_transaction();
+
+    // Se bloquea la fila para que dos devoluciones simultáneas no superen lo asignado.
+    $asignacion = consultar_fila(
+        'SELECT id_obra, cantidad_asignada, cantidad_devuelta FROM herramienta_obra WHERE id_herramienta_obra = ? FOR UPDATE',
+        'i',
+        [$idAsignacion]
+    );
+    if ($asignacion === null) {
+        throw new ErrorValidacion('La herramienta no está asignada a ninguna obra.');
+    }
+    exigir_acceso_obra($usuario, (int) $asignacion['id_obra']);
+
+    $pendientes = (int) $asignacion['cantidad_asignada'] - (int) $asignacion['cantidad_devuelta'];
+    if ($cantidad > $pendientes) {
+        throw new ErrorValidacion($pendientes > 0 ? "Solo quedan $pendientes por devolver." : 'Esta herramienta ya fue devuelta completa.');
     }
 
-    $conexion->begin_transaction();
+    // El trigger after_insert_devolucion_herramienta suma la cantidad a herramienta_obra.cantidad_devuelta.
+    ejecutar(
+        'INSERT INTO devolucion_herramienta (id_herramienta_obra, cantidad, fecha_devolucion, observaciones, id_usuario) VALUES (?, ?, ?, ?, ?)',
+        'iissi',
+        [$idAsignacion, $cantidad, date('Y-m-d H:i:s'), $observaciones, $usuario['id_usuario']]
+    );
 
+    // Si con esta devolución volvió todo, la asignación se marca como devuelta.
+    if ($cantidad >= $pendientes) {
+        ejecutar(
+            'UPDATE herramienta_obra SET id_estado_herramienta = ?, fecha_devolucion = ? WHERE id_herramienta_obra = ?',
+            'isi',
+            [ESTADO_HERRAMIENTA_DEVUELTA, date('Y-m-d'), $idAsignacion]
+        );
+    }
+
+    db()->commit();
+} catch (Throwable $e) {
     try {
-        $fechaActual = date('Y-m-d H:i:s');
-
-        // 1. Buscar si la herramienta existe en 'herramienta_obra'
-        $stmtObra = $conexion->prepare("SELECT id_herramienta_obra FROM herramienta_obra WHERE id_herramienta = ? LIMIT 1");
-        $stmtObra->bind_param("i", $id_herramienta);
-        $stmtObra->execute();
-        $resObra = $stmtObra->get_result();
-
-        if ($resObra && $resObra->num_rows > 0) {
-            $rowObra = $resObra->fetch_assoc();
-            $id_herramienta_obra = $rowObra['id_herramienta_obra'];
-        } else {
-            // Si no existe asignada a una obra aún, creamos el registro base en 'herramienta_obra'
-            $id_obra_defecto = 1; // Asignamos obra por defecto
-            $stmtInsertHO = $conexion->prepare("INSERT INTO herramienta_obra (id_herramienta, id_obra, cantidad) VALUES (?, ?, ?)");
-            $stmtInsertHO->bind_param("iii", $id_herramienta, $id_obra_defecto, $cantidad);
-            $stmtInsertHO->execute();
-            $id_herramienta_obra = $conexion->insert_id;
-            $stmtInsertHO->close();
-        }
-        $stmtObra->close();
-
-        // 2. Registrar la devolución usando el id_herramienta_obra válido
-        $stmt = $conexion->prepare("INSERT INTO devolucion_herramienta (id_herramienta_obra, cantidad, fecha_devolucion, observaciones, id_usuario) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("iissi", $id_herramienta_obra, $cantidad, $fechaActual, $observaciones, $id_usuario);
-        $stmt->execute();
-        $stmt->close();
-
-        $conexion->commit();
-        echo json_encode(["status" => "success", "message" => "Devolución registrada con éxito."]);
-    } catch (Exception $e) {
-        $conexion->rollback();
-        echo json_encode(["status" => "error", "message" => "Error al guardar: " . $e->getMessage()]);
+        db()->rollback();
+    } catch (Throwable $ignorado) {
     }
-    exit();
+    throw $e;
 }
 
-$conexion->close();
-?>
+responder_ok(['pendientes' => $pendientes - $cantidad], 'Devolución registrada.');

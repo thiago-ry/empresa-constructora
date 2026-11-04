@@ -1,0 +1,23 @@
+# Deja pasar el header Authorization a PHP (Apache lo descarta por defecto con algunos módulos)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</IfModule>
+
+# Límites de subida de fotos (solo aplica si PHP corre como módulo de Apache, como en XAMPP)
+<IfModule mod_php.c>
+    php_value upload_max_filesize 12M
+    php_value post_max_size 14M
+</IfModule>
+<IfModule mod_php8.c>
+    php_value upload_max_filesize 12M
+    php_value post_max_size 14M
+</IfModule>
+
+# Archivos internos: no deben abrirse desde el navegador
+<FilesMatch "^(config|config\.example|bootstrap)\.php$">
+    Require all denied
+</FilesMatch>
+
+Options -Indexes

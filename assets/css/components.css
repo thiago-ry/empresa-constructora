@@ -2391,3 +2391,628 @@ select:focus {
     grid-template-columns: 1fr;
   }
 }
+.obra-selector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.obra-selector select {
+    flex: 1;
+    min-width: 220px;
+}
+
+.obra-selector .btn {
+    white-space: nowrap;
+    text-decoration: none;
+}
+/* =========================================
+   BUILDPRO - PANTALLA DE PRESUPUESTO
+========================================= */
+
+.presupuesto-contenedor {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 25px;
+    color: #f1f5f9;
+    font-family: 'Poppins', Arial, sans-serif;
+    box-sizing: border-box;
+}
+
+.presupuesto-contenedor * {
+    box-sizing: border-box;
+}
+
+.presupuesto-header {
+    margin-bottom: 25px;
+}
+
+.presupuesto-header h1 {
+    margin: 0 0 8px;
+    color: #f4b400;
+    font-size: 28px;
+}
+
+.presupuesto-header p {
+    margin: 0;
+    color: #aab8c8;
+}
+
+.panel-presupuesto {
+    margin-bottom: 24px;
+    padding: 24px;
+    background: #111c2a;
+    border: 1px solid #24384d;
+    border-radius: 18px;
+}
+
+.panel-presupuesto h2 {
+    margin: 0 0 20px;
+    color: #f1f5f9;
+    font-size: 19px;
+}
+
+.titulo-seccion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.titulo-seccion h2 {
+    margin: 0;
+}
+
+.presupuesto-contenedor label {
+    display: block;
+    margin: 15px 0 8px;
+    color: #d7e0ea;
+    font-size: 14px;
+}
+
+.presupuesto-contenedor input,
+.presupuesto-contenedor select,
+.presupuesto-contenedor textarea {
+    width: 100%;
+    min-height: 43px;
+    padding: 11px 12px;
+    color: #f1f5f9;
+    background: #0b1320;
+    border: 1px solid #34485e;
+    border-radius: 8px;
+    font: inherit;
+}
+
+.presupuesto-contenedor textarea {
+    resize: vertical;
+}
+
+.presupuesto-contenedor input:focus,
+.presupuesto-contenedor select:focus,
+.presupuesto-contenedor textarea:focus {
+    outline: 2px solid #f4b400;
+    outline-offset: 1px;
+}
+
+.tabla-scroll {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.presupuesto-contenedor table {
+    width: 100%;
+    min-width: 650px;
+    border-collapse: collapse;
+}
+
+.presupuesto-contenedor th,
+.presupuesto-contenedor td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #24384d;
+}
+
+.presupuesto-contenedor th {
+    color: #f4b400;
+    background: #182536;
+    font-size: 13px;
+}
+
+.presupuesto-contenedor td {
+    color: #e2e8f0;
+}
+
+.presupuesto-contenedor td input {
+    min-width: 90px;
+}
+
+.presupuesto-contenedor button {
+    padding: 11px 16px;
+    color: #111827;
+    background: #f4b400;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.presupuesto-contenedor button:hover {
+    background: #df9f00;
+}
+
+.presupuesto-contenedor .porcentajes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.resumen-costos {
+    padding: 18px;
+    background: #0b1320;
+    border: 1px solid #24384d;
+    border-radius: 12px;
+}
+
+.resumen-costos > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 12px 0;
+    color: #cbd5e1;
+    border-bottom: 1px solid #24384d;
+}
+
+.resumen-costos strong {
+    color: #f1f5f9;
+    text-align: right;
+}
+
+.resumen-costos .total-final {
+    margin-top: 10px;
+    padding-top: 20px;
+    color: #f4b400;
+    border-bottom: none;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.resumen-costos .total-final strong {
+    color: #f4b400;
+    font-size: 23px;
+}
+
+.acciones-presupuesto {
+    display: flex;
+    justify-content: flex-end;
+    margin: 25px 0;
+}
+
+.presupuesto-contenedor .btn-guardar {
+    padding: 14px 25px;
+    color: #111827;
+    background: #f4b400;
+    font-size: 15px;
+}
+
+.alerta-error {
+    margin-bottom: 20px;
+    padding: 14px;
+    color: #fecaca;
+    background: #451a1a;
+    border: 1px solid #ef4444;
+    border-radius: 8px;
+}
+
+@media (max-width: 700px) {
+    .presupuesto-contenedor {
+        padding: 15px;
+    }
+
+    .panel-presupuesto {
+        padding: 16px;
+    }
+
+    .titulo-seccion {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .presupuesto-contenedor .porcentajes-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .resumen-costos > div {
+        font-size: 13px;
+    }
+
+    .resumen-costos .total-final {
+        font-size: 15px;
+    }
+
+    .resumen-costos .total-final strong {
+        font-size: 19px;
+    }
+}
+
+/* =========================================
+   BUILDPRO - LISTADO DE PRESUPUESTOS
+========================================= */
+
+.presupuesto-listado {
+    padding: 25px;
+    color: #f1f5f9;
+    font-family: 'Poppins', Arial, sans-serif;
+}
+
+/* ENCABEZADO */
+
+.presupuesto-listado .presupuesto-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.presupuesto-etiqueta {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: #f4b400;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.presupuesto-listado .presupuesto-header h1 {
+    margin: 0 0 8px;
+    color: #f1f5f9;
+    font-size: 29px;
+    font-weight: 700;
+}
+
+.presupuesto-listado .presupuesto-header p {
+    margin: 0;
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.btn-nuevo-presupuesto {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 45px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: 0.2s ease;
+}
+
+.btn-nuevo-presupuesto span {
+    font-size: 22px;
+    line-height: 1;
+}
+
+.btn-nuevo-presupuesto:hover {
+    transform: translateY(-2px);
+}
+
+/* INDICADORES */
+
+.presupuesto-indicadores {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.indicador-presupuesto {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    min-height: 115px;
+    padding: 22px;
+    background: #111c2a;
+    border: 1px solid #24384d;
+    border-radius: 15px;
+    transition: 0.2s ease;
+}
+
+.indicador-presupuesto:hover {
+    border-color: #f4b400;
+    transform: translateY(-2px);
+}
+
+.indicador-icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    font-size: 22px;
+}
+
+.icono-total {
+    color: #f4b400;
+    background: #3b3217;
+}
+
+.icono-activo {
+    color: #60a5fa;
+    background: #172e49;
+}
+
+.icono-aprobado {
+    color: #4ade80;
+    background: #153c2b;
+}
+
+.indicador-presupuesto span,
+.indicador-presupuesto small {
+    display: block;
+}
+
+.indicador-presupuesto span {
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+.indicador-presupuesto strong {
+    display: block;
+    margin: 4px 0;
+    color: #f8fafc;
+    font-size: 25px;
+}
+
+.indicador-presupuesto small {
+    color: #64748b;
+    font-size: 11px;
+}
+
+/* PANEL DE TABLA */
+
+.presupuesto-tabla-card {
+    padding: 0 !important;
+    overflow: hidden;
+    background: #111c2a;
+    border: 1px solid #24384d;
+    border-radius: 16px;
+}
+
+.presupuesto-tabla-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 23px 25px;
+    border-bottom: 1px solid #24384d;
+}
+
+.presupuesto-tabla-header h2 {
+    margin: 0 0 6px;
+    color: #f1f5f9;
+    font-size: 18px;
+}
+
+.presupuesto-tabla-header p {
+    margin: 0;
+    color: #8493a6;
+    font-size: 12px;
+}
+
+.contador-registros {
+    padding: 8px 13px;
+    color: #f4b400;
+    background: #302914;
+    border: 1px solid #51431b;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* TABLA */
+
+.presupuesto-tabla-card .table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.tabla-presupuestos {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: collapse;
+}
+
+.tabla-presupuestos thead {
+    background: #182536;
+}
+
+.tabla-presupuestos th {
+    padding: 16px 18px;
+    color: #aebdce;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #24384d;
+}
+
+.tabla-presupuestos td {
+    padding: 17px 18px;
+    color: #cbd5e1;
+    font-size: 13px;
+    border-bottom: 1px solid #1e3043;
+}
+
+.tabla-presupuestos tbody tr {
+    transition: background 0.2s ease;
+}
+
+.tabla-presupuestos tbody tr:hover {
+    background: #172638;
+}
+
+.tabla-presupuestos tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.numero-presupuesto {
+    color: #f4b400 !important;
+    font-weight: 700;
+}
+
+.nombre-obra {
+    color: #f1f5f9 !important;
+    font-weight: 600;
+}
+
+.precio-presupuesto {
+    color: #f4b400 !important;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.version-presupuesto {
+    display: inline-block;
+    padding: 5px 10px;
+    color: #93c5fd;
+    background: #172e49;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* ESTADOS */
+
+.estado-presupuesto {
+    display: inline-block;
+    padding: 6px 11px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.estado-aprobado {
+    color: #4ade80;
+    background: #153c2b;
+}
+
+.estado-rechazado {
+    color: #f87171;
+    background: #451e24;
+}
+
+.estado-activo {
+    color: #fbbf24;
+    background: #3b3217;
+}
+
+.estado-inactivo {
+    color: #cbd5e1;
+    background: #334155;
+}
+
+/* BOTÓN VER */
+
+.btn-ver-presupuesto {
+    display: inline-block;
+    padding: 8px 12px;
+    color: #f4b400;
+    background: #302914;
+    border: 1px solid #51431b;
+    border-radius: 7px;
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: 0.2s ease;
+}
+
+.btn-ver-presupuesto:hover {
+    color: #111827;
+    background: #f4b400;
+}
+
+/* ESTADO VACÍO */
+
+.presupuesto-vacio {
+    padding: 55px 20px;
+    text-align: center;
+}
+
+.vacio-icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 18px;
+    color: #f4b400;
+    background: #302914;
+    border-radius: 18px;
+    font-size: 29px;
+}
+
+.presupuesto-vacio h3 {
+    margin: 0 0 10px;
+    color: #f1f5f9;
+    font-size: 17px;
+}
+
+.presupuesto-vacio p {
+    margin: 0 0 22px;
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+    .presupuesto-indicadores {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+
+    .presupuesto-listado {
+        padding: 15px;
+    }
+
+    .presupuesto-listado .presupuesto-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .presupuesto-indicadores {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .indicador-presupuesto {
+        min-height: 95px;
+    }
+
+    .presupuesto-tabla-header {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 18px;
+    }
+
+    .presupuesto-vacio {
+        padding: 35px 12px;
+    }
+}

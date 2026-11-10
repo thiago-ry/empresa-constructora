@@ -1,13 +1,17 @@
 <?php
 
 require_once __DIR__ . "/../../config/permisos.php";
+require_once __DIR__ . "/partes/reporte_comun.php";
 
 verificarPermiso("reportes");
+
+$resumen = (new Reporte())->resumenGeneral();
 
 require_once __DIR__ . "/../../layouts/header.php";
 require_once __DIR__ . "/../../layouts/sidebar.php";
 
 ?>
+<link rel="stylesheet" href="/empresa_constructora/assets/css/reportes.css">
 
 <main class="content">
 
@@ -20,6 +24,41 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
         <p>
             Consulte y genere informes sobre la información de la empresa.
         </p>
+
+    </div>
+
+
+    <div class="resumen-general">
+
+        <div class="alert alert-primary">
+            <p>Obras activas</p>
+            <h3><?= $resumen["obras_en_curso"] ?> en curso</h3>
+            <small><?= $resumen["obras_total"] ?> registradas · <?= $resumen["obras_finalizadas"] ?> finalizadas</small>
+        </div>
+
+        <div class="alert alert-success">
+            <p>Presupuesto total</p>
+            <h3><?= e(Reporte::moneda($resumen["presupuesto_total"])) ?></h3>
+            <small>Última versión de cada obra</small>
+        </div>
+
+        <div class="alert alert-info">
+            <p>Personal y clientes</p>
+            <h3><?= $resumen["empleados"] ?> empleados</h3>
+            <small><?= $resumen["clientes"] ?> clientes activos</small>
+        </div>
+
+        <div class="alert alert-warning">
+            <p>Recursos</p>
+            <h3><?= $resumen["materiales_criticos"] ?> materiales críticos</h3>
+            <small><?= $resumen["herramientas_en_obra"] ?> herramientas en obra · equipamiento <?= e(Reporte::moneda($resumen["valor_herramientas"])) ?></small>
+        </div>
+
+        <div class="alert alert-danger">
+            <p>Incidencias abiertas</p>
+            <h3><?= $resumen["incidencias_abiertas"] ?></h3>
+            <small>Pendientes o en revisión</small>
+        </div>
 
     </div>
 
@@ -347,6 +386,55 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
                 </div>
 
             </a>
+
+            <a
+                href="/empresa_constructora/vistas/reportes/incidencias.php"
+                class="card reporte-card"
+            >
+                <div class="reporte-icon">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div class="reporte-content">
+                    <h3>
+                        Incidencias
+                    </h3>
+                    <p>
+                        Consulte los problemas registrados en las obras,
+                        su tipo, estado y la solución aplicada.
+                    </p>
+                </div>
+                <div class="reporte-footer">
+                    <span>
+                        Ver reporte
+                    </span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <a
+                href="/empresa_constructora/vistas/reportes/asistencia.php"
+                class="card reporte-card"
+            >
+                <div class="reporte-icon">
+                    <i class="fa-solid fa-user-clock"></i>
+                </div>
+                <div class="reporte-content">
+                    <h3>
+                        Asistencia
+                    </h3>
+                    <p>
+                        Consulte presentes, llegadas tarde, ausencias
+                        y horas trabajadas del personal por período.
+                    </p>
+                </div>
+                <div class="reporte-footer">
+                    <span>
+                        Ver reporte
+                    </span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </a>
+
 
 
 

@@ -1,677 +1,237 @@
 <?php
 
-require_once "../../modelos/Reporte.php";
-require_once "../../config/permisos.php";
+require_once __DIR__ . "/../../config/permisos.php";
+require_once __DIR__ . "/partes/reporte_comun.php";
 
 verificarPermiso("reportes");
 
 $reporte = new Reporte();
-
 $empleados = $reporte->empleados();
 
 $totalEmpleados = count($empleados);
-
-$empleadosActivos = 0;
-$empleadosInactivos = 0;
-$empleadosAsignados = 0;
-$empleadosSinObra = 0;
-
+$activos = 0;
+$asignados = 0;
+$masaSalarial = 0;
+$presentes = 0;
+$tardes = 0;
+$ausentes = 0;
 $cargos = [];
 
 foreach ($empleados as $empleado) {
-
     if ((int)$empleado["estado"] === 1) {
-        $empleadosActivos++;
-    } else {
-        $empleadosInactivos++;
+        $activos++;
+        $masaSalarial += (float)$empleado["salario"];
     }
-
     if ((int)$empleado["cantidad_obras"] > 0) {
-        $empleadosAsignados++;
-    } else {
-        $empleadosSinObra++;
+        $asignados++;
     }
+    $presentes += (int)$empleado["presentes"];
+    $tardes += (int)$empleado["tardes"];
+    $ausentes += (int)$empleado["ausentes"];
 
-    $listaCargos = $empleado["nombre_cargo"] ?? "Sin cargo";
-
-    foreach (explode(",", $listaCargos) as $cargo) {
-
-        $cargo = trim($cargo);
-
-        if ($cargo === "") {
-            $cargo = "Sin cargo";
-        }
-
-        if (!isset($cargos[$cargo])) {
-            $cargos[$cargo] = 0;
-        }
-
-        $cargos[$cargo]++;
+    foreach (explode(", ", $empleado["nombre_cargo"]) as $cargo) {
+        $cargos[$cargo] = ($cargos[$cargo] ?? 0) + 1;
     }
 }
+ksort($cargos);
 
-require_once "../../layouts/header.php";
-require_once "../../layouts/sidebar.php";
+$diasRegistrados = $presentes + $tardes + $ausentes;
+$asistenciaGeneral = $diasRegistrados > 0 ? round(($presentes + $tardes) / $diasRegistrados * 100) : 0;
 
+require_once __DIR__ . "/../../layouts/header.php";
+require_once __DIR__ . "/../../layouts/sidebar.php";
 ?>
+<link rel="stylesheet" href="/empresa_constructora/assets/css/reportes.css">
 
 <main class="content">
 
     <div class="page-title no-print">
-
         <div>
-
-            <h1>
-                Reporte de Empleados
-            </h1>
-
-            <p>
-                Información del personal, cargos y asignaciones a obras.
-            </p>
-
+            <h1>Reporte de Empleados</h1>
+            <p>Personal, cargos, obras asignadas, asistencia, tareas y salarios.</p>
         </div>
-
     </div>
 
-
-    <div class="alert-container no-print">
+    <div class="alert-container cuatro no-print">
         <div class="alert alert-primary">
-            <p>
-                Total Empleados
-            </p>
-            <h3>
-                <?= $totalEmpleados ?>
-            </h3>
+            <p>Empleados</p>
+            <h3><span data-contador="tablaEmpleados"><?= $totalEmpleados ?></span> de <?= $totalEmpleados ?></h3>
+            <small><?= $activos ?> activos · <?= $totalEmpleados - $activos ?> inactivos</small>
         </div>
-
-
-        <div class="alert alert-success">
-
-            <p>
-                Empleados Activos
-            </p>
-
-            <h3>
-                <?= $empleadosActivos ?>
-            </h3>
-
-        </div>
-
-
-        <div class="alert alert-warning">
-
-            <p>
-                Asignados a Obras
-            </p>
-
-            <h3>
-                <?= $empleadosAsignados ?>
-            </h3>
-
-        </div>
-
-
         <div class="alert alert-info">
-
-            <p>
-                Sin Obra Asignada
-            </p>
-
-            <h3>
-                <?= $empleadosSinObra ?>
-            </h3>
-
+            <p>Asignados a obras</p>
+            <h3><?= $asignados ?></h3>
+            <small><?= $totalEmpleados - $asignados ?> sin obra actualmente</small>
         </div>
-
+        <div class="alert alert-success">
+            <p>Asistencia general</p>
+            <h3><?= $asistenciaGeneral ?>%</h3>
+            <small><?= $presentes ?> presentes · <?= $tardes ?> tardes · <?= $ausentes ?> ausencias</small>
+        </div>
+        <div class="alert alert-warning">
+            <p>Masa salarial mensual</p>
+            <h3><?= e(Reporte::moneda($masaSalarial)) ?></h3>
+            <small>Suma de salarios del personal activo</small>
+        </div>
     </div>
 
     <div class="table-container">
 
-        <div class="print-header">
-
-            <h1>
-                Empresa Constructora
-            </h1>
-
-            <h2>
-                Reporte General de Empleados
-            </h2>
-
-            <p>
-                Fecha de generación:
-                <?= date("d/m/Y H:i"); ?>
-            </p>
-
-            <p>
-                Generado por:
-                <?= htmlspecialchars(
-                    ($_SESSION["usuario"]["nombre"] ?? "") .
-                        " " .
-                        ($_SESSION["usuario"]["apellido"] ?? "")
-                ); ?>
-            </p>
-
-        </div>
-
+        <?php encabezadoImpresion("Reporte General de Empleados"); ?>
 
         <div class="toolbar no-print">
-
             <div class="toolbar-left">
-
-                <input
-                    type="text"
-                    id="buscarEmpleado"
-                    class="search-box"
-                    placeholder="Buscar empleado...">
-
-
-                <select
-                    id="filtroEstado"
-                    class="filter">
-
-                    <option value="">
-                        Todos los estados
-                    </option>
-
-                    <option value="1">
-                        Activos
-                    </option>
-
-                    <option value="0">
-                        Inactivos
-                    </option>
-
+                <input type="text" class="search-box" data-buscar="tablaEmpleados" placeholder="Buscar empleado, documento u obra...">
+                <select class="filter" data-filtro="tablaEmpleados" data-campo="estado" data-exportar-estado>
+                    <option value="">Todos los estados</option>
+                    <option value="Activo">Activos</option>
+                    <option value="Inactivo">Inactivos</option>
                 </select>
-
-
-                <select
-                    id="filtroAsignacion"
-                    class="filter">
-
-                    <option value="">
-                        Todas las asignaciones
-                    </option>
-
-                    <option value="asignado">
-                        Con obra
-                    </option>
-
-                    <option value="sin-obra">
-                        Sin obra
-                    </option>
-
+                <select class="filter" data-filtro="tablaEmpleados" data-campo="asignacion">
+                    <option value="">Con y sin obra</option>
+                    <option value="asignado">Con obra</option>
+                    <option value="sin-obra">Sin obra</option>
                 </select>
-
-
-                <select
-                    id="filtroCargo"
-                    class="filter">
-
-                    <option value="">
-                        Todos los cargos
-                    </option>
-
+                <select class="filter" data-filtro="tablaEmpleados" data-campo="cargo" data-modo="lista">
+                    <option value="">Todos los cargos</option>
                     <?php foreach ($cargos as $cargo => $cantidad) { ?>
-
-                        <option value="<?= htmlspecialchars($cargo) ?>">
-                            <?= htmlspecialchars($cargo) ?>
-                        </option>
-
+                        <option value="<?= e($cargo) ?>"><?= e($cargo) ?> (<?= $cantidad ?>)</option>
                     <?php } ?>
-
                 </select>
-
             </div>
-
-
-       <div class="toolbar-right">
-
-    <button onclick="window.print()" class="btn btn-primary">
-        <i class="fa-solid fa-print"></i>
-        Imprimir
-    </button>
-
-    <a href="../../reportes/pdf_empleados.php"
-       class="btn btn-danger">
-
-        <i class="fa-solid fa-file-pdf"></i>
-        PDF
-
-    </a>
-
-    <a href="../../reportes/excel_empleados.php"
-       class="btn btn-success">
-
-        <i class="fa-solid fa-file-excel"></i>
-        Excel
-
-    </a>
-
-</div>
-
+            <?php botonesReporte("empleados", "tablaEmpleados"); ?>
         </div>
 
-
-        <table
-            class="table"
-            id="tablaEmpleados">
-
+        <table class="table" id="tablaEmpleados">
             <thead>
-
                 <tr>
-
-                    <th>
-                        Empleado
-                    </th>
-
-                    <th>
-                        Documento
-                    </th>
-
-                    <th>
-                        Cargo
-                    </th>
-
-                    <th>
-                        Teléfono
-                    </th>
-
-                    <th>
-                        Obras asignadas
-                    </th>
-
-                    <th>
-                        Salario
-                    </th>
-
-                    <th>
-                        Estado
-                    </th>
-
+                    <th>Empleado</th>
+                    <th>Documento</th>
+                    <th>Cargo</th>
+                    <th>Obras actuales</th>
+                    <th>Asistencia</th>
+                    <th>Tareas</th>
+                    <th>Salario</th>
+                    <th>Estado</th>
                 </tr>
-
             </thead>
-
-
             <tbody>
-
-                <?php foreach ($empleados as $empleado) { ?>
-
-                    <?php
-
-                    $asignado =
-                        ((int)$empleado["cantidad_obras"] > 0);
-
-                    ?>
-
-                    <tr
-
-                        data-estado="<?= (int)$empleado["estado"] ?>"
-
-                        data-asignacion="<?= $asignado
-                                                ? "asignado"
-                                                : "sin-obra"
-                                            ?>"
-
-                        data-cargo="<?= htmlspecialchars(
-                                        $empleado["nombre_cargo"] ?? "Sin cargo"
-                                    ) ?>">
-
-                        <td>
-
-                            <strong>
-
-                                <?= htmlspecialchars(
-                                    $empleado["apellido"] .
-                                        ", " .
-                                        $empleado["nombre"]
-                                ) ?>
-
-                            </strong>
-
-                            <br>
-
-                            <small>
-
-                                <?= htmlspecialchars(
-                                    $empleado["correo"]
-                                ) ?>
-
-                            </small>
-
-                        </td>
-
-
-                        <td>
-
-                            <?= htmlspecialchars(
-                                $empleado["documento"] ?? "-"
-                            ) ?>
-
-                        </td>
-
-
-                        <td>
-
-                            <?= htmlspecialchars(
-                                $empleado["nombre_cargo"] ??
-                                    "Sin cargo"
-                            ) ?>
-
-                        </td>
-
-
-                        <td>
-
-                            <?= htmlspecialchars(
-                                $empleado["telefono"] ?? "-"
-                            ) ?>
-
-                        </td>
-
-
-                        <td>
-
-                            <?php if ($asignado) { ?>
-
-                                <span class="badge badge-info">
-
-                                    <?= htmlspecialchars(
-                                        $empleado["obras"]
-                                    ) ?>
-
-                                </span>
-
-                            <?php } else { ?>
-
-                                <span class="badge badge-secondary">
-
-                                    Sin obra
-
-                                </span>
-
-                            <?php } ?>
-
-                        </td>
-
-
-                        <td>
-
-                            <?php if (
-                                $empleado["salario"] !== null &&
-                                $empleado["salario"] !== ""
-                            ) { ?>
-
-                                $<?= number_format(
-                                        (float)$empleado["salario"],
-                                        2,
-                                        ",",
-                                        "."
-                                    ) ?>
-
-                            <?php } else { ?>
-
-                                -
-
-                            <?php } ?>
-
-                        </td>
-
-
-                        <td>
-
-                            <?php if (
-                                (int)$empleado["estado"] === 1
-                            ) { ?>
-
-                                <span class="badge badge-success">
-
-                                    Activo
-
-                                </span>
-
-                            <?php } else { ?>
-
-                                <span class="badge badge-danger">
-
-                                    Inactivo
-
-                                </span>
-
-                            <?php } ?>
-
-                        </td>
-
-                    </tr>
-
+                <?php if ($totalEmpleados === 0) { ?>
+                    <tr class="fila-vacia"><td colspan="8">No hay empleados registrados.</td></tr>
                 <?php } ?>
 
+                <?php foreach ($empleados as $empleado) {
+                    $asignado = (int)$empleado["cantidad_obras"] > 0;
+                    $estado = (int)$empleado["estado"] === 1 ? "Activo" : "Inactivo";
+                    // Todos los cargos del empleado, para poder filtrar por cualquiera
+                    $listaCargos = str_replace(", ", "|", $empleado["nombre_cargo"]);
+                ?>
+                    <tr data-estado="<?= $estado ?>"
+                        data-asignacion="<?= $asignado ? "asignado" : "sin-obra" ?>"
+                        data-cargo="<?= e($listaCargos) ?>">
+                        <td>
+                            <strong><?= e($empleado["empleado"]) ?></strong><br>
+                            <span class="texto-secundario"><?= e($empleado["correo"]) ?> · <?= e($empleado["telefono"] ?: "sin teléfono") ?></span>
+                        </td>
+                        <td><?= e($empleado["documento"] ?: "-") ?></td>
+                        <td><?= e($empleado["nombre_cargo"]) ?></td>
+                        <td>
+                            <?php if ($asignado) { ?>
+                                <?= e($empleado["obras"]) ?>
+                            <?php } else { ?>
+                                <span class="badge badge-secondary">Sin obra</span>
+                            <?php } ?>
+                            <br><span class="texto-secundario"><?= (int)$empleado["obras_historicas"] ?> obras en total</span>
+                        </td>
+                        <td>
+                            <?php if ($empleado["asistencia_pct"] === null) { ?>
+                                <span class="texto-secundario">Sin registros</span>
+                            <?php } else { ?>
+                                <?= (int)$empleado["asistencia_pct"] ?>%<br>
+                                <span class="texto-secundario">
+                                    <?= (int)$empleado["presentes"] ?> P · <?= (int)$empleado["tardes"] ?> T · <?= (int)$empleado["ausentes"] ?> A
+                                </span>
+                            <?php } ?>
+                        </td>
+                        <td>
+                            <?= (int)$empleado["tareas_completadas"] ?> de <?= (int)$empleado["tareas_asignadas"] ?><br>
+                            <span class="texto-secundario">completadas</span>
+                        </td>
+                        <td class="numero">
+                            <?= $empleado["salario"] !== null && $empleado["salario"] !== ""
+                                ? e(Reporte::moneda($empleado["salario"])) : "-" ?>
+                        </td>
+                        <td><?= badge($estado) ?></td>
+                    </tr>
+                <?php } ?>
             </tbody>
-
         </table>
 
     </div>
 
-
-    <div
-        class="card"
-        style="margin-top:20px;">
-
-        <div class="card-header">
-
-            <div>
-
-                <h2>
-                    Empleados por Cargo
-                </h2>
-
-                <p>
-                    Distribución del personal según su cargo.
-                </p>
-
+    <?php if ($totalEmpleados > 0) { ?>
+        <div class="graficos-reporte no-print">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h2>Empleados por cargo</h2>
+                        <p>Un empleado con dos cargos se cuenta en ambos.</p>
+                    </div>
+                </div>
+                <div class="grafico-caja"><canvas id="graficoCargos"></canvas></div>
             </div>
-
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h2>Asistencia registrada</h2>
+                        <p>Total de días presentes, con llegada tarde y ausentes.</p>
+                    </div>
+                </div>
+                <div class="grafico-caja"><canvas id="graficoAsistencia"></canvas></div>
+            </div>
         </div>
-
-
-        <canvas id="graficoCargos"></canvas>
-
-    </div>
+    <?php } ?>
 
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
-    const buscarEmpleado =
-        document.getElementById("buscarEmpleado");
-
-    const filtroEstado =
-        document.getElementById("filtroEstado");
-
-    const filtroAsignacion =
-        document.getElementById("filtroAsignacion");
-
-    const filtroCargo =
-        document.getElementById("filtroCargo");
-
-
-    function filtrarEmpleados() {
-
-        const texto =
-            buscarEmpleado.value.toLowerCase();
-
-        const estado =
-            filtroEstado.value;
-
-        const asignacion =
-            filtroAsignacion.value;
-
-        const cargo =
-            filtroCargo.value;
-
-        const filas =
-            document.querySelectorAll(
-                "#tablaEmpleados tbody tr"
-            );
-
-
-        filas.forEach(fila => {
-
-            const contenido =
-                fila.textContent.toLowerCase();
-
-            const estadoFila =
-                fila.dataset.estado;
-
-            const asignacionFila =
-                fila.dataset.asignacion;
-
-            const cargoFila =
-                fila.dataset.cargo;
-
-
-            const coincideTexto =
-                contenido.includes(texto);
-
-
-            const coincideEstado =
-                estado === "" ||
-                estadoFila === estado;
-
-
-            const coincideAsignacion =
-                asignacion === "" ||
-                asignacionFila === asignacion;
-
-
-            const coincideCargo =
-                cargo === "" ||
-                cargoFila === cargo;
-
-
-            if (
-                coincideTexto &&
-                coincideEstado &&
-                coincideAsignacion &&
-                coincideCargo
-            ) {
-
-                fila.style.display = "";
-
-            } else {
-
-                fila.style.display = "none";
-
-            }
-
-        });
-
-    }
-
-
-    buscarEmpleado.addEventListener(
-        "keyup",
-        filtrarEmpleados
-    );
-
-    filtroEstado.addEventListener(
-        "change",
-        filtrarEmpleados
-    );
-
-    filtroAsignacion.addEventListener(
-        "change",
-        filtrarEmpleados
-    );
-
-    filtroCargo.addEventListener(
-        "change",
-        filtrarEmpleados
-    );
-</script>
-
-<script>
-    const etiquetasCargos = [
-
-        <?php foreach ($cargos as $cargo => $cantidad) { ?>
-
-            <?= json_encode($cargo) ?>,
-
-        <?php } ?>
-
-    ];
-
-
-    const cantidadesCargos = [
-
-        <?php foreach ($cargos as $cargo => $cantidad) { ?>
-
-            <?= (int)$cantidad ?>,
-
-        <?php } ?>
-
-    ];
-
-
-    new Chart(
-
-        document.getElementById("graficoCargos"),
-
-        {
-
-            type: "bar",
-
-            data: {
-
-                labels: etiquetasCargos,
-
-                datasets: [
-
-                    {
-
-                        label: "Cantidad de empleados",
-
-                        data: cantidadesCargos
-
-                    }
-
-                ]
-
-            },
-
-
-            options: {
-
-                responsive: true,
-
-                scales: {
-
-                    y: {
-
-                        beginAtZero: true,
-
-                        ticks: {
-
-                            precision: 0
-
-                        }
-
-                    }
-
-                }
-
-            }
-
+    document.addEventListener("DOMContentLoaded", function() {
+        if (typeof Chart === "undefined") return;
+
+        const cargos = document.getElementById("graficoCargos");
+        if (cargos) {
+            new Chart(cargos, {
+                type: "bar",
+                data: {
+                    labels: <?= json_encode(array_keys($cargos), JSON_UNESCAPED_UNICODE) ?>,
+                    datasets: [{
+                        label: "Empleados",
+                        data: <?= json_encode(array_values($cargos)) ?>,
+                        backgroundColor: "rgba(245, 180, 0, 0.7)"
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+            });
         }
 
-    );
+        const asistencia = document.getElementById("graficoAsistencia");
+        if (asistencia) {
+            new Chart(asistencia, {
+                type: "doughnut",
+                data: {
+                    labels: ["Presente", "Tarde", "Ausente"],
+                    datasets: [{
+                        data: [<?= $presentes ?>, <?= $tardes ?>, <?= $ausentes ?>],
+                        backgroundColor: ["#22c55e", "#f5b400", "#ef4444"]
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+    });
 </script>
 
 <?php
-
 $script = "reportes";
-
-require_once "../../layouts/footer.php";
-
-?>
+require_once __DIR__ . "/../../layouts/footer.php";

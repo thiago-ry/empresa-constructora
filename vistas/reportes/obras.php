@@ -1,123 +1,95 @@
 <?php
 
-require_once "../../modelos/Reporte.php";
-require_once "../../modelos/Etapa.php";
-require_once "../../config/permisos.php";
+require_once __DIR__ . "/../../config/permisos.php";
+require_once __DIR__ . "/partes/reporte_comun.php";
 
 verificarPermiso("reportes");
 
 $reporte = new Reporte();
 $obras = $reporte->obras();
 
-$etapaModel = new Etapa();
-
 $totalObras = count($obras);
-$obrasActivas = 0;
-$obrasFinalizadas = 0;
-$obrasPausadas = 0;
+$porEstado = [];
 $avanceTotal = 0;
-
-$mayorAvance = -1;
-$obraMayorAvance = "Sin datos";
-
-$menorAvance = 101;
-$obraMenorAvance = "Sin datos";
+$presupuestoTotal = 0;
+$incidenciasAbiertas = 0;
+$obraMayor = null;
+$obraMenor = null;
 
 foreach ($obras as $obra) {
-    $avance = (int)$etapaModel->calcularAvance($obra["id_obra"]);
-    $avanceTotal += $avance;
+    $porEstado[$obra["estado"]] = ($porEstado[$obra["estado"]] ?? 0) + 1;
+    $avanceTotal += $obra["avance"];
+    $presupuestoTotal += (float)($obra["presupuesto"] ?? 0);
+    $incidenciasAbiertas += (int)$obra["incidencias_abiertas"];
 
-    if ($avance > $mayorAvance) {
-        $mayorAvance = $avance;
-        $obraMayorAvance = $obra["nombre_obra"];
+    if ($obraMayor === null || $obra["avance"] > $obraMayor["avance"]) {
+        $obraMayor = $obra;
     }
-
-    if ($avance < $menorAvance) {
-        $menorAvance = $avance;
-        $obraMenorAvance = $obra["nombre_obra"];
-    }
-
-    if ($obra["estado"] == "Activa") {
-        $obrasActivas++;
-    } elseif ($obra["estado"] == "Finalizada") {
-        $obrasFinalizadas++;
-    } elseif ($obra["estado"] == "Pausada") {
-        $obrasPausadas++;
+    if ($obraMenor === null || $obra["avance"] < $obraMenor["avance"]) {
+        $obraMenor = $obra;
     }
 }
 
+$enCurso = ($porEstado["Planificacion"] ?? 0) + ($porEstado["En Proceso"] ?? 0);
+$finalizadas = $porEstado["Finalizada"] ?? 0;
 $promedioAvance = $totalObras > 0 ? round($avanceTotal / $totalObras) : 0;
 
-if ($totalObras === 0) {
-    $mayorAvance = 0;
-    $menorAvance = 0;
-    $obraMayorAvance = "Sin datos";
-    $obraMenorAvance = "Sin datos";
-}
+$estados = ["Planificacion" => "Planificación", "En Proceso" => "En proceso", "Finalizada" => "Finalizada",
+    "Suspendida" => "Suspendida", "Cancelada" => "Cancelada"];
 
-require_once "../../layouts/header.php";
-require_once "../../layouts/sidebar.php";
+require_once __DIR__ . "/../../layouts/header.php";
+require_once __DIR__ . "/../../layouts/sidebar.php";
 ?>
+<link rel="stylesheet" href="/empresa_constructora/assets/css/reportes.css">
 
 <main class="content">
 
     <div class="page-title no-print">
         <div>
             <h1>Reporte General de Obras</h1>
-            <p>Administración, seguimiento detallado y análisis integral de las obras registradas.</p>
+            <p>Estado, avance, personal, recursos, incidencias y presupuesto de cada obra.</p>
         </div>
     </div>
 
-    <!-- Contadores Dinámicos -->
-    <div class="alert-container no-print" id="kpiContainer">
+    <div class="alert-container cuatro no-print">
         <div class="alert alert-primary">
-            <p>Total de Obras</p>
-            <h3 id="kpiTotal"><?= $totalObras ?></h3>
+            <p>Obras registradas</p>
+            <h3><span data-contador="tablaObras"><?= $totalObras ?></span> de <?= $totalObras ?></h3>
+            <small><?= $enCurso ?> en curso · <?= $finalizadas ?> finalizadas</small>
         </div>
         <div class="alert alert-warning">
-            <p>Promedio de Avance</p>
-            <h3 id="kpiPromedio"><?= $promedioAvance ?>%</h3>
+            <p>Avance promedio</p>
+            <h3><?= $promedioAvance ?>%</h3>
+            <small>Según las etapas finalizadas</small>
         </div>
         <div class="alert alert-success">
-            <p>Mayor Avance</p>
-            <h3><?= $mayorAvance ?>%</h3>
+            <p>Presupuesto total</p>
+            <h3><?= e(Reporte::moneda($presupuestoTotal)) ?></h3>
+            <small>Última versión de cada obra</small>
         </div>
         <div class="alert alert-danger">
-            <p>Obras Pausadas</p>
-            <h3 id="kpiPausadas"><?= $obrasPausadas ?></h3>
+            <p>Incidencias abiertas</p>
+            <h3><?= $incidenciasAbiertas ?></h3>
+            <small>Pendientes o en revisión</small>
         </div>
     </div>
 
     <div class="table-container">
 
-        <div class="print-header">
-            <h1>Empresa Constructora</h1>
-            <h2>Reporte General de Obras</h2>
-            <p>Fecha de generación: <?= date("d/m/Y H:i"); ?></p>
-            <p>Generado por: <?= htmlspecialchars(($_SESSION["usuario"]["nombre"] ?? "") . " " . ($_SESSION["usuario"]["apellido"] ?? "")); ?></p>
-        </div>
+        <?php encabezadoImpresion("Reporte General de Obras"); ?>
 
         <div class="toolbar no-print">
             <div class="toolbar-left">
-                <input type="text" id="buscarObra" class="search-box" placeholder="Buscar por obra, cliente, responsable...">
-                <select id="filtroEstado" class="filter">
+                <input type="text" class="search-box" data-buscar="tablaObras"
+                    placeholder="Buscar por obra, cliente, responsable o dirección...">
+                <select class="filter" data-filtro="tablaObras" data-campo="estado" data-exportar-estado>
                     <option value="">Todos los estados</option>
-                    <option value="Activa">Activas</option>
-                    <option value="Finalizada">Finalizadas</option>
-                    <option value="Pausada">Pausadas</option>
+                    <?php foreach ($estados as $valor => $texto) { ?>
+                        <option value="<?= e($valor) ?>"><?= e($texto) ?></option>
+                    <?php } ?>
                 </select>
             </div>
-            <div class="toolbar-right">
-                <button onclick="window.print()" class="btn btn-primary">
-                    <i class="fa-solid fa-print"></i> Imprimir
-                </button>
-                <a href="../../reportes/pdf_obras.php" class="btn btn-danger">
-                    <i class="fa-solid fa-file-pdf"></i> PDF
-                </a>
-                <a href="../../reportes/excel_obras.php" class="btn btn-success">
-                    <i class="fa-solid fa-file-excel"></i> Excel
-                </a>
-            </div>
+            <?php botonesReporte("obras", "tablaObras"); ?>
         </div>
 
         <table class="table" id="tablaObras">
@@ -125,59 +97,72 @@ require_once "../../layouts/sidebar.php";
                 <tr>
                     <th>Obra</th>
                     <th>Cliente</th>
-                    <th>Responsable</th>
-                    <th>Dirección</th>
-                    <th>Inicio</th>
-                    <th>Fin</th>
+                    <th>Responsables</th>
+                    <th>Fechas</th>
                     <th>Avance</th>
+                    <th>Recursos</th>
+                    <th>Incidencias</th>
+                    <th>Presupuesto</th>
                     <th>Estado</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($obras as $obra) { 
-                    $avance = (int)$etapaModel->calcularAvance($obra["id_obra"]);
-                ?>
-                    <tr data-estado="<?= htmlspecialchars($obra["estado"]) ?>">
+                <?php if ($totalObras === 0) { ?>
+                    <tr class="fila-vacia"><td colspan="9">No hay obras registradas.</td></tr>
+                <?php } ?>
+
+                <?php foreach ($obras as $obra) { ?>
+                    <tr data-estado="<?= e($obra["estado"]) ?>">
                         <td>
-                            <strong><?= htmlspecialchars($obra["nombre_obra"]) ?></strong>
+                            <strong><?= e($obra["nombre_obra"]) ?></strong><br>
+                            <span class="texto-secundario"><?= e($obra["direccion"]) ?></span>
                         </td>
                         <td>
-                            <?= htmlspecialchars($obra["nombre_cliente"] ?? "Sin asignar") ?>
+                            <?= e($obra["cliente"]) ?>
+                            <?php if (!empty($obra["cliente_telefono"])) { ?>
+                                <br><span class="texto-secundario"><?= e($obra["cliente_telefono"]) ?></span>
+                            <?php } ?>
                         </td>
                         <td>
-                            <span class="text-muted"><i class="fa-solid fa-user-tie"></i> <?= htmlspecialchars($obra["responsable"] ?? "Sin asignar") ?></span>
+                            <span class="texto-secundario">Jefe:</span> <?= e($obra["jefe_obra"]) ?><br>
+                            <span class="texto-secundario">Capataz:</span> <?= e($obra["capataz"]) ?>
                         </td>
                         <td>
-                            <?= htmlspecialchars($obra["direccion"]) ?>
+                            <span class="texto-secundario">Inicio:</span> <?= e(Reporte::fecha($obra["fecha_inicio"])) ?><br>
+                            <span class="texto-secundario">Fin:</span> <?= e(Reporte::fecha($obra["fecha_fin"])) ?>
                         </td>
-                        <td>
-                            <?= htmlspecialchars($obra["fecha_inicio"]) ?>
-                        </td>
-                        <td>
-                            <?= htmlspecialchars($obra["fecha_fin"]) ?>
-                        </td>
-                        <td style="min-width:220px;">
-                            <div class="progress">
-                                <div class="progress-bar" style="width: <?= $avance ?>%;">
-                                    <?= $avance ?>%
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <?php
-                            $clase = "badge badge-secondary";
-                            if ($obra["estado"] == "Activa") {
-                                $clase = "badge badge-success";
-                            } elseif ($obra["estado"] == "Finalizada") {
-                                $clase = "badge badge-primary";
-                            } elseif ($obra["estado"] == "Pausada") {
-                                $clase = "badge badge-danger";
-                            }
-                            ?>
-                            <span class="<?= $clase ?>">
-                                <?= htmlspecialchars($obra["estado"]) ?>
+                        <td style="min-width:170px;">
+                            <?= barraAvance($obra["avance"]) ?>
+                            <span class="texto-secundario">
+                                <?= (int)$obra["etapas_finalizadas"] ?> de <?= (int)$obra["total_etapas"] ?> etapas
+                                · <?= (int)$obra["total_avances"] ?> avances
                             </span>
                         </td>
+                        <td>
+                            <?= (int)$obra["empleados_activos"] ?> empleados<br>
+                            <?= (int)$obra["herramientas_en_obra"] ?> herramientas<br>
+                            <span class="texto-secundario">
+                                <?= (int)$obra["entregas_material"] ?> entregas de material
+                                <?php if ((int)$obra["solicitudes_pendientes"] > 0) { ?>
+                                    · <?= (int)$obra["solicitudes_pendientes"] ?> pedidos pendientes
+                                <?php } ?>
+                            </span>
+                        </td>
+                        <td>
+                            <?= (int)$obra["incidencias_abiertas"] ?> abiertas<br>
+                            <span class="texto-secundario"><?= (int)$obra["total_incidencias"] ?> en total</span>
+                        </td>
+                        <td class="numero">
+                            <?php if ($obra["presupuesto"] === null) { ?>
+                                <span class="texto-secundario">Sin presupuesto</span>
+                            <?php } else { ?>
+                                <?= e(Reporte::moneda($obra["presupuesto"])) ?><br>
+                                <span class="texto-secundario">
+                                    v<?= (int)$obra["versiones_presupuesto"] ?> · <?= e($obra["presupuesto_estado"]) ?>
+                                </span>
+                            <?php } ?>
+                        </td>
+                        <td><?= badge($obra["estado"]) ?></td>
                     </tr>
                 <?php } ?>
             </tbody>
@@ -185,116 +170,81 @@ require_once "../../layouts/sidebar.php";
 
     </div>
 
-    <!-- Alertas de Extremos de Avance -->
-    <div class="alert-container no-print" style="margin-top:20px;">
-        <div class="alert alert-success">
-            <p>Obra con mayor avance</p>
-            <h3><?= htmlspecialchars($obraMayorAvance) ?> (<?= $mayorAvance ?>%)</h3>
-        </div>
-        <div class="alert alert-warning">
-            <p>Obra con menor avance</p>
-            <h3><?= htmlspecialchars($obraMenorAvance) ?> (<?= $menorAvance ?>%)</h3>
-        </div>
-    </div>
-
-    <!-- Gráfico Estadístico -->
-    <div class="card no-print" style="margin-top:20px;">
-        <div class="card-header">
-            <div>
-                <h2>Avance de las Obras</h2>
-                <p>Comparación gráfica del porcentaje de avance de cada obra registrada en el sistema.</p>
+    <?php if ($totalObras > 0) { ?>
+        <div class="alert-container no-print" style="grid-template-columns:repeat(2,1fr);">
+            <div class="alert alert-success">
+                <p>Obra con mayor avance</p>
+                <h3><?= e($obraMayor["nombre_obra"]) ?> (<?= (int)$obraMayor["avance"] ?>%)</h3>
+            </div>
+            <div class="alert alert-warning">
+                <p>Obra con menor avance</p>
+                <h3><?= e($obraMenor["nombre_obra"]) ?> (<?= (int)$obraMenor["avance"] ?>%)</h3>
             </div>
         </div>
-        <div style="width:100%; height:450px; position:relative;">
-            <canvas id="graficoAvance"></canvas>
+
+        <div class="graficos-reporte no-print">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h2>Avance de las obras</h2>
+                        <p>Porcentaje de etapas finalizadas en cada obra.</p>
+                    </div>
+                </div>
+                <div class="grafico-caja"><canvas id="graficoAvance"></canvas></div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h2>Obras por estado</h2>
+                        <p>Cantidad de obras en cada estado.</p>
+                    </div>
+                </div>
+                <div class="grafico-caja"><canvas id="graficoEstados"></canvas></div>
+            </div>
         </div>
-    </div>
+    <?php } ?>
 
-
-
-
-    
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-    const buscarObra = document.getElementById("buscarObra");
-    const filtroEstado = document.getElementById("filtroEstado");
-
-    function filtrarObras() {
-        const texto = buscarObra.value.toLowerCase().trim();
-        const estado = filtroEstado.value;
-        const filas = document.querySelectorAll("#tablaObras tbody tr");
-
-        let visibles = 0;
-
-        filas.forEach(fila => {
-            const contenido = fila.textContent.toLowerCase();
-            const estadoFila = fila.dataset.estado;
-
-            const coincideTexto = contenido.includes(texto);
-            const coincideEstado = (estado === "" || estadoFila === estado);
-
-            if (coincideTexto && coincideEstado) {
-                fila.style.display = "";
-                visibles++;
-            } else {
-                fila.style.display = "none";
-            }
-        });
-
-        // Actualizar contador total visible en vivo
-        document.getElementById("kpiTotal").textContent = visibles;
-    }
-
-    buscarObra.addEventListener("keyup", filtrarObras);
-    filtroEstado.addEventListener("change", filtrarObras);
-</script>
-
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const canvas = document.getElementById("graficoAvance");
-        if (!canvas || typeof Chart === "undefined") return;
+        if (typeof Chart === "undefined") return;
 
-        const etiquetasObras = <?= json_encode(array_map(fn($o) => $o["nombre_obra"], $obras), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
-        const avancesObras = <?= json_encode(array_map(fn($o) => (int)$etapaModel->calcularAvance($o["id_obra"]), $obras)) ?>;
-
-        new Chart(canvas, {
-            type: "bar",
-            data: {
-                labels: etiquetasObras,
-                datasets: [{
-                    label: "Porcentaje de avance",
-                    data: avancesObras,
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: true }
+        const avance = document.getElementById("graficoAvance");
+        if (avance) {
+            new Chart(avance, {
+                type: "bar",
+                data: {
+                    labels: <?= json_encode(array_column($obras, "nombre_obra"), JSON_UNESCAPED_UNICODE) ?>,
+                    datasets: [{
+                        label: "Avance (%)",
+                        data: <?= json_encode(array_map("intval", array_column($obras, "avance"))) ?>,
+                        backgroundColor: "rgba(245, 180, 0, 0.7)"
+                    }]
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        ticks: { precision: 0, stepSize: 10 },
-                        title: { display: true, text: "Porcentaje de avance (%)" }
-                    },
-                    x: {
-                        title: { display: true, text: "Obras" }
-                    }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, max: 100 } }
                 }
-            }
-        });
+            });
+        }
+
+        const estados = document.getElementById("graficoEstados");
+        if (estados) {
+            new Chart(estados, {
+                type: "doughnut",
+                data: {
+                    labels: <?= json_encode(array_map(fn($k) => $estados[$k] ?? $k, array_keys($porEstado)), JSON_UNESCAPED_UNICODE) ?>,
+                    datasets: [{ data: <?= json_encode(array_values($porEstado)) ?> }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
     });
 </script>
 
 <?php
 $script = "reportes";
-require_once "../../layouts/footer.php";
-?>
+require_once __DIR__ . "/../../layouts/footer.php";

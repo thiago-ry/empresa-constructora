@@ -43,6 +43,7 @@ foreach ($registros as $registro) {
 require_once "../../layouts/header.php";
 require_once "../../layouts/sidebar.php";
 ?>
+<link rel="stylesheet" href="/empresa_constructora/assets/css/reportes.css">
 
 <main class="content">
 
@@ -231,14 +232,17 @@ require_once "../../layouts/sidebar.php";
                 </button>
 
                 <a
-                    href="../../reportes/pdf_auditoria.php"
+                    href="/empresa_constructora/controladores/ReporteController.php?accion=exportar&amp;tipo=auditoria&amp;formato=pdf"
+                    target="_blank"
+                    data-exportar-auditoria
                     class="btn btn-danger">
                     <i class="fa-solid fa-file-pdf"></i>
                     PDF
                 </a>
 
                 <a
-                    href="../../reportes/excel_auditoria.php"
+                    href="/empresa_constructora/controladores/ReporteController.php?accion=exportar&amp;tipo=auditoria&amp;formato=excel"
+                    data-exportar-auditoria
                     class="btn btn-success">
                     <i class="fa-solid fa-file-excel"></i>
                     Excel
@@ -415,95 +419,71 @@ require_once "../../layouts/sidebar.php";
     const fechaDesde = document.getElementById("fechaDesde");
     const fechaHasta = document.getElementById("fechaHasta");
 
-    function filtrarAuditoria() {
+    // Recarga la página con los filtros en la URL.
+    // El modelo Auditoria->obtenerReporte() los aplica en la consulta SQL.
+    function aplicarFiltros() {
+        const params = new URLSearchParams(window.location.search);
 
-        const texto = buscarAuditoria.value.toLowerCase().trim();
-        const tipo = filtroTipo.value;
-        const accion = filtroAccion.value;
-        const modulo = filtroModulo.value;
-        const desde = fechaDesde.value;
-        const hasta = fechaHasta.value;
+        const valores = {
+            buscar: buscarAuditoria.value.trim(),
+            tipo: filtroTipo.value,
+            accion_filtro: filtroAccion.value,
+            modulo: filtroModulo.value,
+            fecha_desde: fechaDesde.value,
+            fecha_hasta: fechaHasta.value
+        };
 
-        const filas = document.querySelectorAll("#tablaAuditoria tbody tr");
-
-        filas.forEach(function(fila) {
-
-            const contenido = fila.textContent.toLowerCase();
-
-            const tipoFila = fila.dataset.tipo;
-            const accionFila = fila.dataset.accion;
-            const moduloFila = fila.dataset.modulo;
-
-            let coincideTexto = contenido.includes(texto);
-            let coincideTipo = tipo === "" || tipoFila === tipo;
-            let coincideAccion = accion === "" || accionFila === accion;
-            let coincideModulo = modulo === "" || moduloFila === modulo;
-
-            let coincideFechaDesde = true;
-            let coincideFechaHasta = true;
-
-            const celdas = fila.children;
-
-            if (celdas.length > 1 && (desde || hasta)) {
-
-                const fechaTexto = celdas[1].textContent.trim();
-
-                if (fechaTexto.includes("/")) {
-
-                    const partes = fechaTexto.split(" ");
-
-                    const fechaPartes = partes[0].split("/");
-
-                    if (fechaPartes.length === 3) {
-
-                        const fechaFila =
-                            fechaPartes[2] +
-                            "-" +
-                            fechaPartes[1] +
-                            "-" +
-                            fechaPartes[0];
-
-                        if (desde) {
-                            coincideFechaDesde = fechaFila >= desde;
-                        }
-
-                        if (hasta) {
-                            coincideFechaHasta = fechaFila <= hasta;
-                        }
-
-                    }
-
-                }
-
-            }
-
-            if (
-                coincideTexto &&
-                coincideTipo &&
-                coincideAccion &&
-                coincideModulo &&
-                coincideFechaDesde &&
-                coincideFechaHasta
-            ) {
-
-                fila.style.display = "";
-
+        Object.keys(valores).forEach(function (clave) {
+            if (valores[clave]) {
+                params.set(clave, valores[clave]);
             } else {
-
-                fila.style.display = "none";
-
+                params.delete(clave);
             }
-
         });
 
+        window.location.search = params.toString();
     }
 
-    buscarAuditoria.addEventListener("keyup", filtrarAuditoria);
-    filtroTipo.addEventListener("change", filtrarAuditoria);
-    filtroAccion.addEventListener("change", filtrarAuditoria);
-    filtroModulo.addEventListener("change", filtrarAuditoria);
-    fechaDesde.addEventListener("change", filtrarAuditoria);
-    fechaHasta.addEventListener("change", filtrarAuditoria);
+    // Los selects y las fechas filtran apenas cambian
+    filtroTipo.addEventListener("change", aplicarFiltros);
+    filtroAccion.addEventListener("change", aplicarFiltros);
+    filtroModulo.addEventListener("change", aplicarFiltros);
+    fechaDesde.addEventListener("change", aplicarFiltros);
+    fechaHasta.addEventListener("change", aplicarFiltros);
+
+    // El buscador filtra al apretar Enter (para no recargar en cada letra)
+    buscarAuditoria.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            aplicarFiltros();
+        }
+    });
+</script>
+
+
+<script>
+    // PDF y Excel: exportan con los mismos filtros que se ven en pantalla
+    document.querySelectorAll("[data-exportar-auditoria]").forEach(function(enlace) {
+        enlace.addEventListener("click", function() {
+            const url = new URL(enlace.getAttribute("href"), window.location.origin);
+            const valores = {
+                buscar: document.getElementById("buscarAuditoria").value.trim(),
+                tipo_registro: document.getElementById("filtroTipo").value,
+                accion_filtro: document.getElementById("filtroAccion").value,
+                modulo: document.getElementById("filtroModulo").value,
+                fecha_desde: document.getElementById("fechaDesde").value,
+                fecha_hasta: document.getElementById("fechaHasta").value
+            };
+            Object.keys(valores).forEach(function(clave) {
+                if (valores[clave]) {
+                    url.searchParams.set(clave, valores[clave]);
+                } else {
+                    url.searchParams.delete(clave);
+                }
+            });
+            enlace.setAttribute("href", url.pathname + url.search);
+        });
+    });
 </script>
 
 <?php

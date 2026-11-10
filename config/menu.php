@@ -31,6 +31,7 @@ $menu = [
         ["fa-solid fa-building", "Obras", "/empresa_constructora/vistas/obras/"],
         ["fa-solid fa-chart-line", "Avances", "/empresa_constructora/vistas/avances/"],
         ["fa-solid fa-list-check", "Tareas", "/empresa_constructora/vistas/tareas/"],
+        ["fa-solid fa-file-invoice-dollar", "Presupuestos", "/empresa_constructora/vistas/presupuestos/"],
         ["fa-solid fa-triangle-exclamation", "Incidencias", "/empresa_constructora/vistas/incidencias/"],
         ["fa-solid fa-user", "Perfil", "/empresa_constructora/vistas/perfil/"]
     ],

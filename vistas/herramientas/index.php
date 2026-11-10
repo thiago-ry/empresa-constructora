@@ -63,46 +63,72 @@ require_once "../../layouts/sidebar.php";
 
         </div>
 
-        <div class="toolbar no-print">
 
-            <div class="toolbar-left">
+<div class="toolbar no-print">
 
-                <div class="search-container">
+    <div class="toolbar-left">
 
-                    <input
-                        type="text"
-                        id="buscarHerramienta"
-                        class="search-box"
-                        placeholder="Buscar herramienta...">
-
-                </div>
-
-            </div>
-
-            <div style="display: flex; flex-direction: column; margin: 20px;">
-
-                <button
-                    onclick="window.print()"
-                    class="btn btn-primary"
-                    style="margin-bottom: 10px;">
-
-                    <i class="fa-solid fa-print"></i>
-                    Imprimir
-
-                </button>
-
-                <a
-                    href="agregar.php"
-                    class="btn btn-primary">
-
-                    <i class="fa-solid fa-plus"></i>
-                    Agregar
-
-                </a>
-
-            </div>
-
+        <div class="search-container">
+            <input
+                type="text"
+                id="buscarHerramienta"
+                class="search-box"
+                placeholder="Buscar por herramienta, marca o tipo...">
         </div>
+
+        <select id="filtroTipo" class="form-control">
+            <option value="">Todos los tipos</option>
+
+            <?php
+            $tipos = array_unique(array_column($herramientas, "tipo"));
+            sort($tipos);
+
+            foreach ($tipos as $tipo) {
+            ?>
+                <option value="<?= htmlspecialchars(strtolower($tipo)); ?>">
+                    <?= htmlspecialchars($tipo); ?>
+                </option>
+            <?php } ?>
+
+        </select>
+
+        <select id="filtroCantidad" class="form-control">
+            <option value="">Todas las cantidades</option>
+            <option value="bajo">Stock bajo (2 o menos)</option>
+            <option value="disponible">Stock disponible (más de 2)</option>
+        </select>
+
+        <button
+            type="button"
+            id="limpiarFiltros"
+            class="btn btn-secondary">
+            <i class="fa-solid fa-rotate-left"></i>
+            Limpiar
+        </button>
+
+    </div>
+
+    <div style="display: flex; flex-direction: column; margin: 20px;">
+
+        <button
+            onclick="window.print()"
+            class="btn btn-primary"
+            style="margin-bottom: 10px;">
+
+            <i class="fa-solid fa-print"></i>
+            Imprimir
+
+        </button>
+
+        <a href="agregar.php" class="btn btn-primary">
+            <i class="fa-solid fa-plus"></i>
+            Agregar
+        </a>
+
+    </div>
+
+</div>
+
 
         <table
             class="table"

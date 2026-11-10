@@ -84,18 +84,6 @@ $actividad = $datos["actividad"];
                 <small>En obras</small>
             </div>
 
-            <div class="inventory-card repair">
-                <span class="inventory-title">En reparación</span>
-                <strong><?= $herramientas["reparacion"]; ?></strong>
-                <small>Fuera de disponibilidad</small>
-            </div>
-
-            <div class="inventory-card disabled">
-                <span class="inventory-title">Fuera de servicio</span>
-                <strong><?= $herramientas["fuera_servicio"]; ?></strong>
-                <small>No disponibles</small>
-            </div>
-
         </div>
     </section>
 
@@ -143,10 +131,8 @@ $actividad = $datos["actividad"];
             if ($totalHerramientas > 0) {
                 $porcentajeDisponible = round(($herramientas["disponibles"] / $totalHerramientas) * 100);
                 $porcentajeAsignada   = round(($herramientas["asignadas"] / $totalHerramientas) * 100);
-                $porcentajeReparacion = round(($herramientas["reparacion"] / $totalHerramientas) * 100);
-                $porcentajeFuera      = round(($herramientas["fuera_servicio"] / $totalHerramientas) * 100);
             } else {
-                $porcentajeDisponible = $porcentajeAsignada = $porcentajeReparacion = $porcentajeFuera = 0;
+                $porcentajeDisponible = $porcentajeAsignada = 0;
             }
             ?>
 
@@ -170,25 +156,6 @@ $actividad = $datos["actividad"];
                 </div>
             </div>
 
-            <div class="progress-item">
-                <div class="progress-label">
-                    <span>En reparación</span>
-                    <strong><?= $porcentajeReparacion ?>%</strong>
-                </div>
-                <div class="progress">
-                    <div class="progress-bar repair-bar" style="width: <?= $porcentajeReparacion ?>%;"></div>
-                </div>
-            </div>
-
-            <div class="progress-item">
-                <div class="progress-label">
-                    <span>Fuera de servicio</span>
-                    <strong><?= $porcentajeFuera ?>%</strong>
-                </div>
-                <div class="progress">
-                    <div class="progress-bar disabled-bar" style="width: <?= $porcentajeFuera ?>%;"></div>
-                </div>
-            </div>
 
         </section>
 

@@ -13,6 +13,7 @@ $menu = [
         ["fa-solid fa-screwdriver-wrench", "Herramientas", "/empresa_constructora/vistas/herramientas/"],
         ["fa-solid fa-clipboard-list", "Solicitudes de herramientas", "/empresa_constructora/controladores/SolicitudHerramientaController.php?accion=gestionar"],
         ["fa-solid fa-chart-column", "Reportes", "/empresa_constructora/vistas/reportes/"],
+        ["fa-solid fa-file-invoice-dollar", "Presupuestos", "/empresa_constructora/vistas/presupuestos/"],
         ["fa-solid fa-user", "Perfil", "/empresa_constructora/vistas/perfil/"]
     ],
 

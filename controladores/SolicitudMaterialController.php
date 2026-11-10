@@ -17,25 +17,30 @@ $accion = $_GET["accion"] ?? "listar";
 
 switch ($accion) {
 
-    case "listar":
 
-        $id_obra = $_GET["id_obra"] ?? 0;
+case "listar":
 
-        if (!$id_obra) {
-            die("Obra no especificada.");
-        }
+    $id_obra = $_GET["id_obra"] ?? 0;
 
-        $obra = $obraModel->buscarPorId($id_obra);
+    if (!$id_obra) {
+        die("Obra no especificada.");
+    }
 
-        if (!$obra) {
-            die("La obra no existe.");
-        }
+    $obra = $obraModel->buscarPorId($id_obra);
 
-        $solicitudes = $solicitudModel->obtenerPorObra($id_obra);
+    if (!$obra) {
+        die("La obra no existe.");
+    }
 
-        require __DIR__ . "/../vistas/obras/materiales/index.php";
+    $solicitudes = $solicitudModel->obtenerPorObra($id_obra);
 
-        break;
+    // Historial de materiales de la obra
+    $historialMateriales =
+        $solicitudModel->obtenerHistorialMateriales($id_obra);
+
+    require __DIR__ . "/../vistas/obras/materiales/index.php";
+
+    break;
 
     case "crear":
 
@@ -112,11 +117,6 @@ switch ($accion) {
             $cantidadDetalles++;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Verificar que haya al menos un detalle válido
-        |--------------------------------------------------------------------------
-        */
 
         if ($cantidadDetalles === 0) {
 
@@ -135,11 +135,6 @@ switch ($accion) {
                 . $id_obra
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Redireccionar
-        |--------------------------------------------------------------------------
-        */
 
         header(
             "Location: SolicitudMaterialController.php?accion=listar&id_obra="
@@ -176,13 +171,16 @@ switch ($accion) {
 
         break;
 
-    case "gerente":
+ case "gerente":
 
-        $solicitudes = $solicitudModel->obtenerTodas();
+    $solicitudes = $solicitudModel->obtenerTodas();
 
-        require __DIR__ . "/../vistas/obras/materiales/todas.php";
+    // Historial general de materiales de todas las obras.
+    $historialMateriales = $solicitudModel->obtenerHistorialMateriales();
 
-        break;
+    require __DIR__ . "/../vistas/obras/materiales/todas.php";
+
+    break;
 
     default:
 

@@ -1,13 +1,26 @@
-
 <?php
 
-$titulo = "Mis solicitudes de herramientas";
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$rol = (int)($_SESSION["usuario"]["id_rol"] ?? 0);
+
+$puedeConsultar = in_array($rol, [2, 3, 5, 7], true);
+$puedeGestionar = ($rol === 5);
+
+if (!$puedeConsultar) {
+    http_response_code(403);
+    exit("No tenés permiso para ver estas solicitudes.");
+}
 
 require_once __DIR__ . "/../../../layouts/header.php";
 require_once __DIR__ . "/../../../layouts/sidebar.php";
 
 $solicitudes = $solicitudes ?? [];
+
 ?>
+
 
 <main class="content fade-up">
 

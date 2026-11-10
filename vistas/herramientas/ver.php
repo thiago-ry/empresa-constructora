@@ -247,7 +247,7 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
         </div>
 
 
-        <div class="herramienta-modulos-grid">
+        <cente class="herramienta-modulos-grid" style="display: flex; justify-content: center; flex-direction: row; align-items: center;">
 
             <div class="herramienta-module">
 
@@ -307,36 +307,7 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
             </div>
 
-
-            <div class="herramienta-module">
-
-                <div class="herramienta-module-icon">
-                    <i class="fa-solid fa-screwdriver-wrench"></i>
-                </div>
-
-                <div class="herramienta-module-content">
-
-                    <h3>
-                        Mantenimientos
-                    </h3>
-
-                    <p>
-                        Consulte las reparaciones y mantenimientos
-                        realizados sobre esta herramienta.
-                    </p>
-
-                    <a
-                        href="#"
-                        class="btn btn-primary">
-                        <i class="fa-solid fa-screwdriver-wrench"></i>
-                        Ver mantenimientos
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
+        </cente>
 
     </div>
 
@@ -419,26 +390,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
             </div>
 
 
-            <div class="unidad-resumen-item reparacion">
-
-                <span>En reparación</span>
-
-                <strong id="modalReparacion">
-                    0
-                </strong>
-
-            </div>
-
-
-            <div class="unidad-resumen-item fuera-servicio">
-
-                <span>Fuera de servicio</span>
-
-                <strong id="modalFueraServicio">
-                    0
-                </strong>
-
-            </div>
 
         </div>
 
@@ -2752,18 +2703,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
                                     "modalAsignadas"
                                 ).textContent =
                                 data.resumen.asignadas;
-
-
-                            document.getElementById(
-                                    "modalReparacion"
-                                ).textContent =
-                                data.resumen.reparacion;
-
-
-                            document.getElementById(
-                                    "modalFueraServicio"
-                                ).textContent =
-                                data.resumen.fuera_servicio;
 
 
                             if (

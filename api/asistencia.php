@@ -1,105 +1,192 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: *");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-header("Content-Type: application/json; charset=UTF-8");
+require __DIR__ . '/bootstrap.php';
+iniciar_api(['GET', 'POST']);
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
+$usuario = usuario_actual();
 
-$host = "localhost";
-$user = "root";
-$pass = "";
-$dbname = "constructora";
+/* ------------------------------ GET: lista -------------------------------- */
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $idObra = (int) ($_GET['id_obra'] ?? 0);
+    exigir_acceso_obra($usuario, $idObra);
+    $hoy = date('Y-m-d');
+    $fecha = fecha_valida($_GET['fecha'] ?? null);
 
-$conexion = new mysqli($host, $user, $pass, $dbname);
+    $personal = personal_de_obra($idObra, $fecha);
 
-if ($conexion->connect_error) {
-    echo json_encode(["status" => "error", "message" => "Error de conexión: " . $conexion->connect_error]);
-    exit();
-}
+    // Registros ya cargados para esa obra y día (la tabla guarda filas "Presente" y "Ausente").
+    $registros = [];
+    foreach (consultar('SELECT id_usuario, estado, hora_entrada, hora_salida, observacion FROM asistencia WHERE id_obra = ? AND fecha = ?', 'is', [$idObra, $fecha]) as $r) {
+        $registros[(int) $r['id_usuario']] = $r;
+    }
 
-$conexion->set_charset("utf8mb4");
-$metodo = $_SERVER['REQUEST_METHOD'];
-
-// 📥 GET: Cargar la lista de usuarios/empleados reales
-if ($metodo === 'GET') {
-    // Obtenemos los usuarios con su rol traducido
-    $sql = "SELECT u.id_usuario, u.nombre, u.apellido, u.id_rol, 
-                   IFNULL(c.nombre_cargo, CONCAT('Rol ID ', u.id_rol)) AS cargo
-            FROM usuario u
-            LEFT JOIN cargo c ON u.id_rol = c.id_cargo
-            ORDER BY u.apellido, u.nombre ASC";
-            
-    $res = $conexion->query($sql);
-
-    $empleados = [];
-    if ($res && $res->num_rows > 0) {
-        while ($row = $res->fetch_assoc()) {
-            $empleados[] = [
-                'id_usuario' => intval($row['id_usuario']),
-                'nombre' => $row['nombre'] . ' ' . $row['apellido'],
-                'cargo' => $row['cargo'],
-                'presente' => true // Por defecto lo dejamos marcado como presente
-            ];
+    $yaRegistrado = false;
+    foreach ($personal as $p) {
+        if (isset($registros[(int) $p['id_usuario']])) {
+            $yaRegistrado = true;
+            break;
         }
     }
 
-    echo json_encode([
-        "status" => "success",
-        "empleados" => $empleados,
-        "fecha_hoy" => date('Y-m-d')
-    ]);
-    exit();
+    // Si hoy todavía no se cargó nada, todos arrancan presentes para que el parte sea rápido.
+    // En días anteriores sin registros, nadie figura presente.
+    $porDefecto = $fecha === $hoy;
+
+    $empleados = array_map(static function (array $p) use ($registros, $yaRegistrado, $porDefecto): array {
+        $id = (int) $p['id_usuario'];
+        $registro = $registros[$id] ?? null;
+        return [
+            'id_usuario' => $id,
+            'nombre' => trim($p['nombre'] . ' ' . $p['apellido']),
+            'cargo' => $p['cargo'],
+            'presente' => $yaRegistrado ? ($registro !== null && $registro['estado'] !== 'Ausente') : $porDefecto,
+            'hora_entrada' => $registro['hora_entrada'] ?? null,
+            'hora_salida' => $registro['hora_salida'] ?? null,
+            'observacion' => $registro['observacion'] ?? null,
+        ];
+    }, $personal);
+
+    responder_ok(['empleados' => $empleados, 'fecha' => $fecha, 'fecha_hoy' => $hoy, 'ya_registrado' => $yaRegistrado]);
 }
 
-// 📤 POST: Guardar asistencia en la tabla 'asistencia'
-if ($metodo === 'POST') {
-    $inputJSON = file_get_contents("php://input");
-    $datos = json_decode($inputJSON, true);
+/* ------------------------------ POST -------------------------------------- */
+$datos = leer_json();
+$idObra = (int) ($datos['id_obra'] ?? 0);
+exigir_acceso_obra($usuario, $idObra);
 
-    $fecha = $datos['fecha'] ?? date('Y-m-d');
-    $asistencias = $datos['asistencias'] ?? []; // Array: [{id_usuario: 8, presente: true}, ...]
-
-    if (empty($asistencias)) {
-        echo json_encode(["status" => "error", "message" => "No se recibieron registros de asistencia."]);
-        exit();
+/** "7:30", "07:30" o "07:30:15" → "07:30:00" (o null si viene vacío). Corta si el formato no es válido. */
+function hora_valida($valor, string $campo): ?string
+{
+    $v = trim((string) ($valor ?? ''));
+    if ($v === '') {
+        return null;
     }
+    if (!preg_match('/^([01]?\d|2[0-3]):([0-5]\d)(:([0-5]\d))?$/', $v, $m)) {
+        throw new ErrorValidacion("La $campo no es válida: usá el formato HH:MM (por ejemplo, 07:30).");
+    }
+    return sprintf('%02d:%s:%s', (int) $m[1], $m[2], $m[4] ?? '00');
+}
 
-    $conexion->begin_transaction();
+/* ------------------------- POST: marcar hora de salida -------------------- */
+// { accion: 'salida', id_obra, id_usuario? }  → sin id_usuario, marca la salida de todos los que siguen en obra.
+if (($datos['accion'] ?? '') === 'salida') {
+    $hoy = date('Y-m-d');
+    if (($datos['fecha'] ?? $hoy) !== $hoy) {
+        throw new ErrorValidacion('La hora de salida solo se puede marcar el mismo día.');
+    }
+    $ahora = date('H:i:s');
+    $sql = "UPDATE asistencia SET hora_salida = ?
+            WHERE id_obra = ? AND fecha = ? AND estado IN ('Presente', 'Tarde')
+              AND hora_entrada IS NOT NULL AND hora_entrada <= ? AND hora_salida IS NULL";
+    $tipos = 'siss';
+    $params = [$ahora, $idObra, $hoy, $ahora];
+    $idUsuario = (int) ($datos['id_usuario'] ?? 0);
+    if ($idUsuario > 0) {
+        $sql .= ' AND id_usuario = ?';
+        $tipos .= 'i';
+        $params[] = $idUsuario;
+    }
+    $marcados = ejecutar($sql, $tipos, $params);
+    responder_ok(
+        ['marcados' => $marcados, 'hora_salida' => $ahora],
+        $marcados > 0 ? 'Salida registrada a las ' . substr($ahora, 0, 5) . '.' : 'No había nadie con la salida pendiente.'
+    );
+}
 
-    try {
-        $horaActual = date('H:i:s');
+/* ------------------------------ POST: guardar parte ----------------------- */
+$fecha = fecha_valida($datos['fecha'] ?? null);
+$asistencias = $datos['asistencias'] ?? [];
 
-        foreach ($asistencias as $ast) {
-            $id_usuario = intval($ast['id_usuario']);
-            $presente = $ast['presente'];
+if (!is_array($asistencias) || count($asistencias) === 0) {
+    throw new ErrorValidacion('No se recibieron registros de asistencia.');
+}
 
-            // Eliminamos registro previo del usuario para el mismo día (evita duplicados)
-            $stmtDel = $conexion->prepare("DELETE FROM asistencia WHERE id_usuario = ? AND fecha = ?");
-            $stmtDel->bind_param("is", $id_usuario, $fecha);
-            $stmtDel->execute();
-            $stmtDel->close();
+// Solo se aceptan personas que pertenecen a esta obra en esa fecha.
+$permitidos = [];
+foreach (personal_de_obra($idObra, $fecha) as $p) {
+    $permitidos[(int) $p['id_usuario']] = true;
+}
 
-            // Si el empleado asistió, insertamos en la tabla 'asistencia'
-            if ($presente) {
-                $stmtIns = $conexion->prepare("INSERT INTO asistencia (id_usuario, fecha, hora_entrada) VALUES (?, ?, ?)");
-                $stmtIns->bind_param("iss", $id_usuario, $fecha, $horaActual);
-                $stmtIns->execute();
-                $stmtIns->close();
+$horaActual = date('H:i:s');
+$presentes = 0;
+$ausentes = 0;
+
+try {
+    db()->begin_transaction();
+    foreach ($asistencias as $registro) {
+        $idUsuario = (int) ($registro['id_usuario'] ?? 0);
+        if (!isset($permitidos[$idUsuario])) {
+            continue;
+        }
+        $existente = consultar_fila(
+            'SELECT id_asistencia, estado, hora_entrada, hora_salida, observacion FROM asistencia WHERE id_usuario = ? AND id_obra = ? AND fecha = ? LIMIT 1',
+            'iis',
+            [$idUsuario, $idObra, $fecha]
+        );
+
+        // Observación: si la app no la manda se conserva la que había.
+        if (array_key_exists('observacion', $registro)) {
+            $observacion = mb_substr(trim((string) ($registro['observacion'] ?? '')), 0, 500);
+            $observacion = $observacion === '' ? null : $observacion;
+        } else {
+            $observacion = $existente['observacion'] ?? null;
+        }
+
+        if (!empty($registro['presente'])) {
+            $estabaPresente = $existente !== null && $existente['estado'] !== 'Ausente';
+
+            // Entrada: la que se escribió; si no hay, la que ya tenía; si tampoco, la hora actual.
+            $entrada = array_key_exists('hora_entrada', $registro) ? hora_valida($registro['hora_entrada'], 'hora de entrada') : null;
+            if ($entrada === null) {
+                $entrada = $estabaPresente && $existente['hora_entrada'] !== null ? $existente['hora_entrada'] : $horaActual;
             }
-        }
+            // Salida: la que se escribió (vacía = sin salida); si la app no la manda, se conserva.
+            if (array_key_exists('hora_salida', $registro)) {
+                $salida = hora_valida($registro['hora_salida'], 'hora de salida');
+            } else {
+                $salida = $estabaPresente ? $existente['hora_salida'] : null;
+            }
+            if ($salida !== null && $salida <= $entrada) {
+                throw new ErrorValidacion('La hora de salida tiene que ser posterior a la de entrada (' . substr($entrada, 0, 5) . ').');
+            }
 
-        $conexion->commit();
-        echo json_encode(["status" => "success", "message" => "Control de asistencia registrado en la base de datos."]);
-    } catch (Exception $e) {
-        $conexion->rollback();
-        echo json_encode(["status" => "error", "message" => "Error al registrar asistencia: " . $e->getMessage()]);
+            if ($existente === null) {
+                ejecutar(
+                    "INSERT INTO asistencia (id_usuario, id_obra, fecha, estado, hora_entrada, hora_salida, observacion) VALUES (?, ?, ?, 'Presente', ?, ?, ?)",
+                    'iissss',
+                    [$idUsuario, $idObra, $fecha, $entrada, $salida, $observacion]
+                );
+            } else {
+                // Si ya estaba "Tarde" se conserva ese estado.
+                ejecutar(
+                    "UPDATE asistencia SET estado = IF(estado = 'Ausente', 'Presente', estado), hora_entrada = ?, hora_salida = ?, observacion = ? WHERE id_asistencia = ?",
+                    'sssi',
+                    [$entrada, $salida, $observacion, (int) $existente['id_asistencia']]
+                );
+            }
+            $presentes++;
+        } else {
+            if ($existente === null) {
+                ejecutar("INSERT INTO asistencia (id_usuario, id_obra, fecha, estado, observacion) VALUES (?, ?, ?, 'Ausente', ?)", 'iiss', [$idUsuario, $idObra, $fecha, $observacion]);
+            } else {
+                ejecutar(
+                    "UPDATE asistencia SET estado = 'Ausente', hora_entrada = NULL, hora_salida = NULL, observacion = ? WHERE id_asistencia = ?",
+                    'si',
+                    [$observacion, (int) $existente['id_asistencia']]
+                );
+            }
+            $ausentes++;
+        }
     }
-    exit();
+    db()->commit();
+} catch (Throwable $e) {
+    try {
+        db()->rollback();
+    } catch (Throwable $ignorado) {
+    }
+    throw $e;
 }
 
-$conexion->close();
-?>
+responder_ok(
+    ['presentes' => $presentes, 'ausentes' => $ausentes],
+    "Parte diario guardado: $presentes presentes, $ausentes ausentes."
+);

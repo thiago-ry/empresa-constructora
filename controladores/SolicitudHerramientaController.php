@@ -175,30 +175,54 @@ public function __construct()
         require __DIR__ . "/../vistas/obras/herramientas/solicitudes.php";
     }
 
-    public function detalle()
-    {
-        $id = (int)($_GET["id"] ?? 0);
-        $solicitud = $this->solicitud->obtenerPorId($id);
+    
+public function detalle()
+{
+    $id = (int)($_GET["id"] ?? 0);
+    $idUsuario = $this->idUsuario();
+    $idRol = (int)($_SESSION["usuario"]["id_rol"] ?? 0);
 
-        if (!$solicitud) {
-            $_SESSION["error"] = "La solicitud no existe.";
-            $this->redirigir(
-                "/empresa_constructora/controladores/SolicitudHerramientaController.php?accion=listar"
-            );
-        }
+    // Solo estos roles pueden consultar los detalles.
+    if (!in_array($idRol, [2, 3, 5, 7], true)) {
+        http_response_code(403);
+        exit("No tenés permiso para consultar solicitudes.");
+    }
 
-        $id_usuario = $this->idUsuario();
-        $obra = $this->obra->obtenerObraPorCapataz($id_usuario);
+    if ($id <= 0) {
+        $_SESSION["error"] = "La solicitud indicada no es válida.";
+        $this->redirigir(
+            "/empresa_constructora/controladores/SolicitudHerramientaController.php?accion=gestionar"
+        );
+    }
 
-        if (!$obra || (int)$obra["id_obra"] !== (int)$solicitud["id_obra"]) {
+    $solicitud = $this->solicitud->obtenerPorId($id);
+
+    if (!$solicitud) {
+        $_SESSION["error"] = "La solicitud no existe.";
+        $this->redirigir(
+            "/empresa_constructora/controladores/SolicitudHerramientaController.php?accion=gestionar"
+        );
+    }
+
+    // El capataz solamente puede consultar solicitudes de su propia obra.
+    if ($idRol === 7) {
+        $obra = $this->obra->obtenerObraPorCapataz($idUsuario);
+
+        if (
+            !$obra ||
+            (int)$obra["id_obra"] !== (int)$solicitud["id_obra"]
+        ) {
             http_response_code(403);
             exit("No tenés permiso para consultar esta solicitud.");
         }
-
-        $detalles = $this->solicitud->obtenerDetalle($id);
-
-        require __DIR__ . "/../vistas/obras/herramientas/detalle_solicitud.php";
     }
+
+    // Depósito, gerente y administrativo pueden consultar cualquier solicitud.
+    $detalles = $this->solicitud->obtenerDetalle($id);
+
+    require __DIR__ . "/../vistas/obras/herramientas/detalle_solicitud.php";
+}
+
     public function gestionar()
     {
         if (session_status() === PHP_SESSION_NONE) {

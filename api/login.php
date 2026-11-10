@@ -1,104 +1,104 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: *");
-header("Access-Control-Allow-Methods: POST, OPTIONS");
-header("Content-Type: application/json; charset=UTF-8");
+require __DIR__ . '/bootstrap.php';
+iniciar_api(['POST']);
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
+const MAX_INTENTOS = 5;
+const VENTANA_SEGUNDOS = 900; // 15 minutos
+
+$datos = leer_json();
+$correo = trim((string) ($datos['correo'] ?? ''));
+$password = trim((string) ($datos['password'] ?? ''));
+
+if ($correo === '' || $password === '') {
+    responder_error('Ingresá tu correo y contraseña.', 422);
 }
 
-require_once 'conexion.php';
-
-if (!$conexion) {
-    echo json_encode([
-        "status" => "error",
-        "message" => "Error de conexión a la base de datos."
-    ]);
-    exit();
+/* --- Freno contra adivinar contraseñas: 5 fallos por correo + IP cada 15 min --- */
+$archivoIntentos = sys_get_temp_dir() . '/constructora_login_' . sha1(strtolower($correo) . '|' . ($_SERVER['REMOTE_ADDR'] ?? '')) . '.json';
+$intentos = ['n' => 0, 't' => time()];
+if (is_file($archivoIntentos)) {
+    $guardado = json_decode((string) file_get_contents($archivoIntentos), true);
+    if (is_array($guardado) && time() - (int) ($guardado['t'] ?? 0) < VENTANA_SEGUNDOS) {
+        $intentos = ['n' => (int) $guardado['n'], 't' => (int) $guardado['t']];
+    }
+}
+if ($intentos['n'] >= MAX_INTENTOS) {
+    $minutos = max(1, (int) ceil((VENTANA_SEGUNDOS - (time() - $intentos['t'])) / 60));
+    responder_error("Demasiados intentos fallidos. Probá de nuevo en $minutos min.", 429);
 }
 
-// Forzar UTF-8 en la conexión
-$conexion->set_charset("utf8mb4");
+/* --- Verificación --- */
+$usuario = consultar_fila(
+    'SELECT id_usuario, nombre, apellido, correo, id_rol, estado, `contraseña` AS clave FROM usuario WHERE correo = ? LIMIT 1',
+    's',
+    [$correo]
+);
 
-$inputJSON = file_get_contents("php://input");
-$datos = json_decode($inputJSON, true);
-
-$correo   = trim($datos['correo'] ?? $_POST['correo'] ?? '');
-$password = trim($datos['password'] ?? $_POST['password'] ?? '');
-
-if (empty($correo) || empty($password)) {
-    echo json_encode([
-        "status" => "error",
-        "message" => "Por favor ingresa tu correo y contraseña."
-    ]);
-    exit();
+$ok = false;
+$guardada = (string) ($usuario['clave'] ?? '');
+$esHash = $guardada !== '' && (strpos($guardada, '$2y$') === 0 || strpos($guardada, '$argon2') === 0);
+if ($usuario !== null) {
+    // Acepta hashes seguros y, mientras dure la migración, contraseñas viejas en texto plano.
+    $ok = $esHash ? password_verify($password, $guardada) : hash_equals($guardada, $password);
 }
 
+if (!$ok) {
+    $intentos['n']++;
+    @file_put_contents($archivoIntentos, json_encode($intentos));
+    responder_error('Correo o contraseña incorrectos.', 401);
+}
+
+if ((int) $usuario['estado'] !== 1) {
+    responder_error('Tu usuario está dado de baja. Consultá con la oficina.', 403);
+}
+if (!in_array((int) $usuario['id_rol'], ROLES_PERMITIDOS, true)) {
+    responder_error('Esta aplicación es solo para Gerentes, Jefes de Obra y Capataces.', 403);
+}
+
+@unlink($archivoIntentos);
+
+/* --- Migración opcional de contraseñas en texto plano a hash --- */
+if (!$esHash && config('migrar_hash_claves', false)) {
+    ejecutar(
+        'UPDATE usuario SET `contraseña` = ? WHERE id_usuario = ?',
+        'si',
+        [password_hash($password, PASSWORD_DEFAULT), (int) $usuario['id_usuario']]
+    );
+}
+
+/* --- Registro de acceso (si falla no impide el ingreso) --- */
 try {
-    // Traemos id_rol para verificar los permisos
-    $stmt = $conexion->prepare("SELECT id_usuario, nombre, apellido, correo, id_rol FROM usuario WHERE correo = ? AND `contraseña` = ?");
-    
-    if (!$stmt) {
-        throw new Exception("Error en la consulta SQL: " . $conexion->error);
-    }
-
-    $stmt->bind_param("ss", $correo, $password);
-    $stmt->execute();
-    $resultado = $stmt->get_result();
-
-    if ($resultado->num_rows > 0) {
-        $user = $resultado->fetch_assoc();
-
-        // PERMITIR TANTO JEFE DE OBRA (4) COMO CAPATAZ (7)
-        $rolesPermitidos = [4, 7];
-        if (!in_array((int)$user['id_rol'], $rolesPermitidos)) {
-            $stmt->close();
-            echo json_encode([
-                "status" => "error",
-                "message" => "Acceso denegado. Esta aplicación es únicamente para Jefes de Obra y Capataces."
-            ]);
-            exit();
-        }
-
-        // Registrar acceso
-        $stmtAcceso = $conexion->prepare("INSERT INTO acceso_usuario (id_usuario, fecha_hora_ingreso) VALUES (?, NOW())");
-        if ($stmtAcceso) {
-            $stmtAcceso->bind_param("i", $user['id_usuario']);
-            $stmtAcceso->execute();
-            $stmtAcceso->close();
-        }
-
-        $stmt->close();
-
-        echo json_encode([
-            "status" => "success",
-            "message" => "¡Inicio de sesión exitoso!",
-            "user" => [
-                "id_usuario" => $user['id_usuario'],
-                "nombre"     => $user['nombre'],
-                "apellido"   => $user['apellido'],
-                "correo"     => $user['correo'],
-                "id_rol"     => (int)$user['id_rol']
-            ]
-        ]);
-        exit();
-
-    } else {
-        $stmt->close();
-        echo json_encode([
-            "status" => "error",
-            "message" => "Correo o contraseña incorrectos."
-        ]);
-        exit();
-    }
-
-} catch (Exception $e) {
-    echo json_encode([
-        "status" => "error",
-        "message" => "Error en el servidor: " . $e->getMessage()
-    ]);
-    exit();
+    ejecutar('INSERT INTO acceso_usuario (id_usuario, fecha_hora_ingreso) VALUES (?, NOW())', 'i', [(int) $usuario['id_usuario']]);
+} catch (Throwable $e) {
+    error_log('[constructora-api] No se pudo registrar el acceso: ' . $e->getMessage());
 }
-?>
+
+$sesion = ['id_usuario' => (int) $usuario['id_usuario'], 'id_rol' => (int) $usuario['id_rol']];
+
+/* --- El capataz trabaja siempre en su obra --- */
+$obra = null;
+if ($sesion['id_rol'] === ROL_CAPATAZ) {
+    $obras = obras_del_usuario($sesion);
+    if ($obras) {
+        $obra = [
+            'id_obra' => (int) $obras[0]['id_obra'],
+            'nombre_obra' => $obras[0]['nombre_obra'],
+            'direccion' => $obras[0]['direccion'],
+        ];
+    }
+}
+
+[$token, $vence] = emitir_token($sesion['id_usuario'], $sesion['id_rol']);
+
+responder_ok([
+    'token' => $token,
+    'expira' => $vence,
+    'user' => [
+        'id_usuario' => $sesion['id_usuario'],
+        'nombre' => $usuario['nombre'],
+        'apellido' => $usuario['apellido'],
+        'correo' => $usuario['correo'],
+        'id_rol' => $sesion['id_rol'],
+    ],
+    'obra' => $obra,
+], '¡Inicio de sesión exitoso!');

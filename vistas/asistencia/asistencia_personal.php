@@ -66,11 +66,6 @@ require_once "../../layouts/sidebar.php";
             <h1>Mi historial de asistencia</h1>
             <p>Consultá tus registros de entrada y salida.</p>
         </div>
-
-        <a href="../dashboard/" class="btn-secondary">
-            <i class="fa-solid fa-arrow-left"></i>
-            Volver al Inicio
-        </a>
     </div>
 
     <!-- INFORMACIÓN DEL EMPLEADO -->

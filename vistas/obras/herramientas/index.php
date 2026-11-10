@@ -92,14 +92,19 @@ require_once __DIR__ . "/../../../layouts/sidebar.php";
 
             </button>
 
-            <a
-                href="/empresa_constructora/controladores/HerramientaObraController.php?accion=crear&id_obra=<?= $_GET["id_obra"] ?>"
-                class="btn btn-primary">
+        <?php if (isset($_SESSION["usuario"]["rol"]) && $_SESSION["usuario"]["rol"] === "Gerente"
+): ?>
 
-                <i class="fa-solid fa-plus"></i>
-                Agregar
+    <a
+        href="/empresa_constructora/controladores/HerramientaObraController.php?accion=crear&id_obra=<?= (int) $_GET["id_obra"] ?>"
+        class="btn btn-primary">
 
-            </a>
+        <i class="fa-solid fa-plus"></i>
+        Agregar
+
+    </a>
+
+<?php endif; ?>
 
         </div>
 

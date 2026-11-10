@@ -41,13 +41,24 @@ $claseEstado = $clasesEstado[$estado] ?? "estado-pendiente";
                 Consultá la información y el detalle de las herramientas solicitadas.
             </p>
         </div>
+         <?php if (isset($_SESSION["usuario"]["rol"]) && $_SESSION["usuario"]["rol"] === "Gerente"
+): ?>
+
+            <a
+                href="/empresa_constructora/controladores/SolicitudHerramientaController.php?accion=gestionar"
+                class="btn btn-secondary">
+                <i class="fa-solid fa-arrow-left"></i>
+                Volver a solicitudes
+            </a>
+        <?php else: ?>
 
         <a
-            href="/empresa_constructora/controladores/SolicitudHerramientaController.php?accion=gestionar"
+            href="/empresa_constructora/controladores/SolicitudHerramientaController.php?accion=listar&id_obra=<?= $solicitud["id_obra"] ?? "" ?>"
             class="btn btn-secondary">
             <i class="fa-solid fa-arrow-left"></i>
             Volver a solicitudes
         </a>
+        <?php endif; ?>
     </div>
 
     <div class="detalle-grid">

@@ -37,7 +37,7 @@ $menu = [
     ],
 
     "Capataz" => [
-        ["fa-solid fa-house", "Dashboard", "/empresa_constructora/vistas/dashboard/capataz.php"],
+        ["fa-solid fa-house", "Dashboard", "/empresa_constructora/controladores/DashboardCapatazController.php"],
         ["fa-solid fa-building", "Mi Obra", "/empresa_constructora/vistas/obras/"],
         ["fa-solid fa-users", "Empleados", "/empresa_constructora/vistas/empleado_obra/"],
         ["fa-solid fa-clock-rotate-left", "Historial", "/empresa_constructora/vistas/asistencia/historial.php"],

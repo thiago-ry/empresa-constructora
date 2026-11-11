@@ -3016,3 +3016,46 @@ select:focus {
         padding: 35px 12px;
     }
 }
+
+.editar-foto {
+    margin-top: 12px;
+    padding: 12px;
+    border: 1px solid #24384d;
+    border-radius: 12px;
+    background: #111c2a;
+}
+
+.editar-foto summary {
+    cursor: pointer;
+    color: #f4b400;
+    font-weight: 600;
+    list-style: none;
+}
+
+.editar-foto summary::-webkit-details-marker {
+    display: none;
+}
+
+.form-editar-foto {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.form-editar-foto textarea {
+    width: 100%;
+    min-height: 75px;
+    padding: 10px;
+    border: 1px solid #24384d;
+    border-radius: 8px;
+    background: #182536;
+    color: white;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+.form-editar-foto label {
+    color: white;
+    font-weight: 500;
+}

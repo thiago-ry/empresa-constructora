@@ -380,10 +380,11 @@ require_once "../../layouts/sidebar.php";
                 </h3>
 
                 <a
-                    href="#"
-                    class="btn btn-secondary">
+                    href="../../controladores/FotoObraController.php?accion=listar&id_obra=<?= (int) $detalle['id_obra'] ?>"
+                    class="btn btn-primary">
 
-                    Próximamente
+                    <i class="fa-solid fa-camera"></i>
+                    Ingresar
 
                 </a>
 

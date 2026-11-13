@@ -9,7 +9,7 @@ $menu = [
         ["fa-solid fa-hard-hat", "Empleados", "/empresa_constructora/vistas/empleados/"],
         ["fa-solid fa-building", "Obras", "/empresa_constructora/vistas/obras/"],
         ["fa-solid fa-boxes-stacked", "Materiales", "/empresa_constructora/vistas/materiales/"],
-        ["fa-solid fa-clipboard-list", "Solicitudes", "/empresa_constructora/controladores/SolicitudMaterialController.php?accion=gerente"],
+        ["fa-solid fa-clipboard-list", "Solicitudes de materiales", "/empresa_constructora/controladores/SolicitudMaterialController.php?accion=gerente"],
         ["fa-solid fa-screwdriver-wrench", "Herramientas", "/empresa_constructora/vistas/herramientas/"],
         ["fa-solid fa-clipboard-list", "Solicitudes de herramientas", "/empresa_constructora/controladores/SolicitudHerramientaController.php?accion=gestionar"],
         ["fa-solid fa-chart-column", "Reportes", "/empresa_constructora/vistas/reportes/"],
@@ -22,7 +22,6 @@ $menu = [
         ["fa-solid fa-user-group", "Clientes", "/empresa_constructora/vistas/clientes/"],
         ["fa-solid fa-hard-hat", "Empleados", "/empresa_constructora/vistas/empleados/"],
         ["fa-solid fa-file-invoice-dollar", "Presupuestos", "/empresa_constructora/vistas/presupuestos/"],
-        ["fa-solid fa-cash-register", "Caja", "/empresa_constructora/vistas/caja/"],
         ["fa-solid fa-user", "Perfil", "/empresa_constructora/vistas/perfil/"]
     ],
 
@@ -51,9 +50,8 @@ $menu = [
     "Encargado de Depósito" => [
         ["fa-solid fa-house", "Dashboard", "/empresa_constructora/vistas/dashboard/deposito.php"],
         ["fa-solid fa-boxes-stacked", "Materiales", "/empresa_constructora/vistas/materiales/"],
-        ["fa-solid fa-clipboard-list", "Solicitudes", "/empresa_constructora/controladores/EntregaMaterialController.php?accion=listar"],
+        ["fa-solid fa-clipboard-list", "Solicitudes de materiales", "/empresa_constructora/controladores/EntregaMaterialController.php?accion=listar"],
         ["fa-solid fa-screwdriver-wrench", "Herramientas", "/empresa_constructora/vistas/herramientas/"],
-        ["fa-solid fa-warehouse", "Inventario", "/empresa_constructora/vistas/inventario/"],
 ["fa-solid fa-screwdriver-wrench", "Solicitudes de herramientas", "/empresa_constructora/controladores/SolicitudHerramientaController.php?accion=gestionar"],
         ["fa-solid fa-user", "Perfil", "/empresa_constructora/vistas/perfil/"]
     ],

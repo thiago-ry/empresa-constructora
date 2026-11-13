@@ -135,8 +135,8 @@ case "Cliente":
             "salario" => !empty($_POST["salario"])
                 ? $_POST["salario"]
                 : null,
-            "correo" => $_POST["correo"],
-            "contraseña" => $_POST["password"]
+            "correo"=> $_POST["correo"],
+            "contraseña" => $_POST["contraseña"]            
         ];
 
         if ($this->usuario->existeCorreo($datos["correo"])) {

@@ -391,23 +391,23 @@ require_once "../../layouts/sidebar.php";
             </div>
 
 
-            <div class="card">
+<div class="card">
+    <i class="fa-solid fa-folder-open fa-2x"></i>
 
-                <i class="fa-solid fa-folder-open fa-2x"></i>
+    <h3>Documentos</h3>
 
-                <h3>
-                    Documentos
-                </h3>
+    <p>
+        Consultá, cargá y administrá los documentos de esta obra.
+    </p>
 
-                <a
-                    href="#"
-                    class="btn btn-secondary">
-
-                    Próximamente
-
-                </a>
-
-            </div>
+    <a
+        href="../../controladores/DocumentoObraController.php?accion=listar&id_obra=<?= (int)$detalle['id_obra'] ?>"
+        class="btn btn-primary"
+    >
+        <i class="fa-solid fa-folder-open"></i>
+        Entrar a documentos
+    </a>
+</div>
 
         </div>
 

@@ -106,11 +106,11 @@ class UsuarioController
 
                 break;
 
-            case "Cliente":
+case "Cliente":
 
-                header("Location: ../vistas/dashboard/cliente.php");
+    header("Location: ../controladores/PortalClienteController.php?accion=dashboard");
 
-                break;
+    break;
 
             case "Capataz":
                 header("Location: ../vistas/dashboard/capataz.php");

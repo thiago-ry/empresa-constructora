@@ -65,11 +65,16 @@ $menu = [
         ["fa-solid fa-user", "Perfil", "/empresa_constructora/vistas/perfil/"]
     ],
 
-    "Cliente" => [
-        ["fa-solid fa-house", "Dashboard", "/empresa_constructora/vistas/dashboard/cliente.php"],
-        ["fa-solid fa-building", "Mis obras", "/empresa_constructora/vistas/obras/"],
-        ["fa-solid fa-folder-open", "Documentos", "/empresa_constructora/vistas/documentos/"],
-        ["fa-solid fa-user", "Perfil", "/empresa_constructora/vistas/perfil/"]
-    ]
+"Cliente" => [
+    ["fa-solid fa-house", "Inicio", "/empresa_constructora/controladores/PortalClienteController.php?accion=dashboard"],
+    ["fa-solid fa-building", "Mi obra", "/empresa_constructora/controladores/PortalClienteController.php?accion=obra"],
+    ["fa-solid fa-chart-line", "Avances", "/empresa_constructora/controladores/PortalClienteController.php?accion=avances"],
+    ["fa-solid fa-list-check", "Etapas", "/empresa_constructora/controladores/PortalClienteController.php?accion=etapas"],
+    ["fa-solid fa-camera", "Fotografías", "/empresa_constructora/controladores/PortalClienteController.php?accion=fotos"],
+    ["fa-solid fa-folder-open", "Documentación", "/empresa_constructora/controladores/PortalClienteController.php?accion=documentos"],
+    ["fa-solid fa-users", "Equipo de trabajo", "/empresa_constructora/controladores/PortalClienteController.php?accion=equipo"],
+    ["fa-solid fa-file-invoice-dollar", "Presupuesto", "/empresa_constructora/controladores/PortalClienteController.php?accion=presupuesto"],
+    ["fa-solid fa-user", "Perfil", "/empresa_constructora/vistas/perfil/"]
+],
 
 ];

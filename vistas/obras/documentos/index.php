@@ -1,6 +1,9 @@
 
 <?php
 
+require_once __DIR__ . "/../../../layouts/header.php";
+require_once __DIR__ . "/../../../layouts/sidebar.php";
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -37,18 +40,6 @@ if (isset($_SESSION['flash_documentos'])) {
 
 ?>
 
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Documentos de obra | BUILDPRO</title>
-
-    <link rel="stylesheet"
-          href="<?= $urlBase ?>/assets/css/components.css">
 
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -221,10 +212,6 @@ if (isset($_SESSION['flash_documentos'])) {
 
     </style>
 
-</head>
-
-<body>
-
 <?php
 
 if (file_exists($raiz . '/layouts/header.php')) {
@@ -237,7 +224,7 @@ if (file_exists($raiz . '/layouts/sidebar.php')) {
 
 ?>
 
-<div class="documentos-contenedor">
+<main class="content">
 
     <div class="documentos-header">
 
@@ -558,7 +545,7 @@ if (file_exists($raiz . '/layouts/sidebar.php')) {
 
     </section>
 
-</div>
+</main>
 
 <script>
 
@@ -593,6 +580,3 @@ if (file_exists($raiz . '/layouts/footer.php')) {
 }
 
 ?>
-
-</body>
-</html>

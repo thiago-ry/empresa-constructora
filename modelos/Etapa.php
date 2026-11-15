@@ -151,24 +151,36 @@ VALUES
             ($resultado["finalizadas"] / $resultado["total"]) * 100
         );
     }
-    public function obtenerResumen($id_obra)
-    {
-        $sql = "SELECT
+public function obtenerResumen($id_obra)
+{
+    $sql = "SELECT
                 COUNT(*) AS total,
-                SUM(CASE WHEN estado='Finalizada' THEN 1 ELSE 0 END) AS finalizadas,
-                SUM(CASE WHEN estado='En Proceso' THEN 1 ELSE 0 END) AS proceso,
-                SUM(CASE WHEN estado='Pendiente' THEN 1 ELSE 0 END) AS pendientes
+                SUM(CASE WHEN estado = 'Finalizada' THEN 1 ELSE 0 END) AS finalizadas,
+                SUM(CASE WHEN estado = 'En Proceso' THEN 1 ELSE 0 END) AS proceso,
+                SUM(CASE WHEN estado = 'Pendiente' THEN 1 ELSE 0 END) AS pendientes
             FROM etapa_obra
-            WHERE id_obra=?";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->execute([$id_obra]);
-        $datos = $stmt->fetch(PDO::FETCH_ASSOC);
+            WHERE id_obra = ?";
 
-        return [
-            "total" => (int)$datos["total"],
-            "finalizadas" => (int)$datos["finalizadas"],
-            "proceso" => (int)$datos["proceso"],
-            "pendientes" => (int)$datos["pendientes"]
-        ];
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->execute([$id_obra]);
+
+    $datos = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $total = (int)($datos["total"] ?? 0);
+    $finalizadas = (int)($datos["finalizadas"] ?? 0);
+
+    $porcentaje = 0;
+
+    if ($total > 0) {
+        $porcentaje = round(($finalizadas / $total) * 100);
     }
+
+    return [
+        "total" => $total,
+        "finalizadas" => $finalizadas,
+        "proceso" => (int)($datos["proceso"] ?? 0),
+        "pendientes" => (int)($datos["pendientes"] ?? 0),
+        "porcentaje_avance" => $porcentaje
+    ];
+}
 }

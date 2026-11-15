@@ -36,8 +36,7 @@ $estados = [
 ];
 
 $estadoMostrar = $estados[$estadoObra] ?? $estadoObra;
-
-$porcentajeAvance = (int)($resumenEtapas["porcentaje_avance"] ?? 0);
+$porcentajeAvance = (int)($resumenEtapas["avance"] ?? 0);
 $porcentajeAvance = max(0, min(100, $porcentajeAvance));
 
 $acciones = [
@@ -357,9 +356,30 @@ function urlPortal($base, $accion, $idObra)
                                         · <?php echo fechaPortal($documento["fecha_subida"] ?? null); ?>
                                     </small>
                                 </div>
-                                <a href="<?php echo escapar($documento["ruta_archivo"]); ?>" target="_blank" rel="noopener">
-                                    Consultar
-                                </a>
+                                <?php
+                                $rutaDocumento = $documento["ruta_archivo"] ?? "";
+                                $urlDocumento = "";
+
+                                if (!empty($rutaDocumento)) {
+                                    $rutaDocumento = str_replace("\\", "/", $rutaDocumento);
+
+                                    $posicionUploads = strpos($rutaDocumento, "uploads/");
+
+                                    if ($posicionUploads !== false) {
+                                        $rutaDocumento = substr($rutaDocumento, $posicionUploads);
+                                    }
+
+                                    $urlDocumento = "/empresa_constructora/" . ltrim($rutaDocumento, "/");
+                                }
+                                ?>
+
+                                <?php if (!empty($urlDocumento)): ?>
+                                    <a href="<?php echo escapar($urlDocumento); ?>"
+                                        target="_blank"
+                                        rel="noopener">
+                                        Consultar
+                                    </a>
+                                <?php endif; ?>
                             </div>
                         <?php endforeach; ?>
                     <?php else: ?>
@@ -533,968 +553,968 @@ function urlPortal($base, $accion, $idObra)
 </main>
 
 <style>
-
-/* =====================================================
+    /* =====================================================
    BUILDPRO | PORTAL DEL CLIENTE
    Diseño moderno, responsive y profesional
 ===================================================== */
 
-.portal-cliente {
-    --pc-bg: #0b1220;
-    --pc-surface: #111c2c;
-    --pc-surface-2: #172438;
-    --pc-border: rgba(148, 163, 184, .13);
-    --pc-text: #f1f5f9;
-    --pc-muted: #91a0b5;
-    --pc-accent: #f4b400;
-    --pc-accent-soft: rgba(244, 180, 0, .12);
-    --pc-green: #35c58a;
-    --pc-blue: #55a8ff;
-    --pc-red: #ef7272;
-
-    width: 100%;
-    min-height: 100vh;
-    padding: 30px;
-    color: var(--pc-text);
-    background: var(--pc-bg);
-    font-family: 'Poppins', sans-serif;
-    box-sizing: border-box;
-    margin-top: 5%;
-}
-
-.portal-cliente *,
-.portal-cliente *::before,
-.portal-cliente *::after {
-    box-sizing: border-box;
-}
-
-/* ENCABEZADO */
-
-.portal-encabezado {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 28px;
-}
-
-.portal-encabezado h1 {
-    margin: 8px 0;
-    font-size: clamp(23px, 3vw, 31px);
-    font-weight: 700;
-    letter-spacing: -.8px;
-}
-
-.portal-encabezado p,
-.portal-seccion-titulo p {
-    margin: 0;
-    color: var(--pc-muted);
-    font-size: 13px;
-    line-height: 1.7;
-}
-
-.portal-etiqueta {
-    color: var(--pc-accent);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-}
-
-.portal-estado {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    padding: 10px 15px;
-    background: var(--pc-surface);
-    border: 1px solid var(--pc-border);
-    border-radius: 30px;
-    color: #dce5f0;
-    font-size: 12px;
-    font-weight: 500;
-}
-
-.estado-punto {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--pc-green);
-    box-shadow: 0 0 10px rgba(53, 197, 138, .5);
-}
-
-/* TARJETA PRINCIPAL DE LA OBRA */
-
-.portal-obra-resumen {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 35px;
-    min-height: 185px;
-    padding: 30px;
-    margin-bottom: 22px;
-    overflow: hidden;
-    background:
-        radial-gradient(circle at 85% 20%, rgba(244, 180, 0, .13), transparent 35%),
-        linear-gradient(120deg, #17263a, #101b2b);
-    border: 1px solid rgba(244, 180, 0, .16);
-    border-radius: 18px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, .12);
-}
-
-.portal-obra-resumen::after {
-    content: "";
-    position: absolute;
-    right: -65px;
-    bottom: -110px;
-    width: 250px;
-    height: 250px;
-    border: 1px solid rgba(244, 180, 0, .12);
-    border-radius: 50%;
-    pointer-events: none;
-}
-
-.portal-obra-resumen h2 {
-    margin: 10px 0;
-    font-size: clamp(20px, 3vw, 27px);
-    font-weight: 700;
-}
-
-.portal-obra-resumen p {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    margin: 0;
-    color: #aab8ca;
-    font-size: 13px;
-}
-
-.portal-obra-resumen p i {
-    color: var(--pc-accent);
-}
-
-.portal-progreso {
-    position: relative;
-    z-index: 1;
-    width: 300px;
-    flex-shrink: 0;
-}
-
-.progreso-texto {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
-    color: #b7c3d3;
-    font-size: 12px;
-}
-
-.progreso-texto strong {
-    color: var(--pc-accent);
-    font-size: 23px;
-}
-
-.progreso-barra {
-    height: 9px;
-    overflow: hidden;
-    background: #344258;
-    border-radius: 20px;
-}
-
-.progreso-barra div {
-    height: 100%;
-    background: linear-gradient(90deg, #d99b00, #ffd04a);
-    border-radius: 20px;
-    transition: width .5s ease;
-}
-
-/* NAVEGACIÓN */
-
-.portal-navegacion {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 8px;
-    margin-bottom: 28px;
-    overflow-x: auto;
-    background: var(--pc-surface);
-    border: 1px solid var(--pc-border);
-    border-radius: 13px;
-    scrollbar-width: thin;
-    scrollbar-color: #344258 transparent;
-}
-
-.portal-navegacion a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
-    flex-shrink: 0;
-    padding: 12px 15px;
-    border-radius: 9px;
-    color: #9cabc0;
-    text-decoration: none;
-    font-size: 12px;
-    font-weight: 500;
-    transition: all .2s ease;
-}
-
-.portal-navegacion a i {
-    font-size: 13px;
-}
-
-.portal-navegacion a:hover {
-    color: #fff;
-    background: rgba(255, 255, 255, .045);
-}
-
-.portal-navegacion a.activo {
-    color: var(--pc-accent);
-    background: var(--pc-accent-soft);
-    box-shadow: inset 0 0 0 1px rgba(244, 180, 0, .13);
-}
-
-/* CONTENIDO */
-
-.portal-contenido {
-    animation: portalEntrada .35s ease;
-}
-
-@keyframes portalEntrada {
-    from {
-        opacity: 0;
-        transform: translateY(7px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.portal-seccion-titulo {
-    margin-bottom: 22px;
-}
-
-.portal-seccion-titulo h2 {
-    margin: 0 0 7px;
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: -.4px;
-}
-
-/* ESTADÍSTICAS */
-
-.portal-estadisticas {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 16px;
-    margin-bottom: 20px;
-}
-
-.portal-card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 11px;
-    min-width: 0;
-    padding: 21px;
-    overflow: hidden;
-    background: var(--pc-surface);
-    border: 1px solid var(--pc-border);
-    border-radius: 15px;
-    transition: transform .2s, border-color .2s;
-}
-
-.portal-card:hover {
-    transform: translateY(-3px);
-    border-color: rgba(244, 180, 0, .3);
-}
-
-.card-icono {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 43px;
-    height: 43px;
-    color: var(--pc-accent);
-    background: var(--pc-accent-soft);
-    border-radius: 12px;
-    font-size: 17px;
-}
-
-.portal-card span {
-    color: var(--pc-muted);
-    font-size: 12px;
-}
-
-.portal-card strong {
-    font-size: 21px;
-    font-weight: 650;
-    overflow-wrap: anywhere;
-}
-
-/* PANELES */
-
-.portal-panel {
-    min-width: 0;
-    padding: 23px;
-    background: var(--pc-surface);
-    border: 1px solid var(--pc-border);
-    border-radius: 15px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, .07);
-}
-
-.portal-panel h3 {
-    margin: 0 0 17px;
-    font-size: 15px;
-    font-weight: 600;
-}
-
-.portal-dos-columnas {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 17px;
-}
-
-.portal-panel-titulo {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
-}
-
-.portal-panel-titulo h3 {
-    margin: 0;
-}
-
-.portal-panel-titulo a {
-    color: var(--pc-accent);
-    text-decoration: none;
-    font-size: 11px;
-    font-weight: 600;
-}
-
-.portal-panel-titulo a:hover {
-    color: #ffd04a;
-}
-
-/* DATOS */
-
-.portal-dato {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 20px;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--pc-border);
-}
-
-.portal-dato:last-child {
-    border-bottom: none;
-}
-
-.portal-dato span {
-    color: var(--pc-muted);
-    font-size: 12px;
-    line-height: 1.6;
-}
-
-.portal-dato strong {
-    max-width: 60%;
-    color: #e7edf5;
-    text-align: right;
-    font-size: 12px;
-    font-weight: 500;
-    overflow-wrap: anywhere;
-}
-
-/* AVANCES */
-
-.portal-lista-item {
-    display: flex;
-    gap: 13px;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--pc-border);
-}
-
-.portal-lista-item:last-child {
-    border-bottom: none;
-}
-
-.lista-punto {
-    width: 9px;
-    height: 9px;
-    flex-shrink: 0;
-    margin-top: 5px;
-    background: var(--pc-accent);
-    border-radius: 50%;
-    box-shadow: 0 0 9px rgba(244, 180, 0, .25);
-}
-
-.portal-lista-item strong,
-.portal-lista-item small {
-    display: block;
-}
-
-.portal-lista-item strong {
-    color: #e6edf6;
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 1.6;
-}
-
-.portal-lista-item small {
-    margin-top: 6px;
-    color: var(--pc-muted);
-    font-size: 10px;
-}
-
-/* ETAPAS */
-
-.portal-etapa {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-    padding: 19px 0;
-    border-bottom: 1px solid var(--pc-border);
-}
-
-.portal-etapa:last-child {
-    border-bottom: none;
-}
-
-.portal-etapa strong {
-    color: #edf2f8;
-    font-size: 13px;
-    font-weight: 600;
-}
-
-.portal-etapa p {
-    margin: 6px 0;
-    color: var(--pc-muted);
-    font-size: 11px;
-    line-height: 1.6;
-}
-
-.portal-etapa small {
-    color: #77869b;
-    font-size: 10px;
-}
-
-.etapa-estado {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    padding: 7px 11px;
-    border: 1px solid var(--pc-border);
-    border-radius: 30px;
-    background: #1b2a3c;
-    color: #aebdd0;
-    font-size: 10px;
-    font-weight: 600;
-}
-
-.etapa-estado.finalizada {
-    color: var(--pc-green);
-    background: rgba(53, 197, 138, .09);
-    border-color: rgba(53, 197, 138, .2);
-}
-
-.etapa-estado.en-proceso {
-    color: var(--pc-accent);
-    background: var(--pc-accent-soft);
-    border-color: rgba(244, 180, 0, .2);
-}
-
-.etapa-estado.pendiente {
-    color: #aab8c9;
-}
-
-/* FOTOGRAFÍAS */
-
-.portal-galeria {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 17px;
-}
-
-.portal-foto {
-    overflow: hidden;
-    background: var(--pc-surface);
-    border: 1px solid var(--pc-border);
-    border-radius: 14px;
-    transition: transform .25s, border-color .25s;
-}
-
-.portal-foto:hover {
-    transform: translateY(-4px);
-    border-color: rgba(244, 180, 0, .3);
-}
-
-.portal-foto a {
-    display: block;
-    overflow: hidden;
-    background: #0a111d;
-}
-
-.portal-foto img {
-    display: block;
-    width: 100%;
-    height: 215px;
-    object-fit: cover;
-    transition: transform .35s ease;
-}
-
-.portal-foto:hover img {
-    transform: scale(1.045);
-}
-
-.portal-foto div {
-    padding: 15px;
-}
-
-.portal-foto strong,
-.portal-foto small {
-    display: block;
-}
-
-.portal-foto strong {
-    color: #e8edf5;
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 1.6;
-}
-
-.portal-foto small {
-    margin-top: 7px;
-    color: var(--pc-muted);
-    font-size: 10px;
-}
-
-/* DOCUMENTOS */
-
-.portal-documento {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 15px 0;
-    border-bottom: 1px solid var(--pc-border);
-}
-
-.portal-documento:last-child {
-    border-bottom: none;
-}
-
-.documento-icono {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 43px;
-    height: 43px;
-    flex-shrink: 0;
-    border-radius: 11px;
-    background: rgba(85, 168, 255, .1);
-    color: var(--pc-blue);
-    font-size: 17px;
-}
-
-.documento-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.documento-info strong,
-.documento-info small {
-    display: block;
-    overflow-wrap: anywhere;
-}
-
-.documento-info strong {
-    color: #e8edf5;
-    font-size: 12px;
-    font-weight: 500;
-}
-
-.documento-info small {
-    margin-top: 6px;
-    color: var(--pc-muted);
-    font-size: 10px;
-}
-
-.portal-documento a {
-    padding: 9px 13px;
-    color: var(--pc-accent);
-    background: var(--pc-accent-soft);
-    border: 1px solid rgba(244, 180, 0, .15);
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 11px;
-    font-weight: 600;
-    transition: .2s;
-}
-
-.portal-documento a:hover {
-    background: rgba(244, 180, 0, .2);
-}
-
-/* EQUIPO */
-
-.portal-equipo {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 15px;
-}
-
-.portal-persona {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    min-width: 0;
-    padding: 19px;
-    background: var(--pc-surface);
-    border: 1px solid var(--pc-border);
-    border-radius: 13px;
-    transition: border-color .2s, transform .2s;
-}
-
-.portal-persona:hover {
-    transform: translateY(-2px);
-    border-color: rgba(244, 180, 0, .25);
-}
-
-.persona-icono {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 45px;
-    height: 45px;
-    flex-shrink: 0;
-    color: var(--pc-accent);
-    background: var(--pc-accent-soft);
-    border-radius: 12px;
-    font-size: 17px;
-}
-
-.portal-persona span,
-.portal-persona strong {
-    display: block;
-    overflow-wrap: anywhere;
-}
-
-.portal-persona span {
-    margin-bottom: 5px;
-    color: var(--pc-muted);
-    font-size: 11px;
-}
-
-.portal-persona strong {
-    color: #edf2f8;
-    font-size: 13px;
-    font-weight: 600;
-}
-
-/* PRESUPUESTO */
-
-.portal-presupuesto-total {
-    display: flex;
-    flex-direction: column;
-    gap: 9px;
-    padding: 25px;
-    margin-bottom: 18px;
-    background:
-        radial-gradient(circle at 90% 10%, rgba(244, 180, 0, .12), transparent 35%),
-        var(--pc-surface-2);
-    border: 1px solid rgba(244, 180, 0, .18);
-    border-radius: 15px;
-}
-
-.portal-presupuesto-total span {
-    color: #aebbd0;
-    font-size: 12px;
-}
-
-.portal-presupuesto-total strong {
-    color: var(--pc-accent);
-    font-size: clamp(23px, 4vw, 31px);
-    font-weight: 700;
-}
-
-.portal-presupuesto-total small {
-    color: var(--pc-muted);
-    font-size: 10px;
-}
-
-.portal-panel select {
-    display: block;
-    width: 100%;
-    margin-top: 12px;
-    padding: 13px 15px;
-    color: var(--pc-text);
-    background: #0b1422;
-    border: 1px solid #34445a;
-    border-radius: 9px;
-    outline: none;
-    font-family: inherit;
-    font-size: 12px;
-    cursor: pointer;
-}
-
-.portal-panel select:focus {
-    border-color: var(--pc-accent);
-    box-shadow: 0 0 0 3px rgba(244, 180, 0, .08);
-}
-
-.portal-tabla-contenedor {
-    width: 100%;
-    overflow-x: auto;
-}
-
-.portal-tabla {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-}
-
-.portal-tabla th {
-    padding: 14px 12px;
-    color: #9eacc0;
-    background: #172438;
-    text-align: left;
-    font-size: 10px;
-    font-weight: 600;
-    white-space: nowrap;
-}
-
-.portal-tabla td {
-    padding: 15px 12px;
-    color: #dce5f0;
-    border-bottom: 1px solid var(--pc-border);
-    vertical-align: middle;
-}
-
-.portal-tabla tbody tr:hover {
-    background: rgba(255, 255, 255, .025);
-}
-
-.portal-tabla td small {
-    display: block;
-    margin-top: 5px;
-    color: var(--pc-muted);
-    font-size: 10px;
-}
-
-/* ESTADOS VACÍOS */
-
-.portal-sin-datos {
-    padding: 20px 0;
-    color: var(--pc-muted);
-    font-size: 12px;
-    line-height: 1.7;
-}
-
-.portal-vacio {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 330px;
-    padding: 40px 25px;
-    text-align: center;
-    background: var(--pc-surface);
-    border: 1px solid var(--pc-border);
-    border-radius: 17px;
-}
-
-.portal-vacio i {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 75px;
-    height: 75px;
-    margin-bottom: 20px;
-    color: var(--pc-accent);
-    background: var(--pc-accent-soft);
-    border-radius: 20px;
-    font-size: 29px;
-}
-
-.portal-vacio h2 {
-    margin: 0 0 10px;
-    font-size: 19px;
-}
-
-.portal-vacio p {
-    max-width: 400px;
-    margin: 0;
-    color: var(--pc-muted);
-    font-size: 12px;
-    line-height: 1.8;
-}
-
-/* TABLETS */
-
-@media (max-width: 1100px) {
     .portal-cliente {
-        padding: 24px;
-        margin-top: 20%;
-    }
+        --pc-bg: #0b1220;
+        --pc-surface: #111c2c;
+        --pc-surface-2: #172438;
+        --pc-border: rgba(148, 163, 184, .13);
+        --pc-text: #f1f5f9;
+        --pc-muted: #91a0b5;
+        --pc-accent: #f4b400;
+        --pc-accent-soft: rgba(244, 180, 0, .12);
+        --pc-green: #35c58a;
+        --pc-blue: #55a8ff;
+        --pc-red: #ef7272;
 
-    .portal-estadisticas {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .portal-galeria {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .portal-navegacion a {
-        padding: 11px 12px;
-    }
-}
-
-/* MÓVILES */
-
-@media (max-width: 700px) {
-    .portal-cliente {
-        padding: 18px 14px;
-    }
-
-    .portal-encabezado {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 14px;
-        margin-bottom: 20px;
-    }
-
-    .portal-encabezado h1 {
-        font-size: 24px;
-    }
-
-    .portal-obra-resumen {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 25px;
-        padding: 22px;
-    }
-
-    .portal-progreso {
         width: 100%;
+        min-height: 100vh;
+        padding: 30px;
+        color: var(--pc-text);
+        background: var(--pc-bg);
+        font-family: 'Poppins', sans-serif;
+        box-sizing: border-box;
+        margin-top: 5%;
     }
 
-    .portal-navegacion {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 5px;
-        overflow: visible;
-    }
-
-    .portal-navegacion a {
-        justify-content: flex-start;
-        min-width: 0;
-        padding: 12px 9px;
-        font-size: 11px;
-    }
-
-    .portal-navegacion a span {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    .portal-estadisticas {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-    }
-
-    .portal-card {
-        padding: 15px;
-    }
-
-    .portal-card strong {
-        font-size: 18px;
-    }
-
-    .portal-dos-columnas,
-    .portal-equipo {
-        grid-template-columns: 1fr;
-    }
-
-    .portal-panel {
-        padding: 17px;
-    }
-
-    .portal-galeria {
-        grid-template-columns: 1fr;
-    }
-
-    .portal-foto img {
-        height: 230px;
-    }
-
-    .portal-etapa {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .portal-dato {
-        flex-direction: column;
-        gap: 6px;
-    }
-
-    .portal-dato strong {
-        max-width: 100%;
-        text-align: left;
-    }
-
-    .portal-documento {
-        gap: 10px;
-    }
-
-    .portal-documento a {
-        padding: 8px 10px;
-    }
-
-    .portal-tabla {
-        min-width: 570px;
-    }
-}
-
-/* MÓVILES PEQUEÑOS */
-
-@media (max-width: 380px) {
-    .portal-cliente {
-        padding: 14px 10px;
-    }
-
-    .portal-estadisticas {
-        grid-template-columns: 1fr;
-    }
-
-    .portal-navegacion a {
-        font-size: 10px;
-    }
-
-    .portal-obra-resumen {
-        padding: 17px;
-    }
-}
-
-/* ACCESIBILIDAD */
-
-@media (prefers-reduced-motion: reduce) {
     .portal-cliente *,
     .portal-cliente *::before,
     .portal-cliente *::after {
-        animation-duration: .01ms !important;
-        transition-duration: .01ms !important;
+        box-sizing: border-box;
     }
-}
 
+    /* ENCABEZADO */
+
+    .portal-encabezado {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 28px;
+    }
+
+    .portal-encabezado h1 {
+        margin: 8px 0;
+        font-size: clamp(23px, 3vw, 31px);
+        font-weight: 700;
+        letter-spacing: -.8px;
+    }
+
+    .portal-encabezado p,
+    .portal-seccion-titulo p {
+        margin: 0;
+        color: var(--pc-muted);
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .portal-etiqueta {
+        color: var(--pc-accent);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    .portal-estado {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 10px 15px;
+        background: var(--pc-surface);
+        border: 1px solid var(--pc-border);
+        border-radius: 30px;
+        color: #dce5f0;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .estado-punto {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--pc-green);
+        box-shadow: 0 0 10px rgba(53, 197, 138, .5);
+    }
+
+    /* TARJETA PRINCIPAL DE LA OBRA */
+
+    .portal-obra-resumen {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 35px;
+        min-height: 185px;
+        padding: 30px;
+        margin-bottom: 22px;
+        overflow: hidden;
+        background:
+            radial-gradient(circle at 85% 20%, rgba(244, 180, 0, .13), transparent 35%),
+            linear-gradient(120deg, #17263a, #101b2b);
+        border: 1px solid rgba(244, 180, 0, .16);
+        border-radius: 18px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, .12);
+    }
+
+    .portal-obra-resumen::after {
+        content: "";
+        position: absolute;
+        right: -65px;
+        bottom: -110px;
+        width: 250px;
+        height: 250px;
+        border: 1px solid rgba(244, 180, 0, .12);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .portal-obra-resumen h2 {
+        margin: 10px 0;
+        font-size: clamp(20px, 3vw, 27px);
+        font-weight: 700;
+    }
+
+    .portal-obra-resumen p {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin: 0;
+        color: #aab8ca;
+        font-size: 13px;
+    }
+
+    .portal-obra-resumen p i {
+        color: var(--pc-accent);
+    }
+
+    .portal-progreso {
+        position: relative;
+        z-index: 1;
+        width: 300px;
+        flex-shrink: 0;
+    }
+
+    .progreso-texto {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+        color: #b7c3d3;
+        font-size: 12px;
+    }
+
+    .progreso-texto strong {
+        color: var(--pc-accent);
+        font-size: 23px;
+    }
+
+    .progreso-barra {
+        height: 9px;
+        overflow: hidden;
+        background: #344258;
+        border-radius: 20px;
+    }
+
+    .progreso-barra div {
+        height: 100%;
+        background: linear-gradient(90deg, #d99b00, #ffd04a);
+        border-radius: 20px;
+        transition: width .5s ease;
+    }
+
+    /* NAVEGACIÓN */
+
+    .portal-navegacion {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 8px;
+        margin-bottom: 28px;
+        overflow-x: auto;
+        background: var(--pc-surface);
+        border: 1px solid var(--pc-border);
+        border-radius: 13px;
+        scrollbar-width: thin;
+        scrollbar-color: #344258 transparent;
+    }
+
+    .portal-navegacion a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        flex-shrink: 0;
+        padding: 12px 15px;
+        border-radius: 9px;
+        color: #9cabc0;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 500;
+        transition: all .2s ease;
+    }
+
+    .portal-navegacion a i {
+        font-size: 13px;
+    }
+
+    .portal-navegacion a:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, .045);
+    }
+
+    .portal-navegacion a.activo {
+        color: var(--pc-accent);
+        background: var(--pc-accent-soft);
+        box-shadow: inset 0 0 0 1px rgba(244, 180, 0, .13);
+    }
+
+    /* CONTENIDO */
+
+    .portal-contenido {
+        animation: portalEntrada .35s ease;
+    }
+
+    @keyframes portalEntrada {
+        from {
+            opacity: 0;
+            transform: translateY(7px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .portal-seccion-titulo {
+        margin-bottom: 22px;
+    }
+
+    .portal-seccion-titulo h2 {
+        margin: 0 0 7px;
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: -.4px;
+    }
+
+    /* ESTADÍSTICAS */
+
+    .portal-estadisticas {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .portal-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 11px;
+        min-width: 0;
+        padding: 21px;
+        overflow: hidden;
+        background: var(--pc-surface);
+        border: 1px solid var(--pc-border);
+        border-radius: 15px;
+        transition: transform .2s, border-color .2s;
+    }
+
+    .portal-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(244, 180, 0, .3);
+    }
+
+    .card-icono {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 43px;
+        height: 43px;
+        color: var(--pc-accent);
+        background: var(--pc-accent-soft);
+        border-radius: 12px;
+        font-size: 17px;
+    }
+
+    .portal-card span {
+        color: var(--pc-muted);
+        font-size: 12px;
+    }
+
+    .portal-card strong {
+        font-size: 21px;
+        font-weight: 650;
+        overflow-wrap: anywhere;
+    }
+
+    /* PANELES */
+
+    .portal-panel {
+        min-width: 0;
+        padding: 23px;
+        background: var(--pc-surface);
+        border: 1px solid var(--pc-border);
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, .07);
+    }
+
+    .portal-panel h3 {
+        margin: 0 0 17px;
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .portal-dos-columnas {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 17px;
+    }
+
+    .portal-panel-titulo {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .portal-panel-titulo h3 {
+        margin: 0;
+    }
+
+    .portal-panel-titulo a {
+        color: var(--pc-accent);
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .portal-panel-titulo a:hover {
+        color: #ffd04a;
+    }
+
+    /* DATOS */
+
+    .portal-dato {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--pc-border);
+    }
+
+    .portal-dato:last-child {
+        border-bottom: none;
+    }
+
+    .portal-dato span {
+        color: var(--pc-muted);
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .portal-dato strong {
+        max-width: 60%;
+        color: #e7edf5;
+        text-align: right;
+        font-size: 12px;
+        font-weight: 500;
+        overflow-wrap: anywhere;
+    }
+
+    /* AVANCES */
+
+    .portal-lista-item {
+        display: flex;
+        gap: 13px;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--pc-border);
+    }
+
+    .portal-lista-item:last-child {
+        border-bottom: none;
+    }
+
+    .lista-punto {
+        width: 9px;
+        height: 9px;
+        flex-shrink: 0;
+        margin-top: 5px;
+        background: var(--pc-accent);
+        border-radius: 50%;
+        box-shadow: 0 0 9px rgba(244, 180, 0, .25);
+    }
+
+    .portal-lista-item strong,
+    .portal-lista-item small {
+        display: block;
+    }
+
+    .portal-lista-item strong {
+        color: #e6edf6;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 1.6;
+    }
+
+    .portal-lista-item small {
+        margin-top: 6px;
+        color: var(--pc-muted);
+        font-size: 10px;
+    }
+
+    /* ETAPAS */
+
+    .portal-etapa {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        padding: 19px 0;
+        border-bottom: 1px solid var(--pc-border);
+    }
+
+    .portal-etapa:last-child {
+        border-bottom: none;
+    }
+
+    .portal-etapa strong {
+        color: #edf2f8;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .portal-etapa p {
+        margin: 6px 0;
+        color: var(--pc-muted);
+        font-size: 11px;
+        line-height: 1.6;
+    }
+
+    .portal-etapa small {
+        color: #77869b;
+        font-size: 10px;
+    }
+
+    .etapa-estado {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        padding: 7px 11px;
+        border: 1px solid var(--pc-border);
+        border-radius: 30px;
+        background: #1b2a3c;
+        color: #aebdd0;
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+    .etapa-estado.finalizada {
+        color: var(--pc-green);
+        background: rgba(53, 197, 138, .09);
+        border-color: rgba(53, 197, 138, .2);
+    }
+
+    .etapa-estado.en-proceso {
+        color: var(--pc-accent);
+        background: var(--pc-accent-soft);
+        border-color: rgba(244, 180, 0, .2);
+    }
+
+    .etapa-estado.pendiente {
+        color: #aab8c9;
+    }
+
+    /* FOTOGRAFÍAS */
+
+    .portal-galeria {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 17px;
+    }
+
+    .portal-foto {
+        overflow: hidden;
+        background: var(--pc-surface);
+        border: 1px solid var(--pc-border);
+        border-radius: 14px;
+        transition: transform .25s, border-color .25s;
+    }
+
+    .portal-foto:hover {
+        transform: translateY(-4px);
+        border-color: rgba(244, 180, 0, .3);
+    }
+
+    .portal-foto a {
+        display: block;
+        overflow: hidden;
+        background: #0a111d;
+    }
+
+    .portal-foto img {
+        display: block;
+        width: 100%;
+        height: 215px;
+        object-fit: cover;
+        transition: transform .35s ease;
+    }
+
+    .portal-foto:hover img {
+        transform: scale(1.045);
+    }
+
+    .portal-foto div {
+        padding: 15px;
+    }
+
+    .portal-foto strong,
+    .portal-foto small {
+        display: block;
+    }
+
+    .portal-foto strong {
+        color: #e8edf5;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 1.6;
+    }
+
+    .portal-foto small {
+        margin-top: 7px;
+        color: var(--pc-muted);
+        font-size: 10px;
+    }
+
+    /* DOCUMENTOS */
+
+    .portal-documento {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px 0;
+        border-bottom: 1px solid var(--pc-border);
+    }
+
+    .portal-documento:last-child {
+        border-bottom: none;
+    }
+
+    .documento-icono {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 43px;
+        height: 43px;
+        flex-shrink: 0;
+        border-radius: 11px;
+        background: rgba(85, 168, 255, .1);
+        color: var(--pc-blue);
+        font-size: 17px;
+    }
+
+    .documento-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .documento-info strong,
+    .documento-info small {
+        display: block;
+        overflow-wrap: anywhere;
+    }
+
+    .documento-info strong {
+        color: #e8edf5;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .documento-info small {
+        margin-top: 6px;
+        color: var(--pc-muted);
+        font-size: 10px;
+    }
+
+    .portal-documento a {
+        padding: 9px 13px;
+        color: var(--pc-accent);
+        background: var(--pc-accent-soft);
+        border: 1px solid rgba(244, 180, 0, .15);
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 600;
+        transition: .2s;
+    }
+
+    .portal-documento a:hover {
+        background: rgba(244, 180, 0, .2);
+    }
+
+    /* EQUIPO */
+
+    .portal-equipo {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 15px;
+    }
+
+    .portal-persona {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        min-width: 0;
+        padding: 19px;
+        background: var(--pc-surface);
+        border: 1px solid var(--pc-border);
+        border-radius: 13px;
+        transition: border-color .2s, transform .2s;
+    }
+
+    .portal-persona:hover {
+        transform: translateY(-2px);
+        border-color: rgba(244, 180, 0, .25);
+    }
+
+    .persona-icono {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 45px;
+        height: 45px;
+        flex-shrink: 0;
+        color: var(--pc-accent);
+        background: var(--pc-accent-soft);
+        border-radius: 12px;
+        font-size: 17px;
+    }
+
+    .portal-persona span,
+    .portal-persona strong {
+        display: block;
+        overflow-wrap: anywhere;
+    }
+
+    .portal-persona span {
+        margin-bottom: 5px;
+        color: var(--pc-muted);
+        font-size: 11px;
+    }
+
+    .portal-persona strong {
+        color: #edf2f8;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    /* PRESUPUESTO */
+
+    .portal-presupuesto-total {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+        padding: 25px;
+        margin-bottom: 18px;
+        background:
+            radial-gradient(circle at 90% 10%, rgba(244, 180, 0, .12), transparent 35%),
+            var(--pc-surface-2);
+        border: 1px solid rgba(244, 180, 0, .18);
+        border-radius: 15px;
+    }
+
+    .portal-presupuesto-total span {
+        color: #aebbd0;
+        font-size: 12px;
+    }
+
+    .portal-presupuesto-total strong {
+        color: var(--pc-accent);
+        font-size: clamp(23px, 4vw, 31px);
+        font-weight: 700;
+    }
+
+    .portal-presupuesto-total small {
+        color: var(--pc-muted);
+        font-size: 10px;
+    }
+
+    .portal-panel select {
+        display: block;
+        width: 100%;
+        margin-top: 12px;
+        padding: 13px 15px;
+        color: var(--pc-text);
+        background: #0b1422;
+        border: 1px solid #34445a;
+        border-radius: 9px;
+        outline: none;
+        font-family: inherit;
+        font-size: 12px;
+        cursor: pointer;
+    }
+
+    .portal-panel select:focus {
+        border-color: var(--pc-accent);
+        box-shadow: 0 0 0 3px rgba(244, 180, 0, .08);
+    }
+
+    .portal-tabla-contenedor {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .portal-tabla {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+    }
+
+    .portal-tabla th {
+        padding: 14px 12px;
+        color: #9eacc0;
+        background: #172438;
+        text-align: left;
+        font-size: 10px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .portal-tabla td {
+        padding: 15px 12px;
+        color: #dce5f0;
+        border-bottom: 1px solid var(--pc-border);
+        vertical-align: middle;
+    }
+
+    .portal-tabla tbody tr:hover {
+        background: rgba(255, 255, 255, .025);
+    }
+
+    .portal-tabla td small {
+        display: block;
+        margin-top: 5px;
+        color: var(--pc-muted);
+        font-size: 10px;
+    }
+
+    /* ESTADOS VACÍOS */
+
+    .portal-sin-datos {
+        padding: 20px 0;
+        color: var(--pc-muted);
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .portal-vacio {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 330px;
+        padding: 40px 25px;
+        text-align: center;
+        background: var(--pc-surface);
+        border: 1px solid var(--pc-border);
+        border-radius: 17px;
+    }
+
+    .portal-vacio i {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 75px;
+        height: 75px;
+        margin-bottom: 20px;
+        color: var(--pc-accent);
+        background: var(--pc-accent-soft);
+        border-radius: 20px;
+        font-size: 29px;
+    }
+
+    .portal-vacio h2 {
+        margin: 0 0 10px;
+        font-size: 19px;
+    }
+
+    .portal-vacio p {
+        max-width: 400px;
+        margin: 0;
+        color: var(--pc-muted);
+        font-size: 12px;
+        line-height: 1.8;
+    }
+
+    /* TABLETS */
+
+    @media (max-width: 1100px) {
+        .portal-cliente {
+            padding: 24px;
+            margin-top: 20%;
+        }
+
+        .portal-estadisticas {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .portal-galeria {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .portal-navegacion a {
+            padding: 11px 12px;
+        }
+    }
+
+    /* MÓVILES */
+
+    @media (max-width: 700px) {
+        .portal-cliente {
+            padding: 18px 14px;
+        }
+
+        .portal-encabezado {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .portal-encabezado h1 {
+            font-size: 24px;
+        }
+
+        .portal-obra-resumen {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 25px;
+            padding: 22px;
+        }
+
+        .portal-progreso {
+            width: 100%;
+        }
+
+        .portal-navegacion {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 5px;
+            overflow: visible;
+        }
+
+        .portal-navegacion a {
+            justify-content: flex-start;
+            min-width: 0;
+            padding: 12px 9px;
+            font-size: 11px;
+        }
+
+        .portal-navegacion a span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .portal-estadisticas {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .portal-card {
+            padding: 15px;
+        }
+
+        .portal-card strong {
+            font-size: 18px;
+        }
+
+        .portal-dos-columnas,
+        .portal-equipo {
+            grid-template-columns: 1fr;
+        }
+
+        .portal-panel {
+            padding: 17px;
+        }
+
+        .portal-galeria {
+            grid-template-columns: 1fr;
+        }
+
+        .portal-foto img {
+            height: 230px;
+        }
+
+        .portal-etapa {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .portal-dato {
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .portal-dato strong {
+            max-width: 100%;
+            text-align: left;
+        }
+
+        .portal-documento {
+            gap: 10px;
+        }
+
+        .portal-documento a {
+            padding: 8px 10px;
+        }
+
+        .portal-tabla {
+            min-width: 570px;
+        }
+    }
+
+    /* MÓVILES PEQUEÑOS */
+
+    @media (max-width: 380px) {
+        .portal-cliente {
+            padding: 14px 10px;
+        }
+
+        .portal-estadisticas {
+            grid-template-columns: 1fr;
+        }
+
+        .portal-navegacion a {
+            font-size: 10px;
+        }
+
+        .portal-obra-resumen {
+            padding: 17px;
+        }
+    }
+
+    /* ACCESIBILIDAD */
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .portal-cliente *,
+        .portal-cliente *::before,
+        .portal-cliente *::after {
+            animation-duration: .01ms !important;
+            transition-duration: .01ms !important;
+        }
+    }
 </style>
 
 <?php require_once __DIR__ . "/../../layouts/footer.php"; ?>

@@ -1,4 +1,3 @@
-
 <?php
 
 /**
@@ -31,35 +30,41 @@ $claseEstado = $clasesEstado[$estado] ?? "estado-pendiente";
 
 <main class="content fade-up">
 
-    <div class="page-header">
-        <div>
-            <span class="badge-id">GESTIÓN DE HERRAMIENTAS</span>
-            <h1 style="margin-top: 12px;">
-                Solicitud #<?= $idSolicitud ?>
-            </h1>
-            <p>
-                Consultá la información y el detalle de las herramientas solicitadas.
-            </p>
-        </div>
-         <?php if (isset($_SESSION["usuario"]["rol"]) && $_SESSION["usuario"]["rol"] === "Gerente"
-): ?>
-
-            <a
-                href="/empresa_constructora/controladores/SolicitudHerramientaController.php?accion=gestionar"
-                class="btn btn-secondary">
-                <i class="fa-solid fa-arrow-left"></i>
-                Volver a solicitudes
-            </a>
-        <?php else: ?>
-
-        <a
-            href="/empresa_constructora/controladores/SolicitudHerramientaController.php?accion=listar&id_obra=<?= $solicitud["id_obra"] ?? "" ?>"
-            class="btn btn-secondary">
-            <i class="fa-solid fa-arrow-left"></i>
-            Volver a solicitudes
-        </a>
-        <?php endif; ?>
+  <div class="page-header">
+    <div>
+        <span class="badge-id">GESTIÓN DE HERRAMIENTAS</span>
+        <h1 style="margin-top: 12px;">
+            Solicitud #<?= $idSolicitud ?>
+        </h1>
+        <p>
+            Consultá la información y el detalle de las herramientas solicitadas.
+        </p>
     </div>
+
+  <?php
+$idRolUsuario = (int)($_SESSION["usuario"]["id_rol"] ?? 0);
+?>
+
+<?php if (in_array($idRolUsuario, [2, 3, 5], true)): ?>
+
+    <a
+        href="/empresa_constructora/controladores/SolicitudHerramientaController.php?accion=gestionar"
+        class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i>
+        Volver a solicitudes
+    </a>
+
+<?php else: ?>
+
+    <a
+        href="/empresa_constructora/controladores/SolicitudHerramientaController.php?accion=listar"
+        class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i>
+        Volver a solicitudes
+    </a>
+
+<?php endif; ?>
+</div>
 
     <div class="detalle-grid">
 
@@ -135,10 +140,10 @@ $claseEstado = $clasesEstado[$estado] ?? "estado-pendiente";
 
                 <?php if (!empty($solicitud["observaciones"])): ?>
                     <p><?= nl2br(htmlspecialchars(
-                        $solicitud["observaciones"],
-                        ENT_QUOTES,
-                        "UTF-8"
-                    )) ?></p>
+                            $solicitud["observaciones"],
+                            ENT_QUOTES,
+                            "UTF-8"
+                        )) ?></p>
                 <?php else: ?>
                     <p class="text-secondary">
                         No se registraron observaciones para esta solicitud.
@@ -299,7 +304,7 @@ $claseEstado = $clasesEstado[$estado] ?? "estado-pendiente";
         color: var(--primary);
     }
 
-    .dato-item > strong {
+    .dato-item>strong {
         color: var(--text);
         font-size: 14px;
         overflow-wrap: anywhere;
@@ -396,7 +401,7 @@ $claseEstado = $clasesEstado[$estado] ?? "estado-pendiente";
         margin-bottom: 20px;
     }
 
-    .resumen-herramientas > div {
+    .resumen-herramientas>div {
         display: flex;
         flex-direction: column;
         gap: 4px;
@@ -467,7 +472,7 @@ $claseEstado = $clasesEstado[$estado] ?? "estado-pendiente";
         gap: 10px;
     }
 
-    .nombre-herramienta > i {
+    .nombre-herramienta>i {
         color: var(--primary);
     }
 

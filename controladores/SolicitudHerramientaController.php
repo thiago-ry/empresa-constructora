@@ -561,3 +561,4 @@ if (
     http_response_code(404);
     echo "Acción no válida.";
 }
+

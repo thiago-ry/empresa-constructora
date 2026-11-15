@@ -154,7 +154,7 @@ case "Cliente":
     break;
 
             case "Capataz":
-                header("Location: ../vistas/dashboard/capataz.php");
+                header("Location: ../controladores/DashboardCapatazController.php");
                 break;
         }
 

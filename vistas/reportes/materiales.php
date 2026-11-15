@@ -50,11 +50,15 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
 <main class="content">
 
-    <div class="page-title no-print">
+    <div class="page-title no-print" style="display: flex; justify-content: space-between; align-items: center;">
         <div>
             <h1>Reporte de Materiales</h1>
             <p>Stock, stock mínimo, movimientos de ingreso y egreso, entregas a obras y pedidos pendientes.</p>
         </div>
+        <a href="index.php" class="back">
+            <i class="fa-solid fa-arrow-left"></i>
+            Volver
+        </a>
     </div>
 
     <div class="alert-container cuatro no-print">

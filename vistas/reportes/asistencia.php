@@ -50,11 +50,15 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
 
 <main class="content">
 
-    <div class="page-title no-print">
+    <div class="page-title no-print" style="display: flex; justify-content: space-between; align-items: center;">
         <div>
             <h1>Reporte de Asistencia</h1>
             <p>Presentes, llegadas tarde, ausencias y horas trabajadas del personal de obra.</p>
         </div>
+         <a href="index.php" class="back">
+                <i class="fa-solid fa-arrow-left"></i>
+                Volver
+            </a>
     </div>
 
     <form method="get" class="toolbar no-print" style="margin-top:20px;">
@@ -101,7 +105,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
                 <tr>
                     <th>Empleado</th>
                     <th class="numero">Presentes</th>
-                    <th class="numero">Tardes</th>
                     <th class="numero">Ausentes</th>
                     <th>Asistencia</th>
                     <th class="numero">Horas</th>
@@ -117,7 +120,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
                     <tr>
                         <td><strong><?= e($nombre) ?></strong></td>
                         <td class="numero"><?= $p["Presente"] ?></td>
-                        <td class="numero"><?= $p["Tarde"] ?></td>
                         <td class="numero"><?= $p["Ausente"] ?></td>
                         <td style="min-width:140px;"><?= barraAvance($pct) ?></td>
                         <td class="numero"><?= e(Reporte::numero(round($p["horas"], 1))) ?></td>
@@ -147,7 +149,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
                 <select class="filter" data-filtro="tablaAsistencia" data-campo="estado" data-exportar-estado>
                     <option value="">Todos los estados</option>
                     <option value="Presente">Presentes</option>
-                    <option value="Tarde">Tardes</option>
                     <option value="Ausente">Ausentes</option>
                 </select>
             </div>
@@ -218,10 +219,6 @@ require_once __DIR__ . "/../../layouts/sidebar.php";
                     label: "Presente",
                     data: <?= json_encode(array_column(array_values($porDia), "Presente")) ?>,
                     backgroundColor: "#22c55e"
-                }, {
-                    label: "Tarde",
-                    data: <?= json_encode(array_column(array_values($porDia), "Tarde")) ?>,
-                    backgroundColor: "#f5b400"
                 }, {
                     label: "Ausente",
                     data: <?= json_encode(array_column(array_values($porDia), "Ausente")) ?>,

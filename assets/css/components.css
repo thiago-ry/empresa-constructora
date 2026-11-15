@@ -3059,3 +3059,27 @@ select:focus {
     color: white;
     font-weight: 500;
 }
+
+    .back {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        padding: 11px 17px;
+        border-radius: 11px;
+        background: #1a2736;
+        border: 1px solid #2c3b4d;
+        color: #dce5ef;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        transition: .2s ease;
+        white-space: nowrap;
+    }
+
+    .back:hover {
+        background: #253548;
+        border-color: #f4b400;
+        color: #f4b400;
+        transform: translateY(-2px);
+    }

@@ -1,4 +1,21 @@
 <?php
+
+/**@var array $resumenEtapas 
+ * @var array $etapas
+ * @var array $fotografias
+ * @var array $documentos
+ * @var array $empleados
+ * @var array $jefeObra
+ * @var array $capataz
+ * @var array $presupuestos
+ * @var array $presupuestoSeleccionado
+ * @var array $detallePresupuesto
+ * @var array $manoObraPresupuesto
+ * @var string $accion
+ * @var array $acciones
+ * @var array $avances 
+*/
+
 require_once __DIR__ . "/../../layouts/header.php";
 
 /*

@@ -50,15 +50,56 @@ class UsuarioController
             exit();
         }
 
-        if ($password != $usuarioEncontrado["contraseña"]) {
+$claveGuardada = $usuarioEncontrado["contraseña"];
 
-            echo "<script>
-                alert('Contraseña incorrecta');
-                window.location.href='../vistas/login.php';
-            </script>";
+$informacionHash = password_get_info($claveGuardada);
 
-            exit();
-        }
+if ($informacionHash["algoName"] !== "unknown") {
+
+    // La contraseña ya está almacenada como hash.
+    $passwordValida = password_verify(
+        $password,
+        $claveGuardada
+    );
+
+    if (
+        $passwordValida &&
+        password_needs_rehash($claveGuardada, PASSWORD_DEFAULT)
+    ) {
+        $this->usuario->cambiarContraseña(
+            $usuarioEncontrado["id_usuario"],
+            $password
+        );
+    }
+
+} else {
+
+    // Migración de una contraseña antigua en texto plano.
+    $passwordValida = hash_equals(
+        $claveGuardada,
+        $password
+    );
+
+    if ($passwordValida) {
+
+        $this->usuario->cambiarContraseña(
+            $usuarioEncontrado["id_usuario"],
+            $password
+        );
+    }
+}
+
+if (!$passwordValida) {
+
+    echo "<script>
+        alert('Contraseña incorrecta');
+        window.location.href='../vistas/login.php';
+    </script>";
+
+    exit();
+}
+
+session_regenerate_id(true);
 
         $this->usuario->registrarIngreso(
             $usuarioEncontrado["id_usuario"]
@@ -136,7 +177,10 @@ case "Cliente":
                 ? $_POST["salario"]
                 : null,
             "correo"=> $_POST["correo"],
-            "contraseña" => $_POST["contraseña"]            
+            "contraseña" => password_hash(
+    $_POST["contraseña"],
+    PASSWORD_DEFAULT
+)         
         ];
 
         if ($this->usuario->existeCorreo($datos["correo"])) {

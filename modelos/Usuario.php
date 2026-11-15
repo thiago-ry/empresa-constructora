@@ -761,8 +761,10 @@ public function obtenerEmpleados()
     }
 
 
- public function cambiarContraseña($id_usuario, $nuevaContraseña)
+public function cambiarContraseña($id_usuario, $nuevaContraseña)
 {
+    $hash = password_hash($nuevaContraseña, PASSWORD_DEFAULT);
+
     $sql = "UPDATE usuario
             SET contraseña = :nueva_contrasena
             WHERE id_usuario = :id_usuario";
@@ -770,7 +772,7 @@ public function obtenerEmpleados()
     $consulta = $this->conexion->prepare($sql);
 
     return $consulta->execute([
-        ":nueva_contrasena" => $nuevaContraseña,
+        ":nueva_contrasena" => $hash,
         ":id_usuario" => $id_usuario
     ]);
 }

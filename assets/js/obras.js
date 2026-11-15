@@ -1,36 +1,73 @@
-const buscar = document.getElementById("buscarObra");
-const estado = document.getElementById("filtroEstado");
-const filas = document.querySelectorAll("#tablaObras tbody tr");
 
-function filtrar() {
+document.addEventListener("DOMContentLoaded", function () {
 
-    const texto = buscar.value.toLowerCase().trim();
-    const estadoSeleccionado = estado.value.toLowerCase();
+    const buscar = document.getElementById("buscarObra");
+    const estado = document.getElementById("filtroEstado");
+    const tabla = document.getElementById("tablaObras");
 
-    filas.forEach(fila => {
+    if (!buscar || !estado || !tabla) {
+        console.error("No se encontraron los elementos del filtro de obras.");
+        return;
+    }
 
-        const nombre = fila.cells[0].textContent.toLowerCase();
-        const cliente = fila.cells[1].textContent.toLowerCase();
-        const direccion = fila.cells[2].textContent.toLowerCase();
-        const estadoTexto = fila.cells[6].textContent.trim().toLowerCase();
-        const estadoSeleccionado = estado.value.trim().toLowerCase();
+    const filas = tabla.querySelectorAll("tbody tr");
 
-        const coincideTexto =
-            nombre.includes(texto) ||
-            cliente.includes(texto) ||
-            direccion.includes(texto);
+    function normalizar(texto) {
+        return texto
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .trim();
+    }
 
-        const coincideEstado =
-            estadoSeleccionado === "" ||
-            estadoTexto === estadoSeleccionado;
+    function filtrar() {
 
-        fila.style.display = (coincideTexto && coincideEstado)
-            ? ""
-            : "none";
+        const texto = normalizar(buscar.value);
+        const estadoSeleccionado = normalizar(estado.value);
 
-    });
+        filas.forEach(function (fila) {
 
-}
+            const celdas = fila.cells;
 
-buscar.addEventListener("input", filtrar);
-estado.addEventListener("change", filtrar);
+            // Evitar procesar filas sin las columnas esperadas
+            if (celdas.length < 8) {
+                return;
+            }
+
+            const nombre = normalizar(celdas[0].textContent);
+            const cliente = normalizar(celdas[1].textContent);
+            const jefeObra = normalizar(celdas[2].textContent);
+            const capataz = normalizar(celdas[3].textContent);
+            const direccion = normalizar(celdas[4].textContent);
+            const fechaInicio = normalizar(celdas[5].textContent);
+            const fechaFin = normalizar(celdas[6].textContent);
+            const estadoTexto = normalizar(celdas[7].textContent);
+
+            // Búsqueda general
+            const coincideTexto =
+                nombre.includes(texto) ||
+                cliente.includes(texto) ||
+                jefeObra.includes(texto) ||
+                capataz.includes(texto) ||
+                direccion.includes(texto) ||
+                fechaInicio.includes(texto) ||
+                fechaFin.includes(texto);
+
+            // Filtro por estado
+            const coincideEstado =
+                estadoSeleccionado === "" ||
+                estadoTexto === estadoSeleccionado;
+
+            // Mostrar u ocultar fila
+            fila.style.display =
+                (coincideTexto && coincideEstado) ? "" : "none";
+
+        });
+
+    }
+
+    // Eventos
+    buscar.addEventListener("input", filtrar);
+    estado.addEventListener("change", filtrar);
+
+});

@@ -76,7 +76,7 @@ require_once __DIR__ . '/../../layouts/sidebar.php';
 
         <div class="indicador-presupuesto">
 
-            <div class="indicador-icono icono-total">📋</div>
+            <div class="indicador-icono icono-total"><i class="fa-solid fa-file-invoice"></i></div>
 
             <div>
                 <span>Total registrados</span>
@@ -88,7 +88,7 @@ require_once __DIR__ . '/../../layouts/sidebar.php';
 
         <div class="indicador-presupuesto">
 
-            <div class="indicador-icono icono-activo">📝</div>
+            <div class="indicador-icono icono-activo"><i class="fa-solid fa-file-alt"></i></div>
 
             <div>
                 <span>Activos</span>
@@ -153,7 +153,7 @@ require_once __DIR__ . '/../../layouts/sidebar.php';
 
                                 <div class="presupuesto-vacio">
 
-                                    <div class="vacio-icono">📋</div>
+                                    <div class="vacio-icono"><i class="fa-solid fa-file-invoice"></i></div>
 
                                     <h3>No hay presupuestos registrados</h3>
 

@@ -336,29 +336,29 @@ class PortalCliente
     public function obtenerPresupuestos($idObra)
     {
         $sql = "
-            SELECT
-                id_presupuesto,
-                id_obra,
-                nombre_presupuesto,
-                fecha,
-                version,
-                costo_total,
-                costo_final_con_impuestos,
-                CASE
-                    WHEN costo_final_con_impuestos > 0
-                    THEN costo_final_con_impuestos
-                    ELSE costo_total
-                END AS monto_cliente,
-                estado,
-                detalle_general,
-                fecha_aprobacion,
-                validez_dias,
-                forma_pago
-            FROM presupuesto
-            WHERE id_obra = :id_obra
-              AND estado IN ('Activo', 'Aprobado')
-            ORDER BY version DESC, fecha DESC
-        ";
+        SELECT
+            id_presupuesto,
+            id_obra,
+            nombre_presupuesto,
+            fecha,
+            version,
+            costo_total,
+            costo_final_con_impuestos,
+            CASE
+                WHEN costo_final_con_impuestos > 0
+                THEN costo_final_con_impuestos
+                ELSE costo_total
+            END AS monto_cliente,
+            estado,
+            detalle_general,
+            fecha_aprobacion,
+            id_usuario_aprobacion,
+            validez_dias,
+            forma_pago
+        FROM presupuesto
+        WHERE id_obra = :id_obra
+        ORDER BY version DESC, fecha DESC, id_presupuesto DESC
+    ";
 
         $stmt = $this->conexion->prepare($sql);
         $stmt->execute([
@@ -393,7 +393,6 @@ class PortalCliente
 
             WHERE dp.id_presupuesto = :id_presupuesto
               AND p.id_obra = :id_obra
-              AND p.estado IN ('Activo', 'Aprobado')
 
             ORDER BY dp.id_detalle ASC
         ";
@@ -427,7 +426,6 @@ class PortalCliente
 
             WHERE mo.id_presupuesto = :id_presupuesto
               AND p.id_obra = :id_obra
-              AND p.estado IN ('Activo', 'Aprobado')
 
             ORDER BY mo.id_mano_obra_pres ASC
         ";
@@ -440,4 +438,152 @@ class PortalCliente
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+public function responderPresupuesto(
+    $idPresupuesto,
+    $idObra,
+    $idCliente,
+    $decision
+) {
+    if (
+        $idPresupuesto <= 0 ||
+        $idObra <= 0 ||
+        $idCliente <= 0 ||
+        !in_array($decision, ["Aprobado", "Rechazado"], true)
+    ) {
+        return [
+            "ok" => false,
+            "mensaje" => "Los datos enviados no son válidos."
+        ];
+    }
+
+    try {
+        $this->conexion->beginTransaction();
+
+        // Bloquear la obra y verificar que pertenezca al cliente.
+        $sqlObra = "
+            SELECT id_obra
+            FROM obra
+            WHERE id_obra = :id_obra
+              AND id_usuario = :id_cliente
+              AND activo = 1
+            LIMIT 1
+            FOR UPDATE
+        ";
+
+        $stmtObra = $this->conexion->prepare($sqlObra);
+        $stmtObra->execute([
+            ":id_obra" => $idObra,
+            ":id_cliente" => $idCliente
+        ]);
+
+        if (!$stmtObra->fetch(PDO::FETCH_ASSOC)) {
+            $this->conexion->rollBack();
+
+            return [
+                "ok" => false,
+                "mensaje" => "No tenés autorización para responder este presupuesto."
+            ];
+        }
+
+        // Obtener la última versión de la obra.
+        $sqlPresupuesto = "
+            SELECT
+                id_presupuesto,
+                version,
+                estado
+            FROM presupuesto
+            WHERE id_obra = :id_obra
+            ORDER BY version DESC, fecha DESC, id_presupuesto DESC
+            LIMIT 1
+            FOR UPDATE
+        ";
+
+        $stmtPresupuesto = $this->conexion->prepare($sqlPresupuesto);
+        $stmtPresupuesto->execute([
+            ":id_obra" => $idObra
+        ]);
+
+        $ultimo = $stmtPresupuesto->fetch(PDO::FETCH_ASSOC);
+
+        if (
+            !$ultimo ||
+            (int)$ultimo["id_presupuesto"] !== $idPresupuesto ||
+            $ultimo["estado"] !== "Activo"
+        ) {
+            $this->conexion->rollBack();
+
+            return [
+                "ok" => false,
+                "mensaje" => "Este presupuesto ya no está vigente. Solo podés responder la última versión activa."
+            ];
+        }
+
+        // Actualizar únicamente la versión vigente y activa.
+        $sqlActualizar = "
+            UPDATE presupuesto p
+            INNER JOIN obra o
+                ON o.id_obra = p.id_obra
+            SET
+                p.estado = :estado,
+                p.fecha_aprobacion = NOW(),
+                p.id_usuario_aprobacion = :id_cliente
+            WHERE p.id_presupuesto = :id_presupuesto
+              AND p.id_obra = :id_obra
+              AND o.id_usuario = :id_cliente
+              AND o.activo = 1
+              AND p.estado = 'Activo'
+              AND p.version = (
+                  SELECT ultima.version
+                  FROM (
+                      SELECT MAX(version) AS version
+                      FROM presupuesto
+                      WHERE id_obra = :id_obra_version
+                  ) AS ultima
+              )
+        ";
+
+        $stmtActualizar = $this->conexion->prepare($sqlActualizar);
+
+        $stmtActualizar->execute([
+            ":estado" => $decision,
+            ":id_cliente" => $idCliente,
+            ":id_presupuesto" => $idPresupuesto,
+            ":id_obra" => $idObra,
+            ":id_obra_version" => $idObra
+        ]);
+
+        if ($stmtActualizar->rowCount() !== 1) {
+            $this->conexion->rollBack();
+
+            return [
+                "ok" => false,
+                "mensaje" => "No se pudo registrar la decisión. El presupuesto pudo haber cambiado."
+            ];
+        }
+
+        $this->conexion->commit();
+
+        return [
+            "ok" => true,
+            "mensaje" => $decision === "Aprobado"
+                ? "El presupuesto fue aprobado correctamente."
+                : "El presupuesto fue rechazado correctamente."
+        ];
+
+    } catch (Exception $e) {
+
+        if ($this->conexion->inTransaction()) {
+            $this->conexion->rollBack();
+        }
+
+        error_log("Error al responder presupuesto: " . $e->getMessage());
+
+        return [
+            "ok" => false,
+            "mensaje" => "Ocurrió un error al procesar la decisión del presupuesto."
+        ];
+    }
+}
+
 }

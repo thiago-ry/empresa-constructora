@@ -17,12 +17,16 @@ if (!isset($_SESSION["usuario"])) {
 }
 
 // Solamente puede ingresar el rol Cliente.
-if ((int)$_SESSION["usuario"]["id_rol"] !== 6) {
+if ((int)($_SESSION["usuario"]["id_rol"] ?? 0) !== 6) {
     http_response_code(403);
     exit("No tenés autorización para acceder a este apartado.");
 }
 
-$idCliente = (int)$_SESSION["usuario"]["id"];
+$idCliente = (int)(
+    $_SESSION["usuario"]["id_usuario"]
+    ?? $_SESSION["usuario"]["id"]
+    ?? 0
+);
 
 if ($idCliente <= 0) {
     http_response_code(401);
@@ -39,7 +43,7 @@ $cliente = new PortalCliente();
 // ACCIÓN SOLICITADA
 // ==========================================
 
-$accion = $_GET["accion"] ?? "dashboard";
+$accion = $_POST["accion"] ?? $_GET["accion"] ?? "dashboard";
 
 $accionesPermitidas = [
     "dashboard",
@@ -49,7 +53,9 @@ $accionesPermitidas = [
     "fotos",
     "documentos",
     "equipo",
-    "presupuesto"
+    "presupuesto",
+    "aprobar_presupuesto",
+    "rechazar_presupuesto"
 ];
 
 if (!in_array($accion, $accionesPermitidas, true)) {
@@ -64,11 +70,15 @@ if (!in_array($accion, $accionesPermitidas, true)) {
 $obrasCliente = $cliente->obtenerObrasCliente($idCliente);
 
 $obraActual = null;
-$idObra = (int)($_GET["id_obra"] ?? 0);
+
+$idObra = (int)(
+    $_POST["id_obra"]
+    ?? $_GET["id_obra"]
+    ?? 0
+);
 
 if (!empty($obrasCliente)) {
 
-    // Si no se especifica una obra, se selecciona la primera.
     if ($idObra <= 0) {
         $idObra = (int)$obrasCliente[0]["id_obra"];
     }
@@ -83,6 +93,56 @@ if (!empty($obrasCliente)) {
         http_response_code(403);
         exit("No tenés autorización para consultar esta obra.");
     }
+}
+
+// ==========================================
+// RESPUESTA DEL CLIENTE AL PRESUPUESTO
+// ==========================================
+
+if (
+    $_SERVER["REQUEST_METHOD"] === "POST" &&
+    in_array($accion, [
+        "aprobar_presupuesto",
+        "rechazar_presupuesto"
+    ], true)
+) {
+
+    if (!$obraActual) {
+        http_response_code(403);
+        exit("No tenés autorización para responder este presupuesto.");
+    }
+
+    $idPresupuesto = (int)(
+        $_POST["id_presupuesto"] ?? 0
+    );
+
+    $decision = $accion === "aprobar_presupuesto"
+        ? "Aprobado"
+        : "Rechazado";
+
+    $resultado = $cliente->responderPresupuesto(
+        $idPresupuesto,
+        $idObra,
+        $idCliente,
+        $decision
+    );
+
+    $_SESSION["mensaje_presupuesto"] = $resultado["mensaje"];
+
+    $_SESSION["tipo_mensaje_presupuesto"] = $resultado["ok"]
+        ? "success"
+        : "error";
+
+    header(
+        "Location: PortalClienteController.php?" .
+        http_build_query([
+            "accion" => "presupuesto",
+            "id_obra" => $idObra,
+            "id_presupuesto" => $idPresupuesto
+        ])
+    );
+
+    exit();
 }
 
 // ==========================================
@@ -188,8 +248,11 @@ $tituloPortal = "Portal del cliente";
 
 $rutaCliente = "../controladores/PortalClienteController.php";
 
-$nombreCliente = $_SESSION["usuario"]["nombre"] . " " .
-                 $_SESSION["usuario"]["apellido"];
+$nombreCliente = (
+    $_SESSION["usuario"]["nombre"] ?? ""
+) . " " . (
+    $_SESSION["usuario"]["apellido"] ?? ""
+);
 
 // ==========================================
 // CARGAR VISTA

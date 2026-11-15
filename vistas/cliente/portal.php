@@ -1,62 +1,140 @@
 <?php
 require_once __DIR__ . "/../../layouts/header.php";
 
-function escapar($valor)
+/*
+|--------------------------------------------------------------------------
+| FUNCIONES AUXILIARES
+|--------------------------------------------------------------------------
+*/
+
+function escapar($valor): string
 {
     return htmlspecialchars((string)($valor ?? ""), ENT_QUOTES, "UTF-8");
 }
 
-function fechaPortal($fecha)
+function fechaPortal($fecha): string
 {
     if (empty($fecha)) {
         return "No especificada";
     }
 
-    return date("d/m/Y", strtotime($fecha));
+    $timestamp = strtotime($fecha);
+
+    return $timestamp !== false
+        ? date("d/m/Y", $timestamp)
+        : "No especificada";
 }
 
-function dineroPortal($valor)
+function dineroPortal($valor): string
 {
-    return "$ " . number_format((float)$valor, 2, ",", ".");
+    return "$ " . number_format((float)($valor ?? 0), 2, ",", ".");
 }
 
-$accionActual = $accion ?? "dashboard";
-$obra = $obraActual ?? null;
+function urlPortal(string $base, string $accion, int $idObra): string
+{
+    return $base . "?accion=" . urlencode($accion) .
+        "&id_obra=" . $idObra;
+}
+
+/*
+|--------------------------------------------------------------------------
+| NORMALIZACIÓN DE VARIABLES
+|--------------------------------------------------------------------------
+*/
+
+$accionActual = $accion ?? ($_GET["accion"] ?? "dashboard");
+
+$obra = is_array($obraActual ?? null)
+    ? $obraActual
+    : null;
+
 $idObraActual = (int)($obra["id_obra"] ?? 0);
 
 $nombreObra = $obra["nombre_obra"] ?? "Mi obra";
+
 $estadoObra = $obra["estado"] ?? "Sin estado";
 
-$estados = [
-    "Planificacion" => "Planificación",
-    "En Proceso" => "En proceso",
-    "Finalizada" => "Finalizada",
-    "Suspendida" => "Suspendida",
-    "Cancelada" => "Cancelada"
-];
-
-$estadoMostrar = $estados[$estadoObra] ?? $estadoObra;
-$porcentajeAvance = (int)($resumenEtapas["avance"] ?? 0);
-$porcentajeAvance = max(0, min(100, $porcentajeAvance));
-
-$acciones = [
-    "dashboard" => ["Inicio", "fa-house"],
-    "obra" => ["Mi obra", "fa-building"],
-    "avances" => ["Avances diarios", "fa-chart-line"],
-    "etapas" => ["Etapas", "fa-list-check"],
-    "fotos" => ["Fotografías", "fa-camera"],
-    "documentos" => ["Documentación", "fa-folder-open"],
-    "equipo" => ["Equipo de trabajo", "fa-users"],
-    "presupuesto" => ["Presupuesto", "fa-file-invoice-dollar"]
-];
+$estadoMostrar = $estadoMostrar ?? $estadoObra;
 
 $baseUrl = $rutaCliente ?? "../controladores/PortalClienteController.php";
 
-function urlPortal($base, $accion, $idObra)
-{
-    return $base . "?accion=" . urlencode($accion) .
-        "&id_obra=" . (int)$idObra;
+/*
+ * El controlador puede entregar el porcentaje dentro de $resumenEtapas.
+ * Se admiten ambas claves porque el resumen del portal utiliza "avance"
+ * y algunas versiones del modelo utilizan "porcentaje_avance".
+ */
+$resumenEtapas = is_array($resumenEtapas ?? null)
+    ? $resumenEtapas
+    : [];
+
+$porcentajeFuente = $resumenEtapas["porcentaje_avance"]
+    ?? $resumenEtapas["avance"]
+    ?? $porcentajeAvance
+    ?? null;
+
+/*
+ * Respaldo: si el controlador no envió el porcentaje, se calcula
+ * contando las etapas finalizadas, igual que el criterio de avance
+ * utilizado por el módulo de Etapas.
+ */
+if (!is_numeric($porcentajeFuente)) {
+    $totalEtapas = count($etapas);
+    $etapasFinalizadas = 0;
+
+    foreach ($etapas as $etapaProgreso) {
+        $estadoProgreso = strtolower(trim((string)($etapaProgreso["estado"] ?? "")));
+
+        if ($estadoProgreso === "finalizada") {
+            $etapasFinalizadas++;
+        }
+    }
+
+    $porcentajeFuente = $totalEtapas > 0
+        ? round(($etapasFinalizadas / $totalEtapas) * 100)
+        : 0;
 }
+
+$porcentajeAvance = round(max(
+    0,
+    min(100, (float)$porcentajeFuente)
+));
+
+$acciones = is_array($acciones ?? null) ? $acciones : [
+    "dashboard" => ["Resumen", "fa-chart-pie"],
+    "obra" => ["Mi obra", "fa-building"],
+    "avances" => ["Avances", "fa-list-check"],
+    "etapas" => ["Etapas", "fa-bars-progress"],
+    "fotos" => ["Fotografías", "fa-camera"],
+    "documentos" => ["Documentos", "fa-folder-open"],
+    "equipo" => ["Equipo", "fa-users"],
+    "presupuesto" => ["Presupuesto", "fa-file-invoice-dollar"]
+];
+
+$avances = is_array($avances ?? null) ? $avances : [];
+$etapas = is_array($etapas ?? null) ? $etapas : [];
+$fotografias = is_array($fotografias ?? null) ? $fotografias : [];
+$documentos = is_array($documentos ?? null) ? $documentos : [];
+$empleados = is_array($empleados ?? null) ? $empleados : [];
+
+$jefeObra = is_array($jefeObra ?? null) ? $jefeObra : [];
+$capataz = is_array($capataz ?? null) ? $capataz : [];
+
+$presupuestos = is_array($presupuestos ?? null)
+    ? $presupuestos
+    : [];
+
+$presupuestoSeleccionado = is_array($presupuestoSeleccionado ?? null)
+    ? $presupuestoSeleccionado
+    : [];
+
+$detallePresupuesto = is_array($detallePresupuesto ?? null)
+    ? $detallePresupuesto
+    : [];
+
+$manoObraPresupuesto = is_array($manoObraPresupuesto ?? null)
+    ? $manoObraPresupuesto
+    : [];
+
 ?>
 
 <main class="portal-cliente">
@@ -65,9 +143,7 @@ function urlPortal($base, $accion, $idObra)
         <div>
             <span class="portal-etiqueta">PORTAL DEL CLIENTE</span>
             <h1>
-                <?php
-                echo escapar($acciones[$accionActual][0] ?? "Mi portal");
-                ?>
+                <?php echo escapar($acciones[$accionActual][0] ?? "Mi portal"); ?>
             </h1>
             <p>Consultá el estado y el progreso de tu obra.</p>
         </div>
@@ -105,7 +181,13 @@ function urlPortal($base, $accion, $idObra)
                     <span>Progreso de etapas</span>
                     <strong><?php echo $porcentajeAvance; ?>%</strong>
                 </div>
-                <div class="progreso-barra">
+                <div
+                    class="progreso-barra"
+                    role="progressbar"
+                    aria-label="Progreso de etapas de la obra"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    aria-valuenow="<?php echo $porcentajeAvance; ?>">
                     <div style="width: <?php echo $porcentajeAvance; ?>%"></div>
                 </div>
             </div>
@@ -116,8 +198,8 @@ function urlPortal($base, $accion, $idObra)
                 <a
                     href="<?php echo escapar(urlPortal($baseUrl, $clave, $idObraActual)); ?>"
                     class="<?php echo $accionActual === $clave ? "activo" : ""; ?>">
-                    <i class="fa-solid <?php echo escapar($datos[1]); ?>"></i>
-                    <span><?php echo escapar($datos[0]); ?></span>
+                    <i class="fa-solid <?php echo escapar($datos[1] ?? "fa-circle"); ?>"></i>
+                    <span><?php echo escapar($datos[0] ?? $clave); ?></span>
                 </a>
             <?php endforeach; ?>
         </nav>
@@ -148,13 +230,13 @@ function urlPortal($base, $accion, $idObra)
                     <div class="portal-card">
                         <div class="card-icono"><i class="fa-solid fa-list-check"></i></div>
                         <span>Etapas registradas</span>
-                        <strong><?php echo count($etapas ?? []); ?></strong>
+                        <strong><?php echo count($etapas); ?></strong>
                     </div>
 
                     <div class="portal-card">
                         <div class="card-icono"><i class="fa-solid fa-camera"></i></div>
                         <span>Fotografías</span>
-                        <strong><?php echo count($fotografias ?? []); ?></strong>
+                        <strong><?php echo count($fotografias); ?></strong>
                     </div>
 
                 </div>
@@ -199,7 +281,7 @@ function urlPortal($base, $accion, $idObra)
                                 <div class="portal-lista-item">
                                     <div class="lista-punto"></div>
                                     <div>
-                                        <strong><?php echo escapar($avance["descripcion"]); ?></strong>
+                                        <strong><?php echo escapar($avance["descripcion"] ?? "Sin descripción"); ?></strong>
                                         <small><?php echo fechaPortal($avance["fecha"] ?? null); ?></small>
                                     </div>
                                 </div>
@@ -263,7 +345,7 @@ function urlPortal($base, $accion, $idObra)
                             <div class="portal-lista-item">
                                 <div class="lista-punto"></div>
                                 <div>
-                                    <strong><?php echo escapar($avance["descripcion"]); ?></strong>
+                                    <strong><?php echo escapar($avance["descripcion"] ?? "Sin descripción"); ?></strong>
                                     <small><?php echo fechaPortal($avance["fecha"] ?? null); ?></small>
                                 </div>
                             </div>
@@ -289,7 +371,7 @@ function urlPortal($base, $accion, $idObra)
                             ?>
                             <div class="portal-etapa">
                                 <div>
-                                    <strong><?php echo escapar($etapa["nombre_etapa"]); ?></strong>
+                                    <strong><?php echo escapar($etapa["nombre_etapa"] ?? "Etapa sin nombre"); ?></strong>
                                     <p><?php echo escapar($etapa["descripcion"] ?? "Sin descripción"); ?></p>
                                     <small>
                                         Inicio: <?php echo fechaPortal($etapa["fecha_inicio"] ?? null); ?>
@@ -317,9 +399,9 @@ function urlPortal($base, $accion, $idObra)
                     <div class="portal-galeria">
                         <?php foreach ($fotografias as $foto): ?>
                             <div class="portal-foto">
-                                <a href="<?php echo escapar($foto["ruta_imagen"]); ?>" target="_blank" rel="noopener">
+                                <a href="<?php echo escapar($foto["ruta_imagen"] ?? ""); ?>" target="_blank" rel="noopener">
                                     <img
-                                        src="<?php echo escapar($foto["ruta_imagen"]); ?>"
+                                        src="<?php echo escapar($foto["ruta_imagen"] ?? ""); ?>"
                                         alt="Fotografía de la obra">
                                 </a>
                                 <div>
@@ -350,7 +432,7 @@ function urlPortal($base, $accion, $idObra)
                                     <i class="fa-solid fa-file-lines"></i>
                                 </div>
                                 <div class="documento-info">
-                                    <strong><?php echo escapar($documento["nombre_archivo"]); ?></strong>
+                                    <strong><?php echo escapar($documento["nombre_archivo"] ?? "Documento"); ?></strong>
                                     <small>
                                         <?php echo escapar($documento["tipo_documento"] ?? "Documento"); ?>
                                         · <?php echo fechaPortal($documento["fecha_subida"] ?? null); ?>
@@ -444,105 +526,418 @@ function urlPortal($base, $accion, $idObra)
 
             <?php elseif ($accionActual === "presupuesto"): ?>
 
-                <div class="portal-seccion-titulo">
-                    <h2>Presupuesto de la obra</h2>
-                    <p>Consultá los presupuestos disponibles y sus conceptos.</p>
-                </div>
+                <?php
+                /*
+                |--------------------------------------------------------------------------
+                | ESTADO Y VIGENCIA DEL PRESUPUESTO
+                |--------------------------------------------------------------------------
+                */
 
-                <?php if (!empty($presupuestos)): ?>
+                $esUltimoPresupuesto = false;
+                $puedeResponderPresupuesto = false;
 
-                    <?php if (count($presupuestos) > 1): ?>
-                        <div class="portal-panel">
-                            <label for="seleccionarPresupuesto">Seleccionar presupuesto</label>
+                if (!empty($presupuestos) && !empty($presupuestoSeleccionado)) {
+
+                    $ultimoPresupuesto = $presupuestos[0] ?? [];
+
+                    $esUltimoPresupuesto =
+                        (int)($ultimoPresupuesto["id_presupuesto"] ?? 0) ===
+                        (int)($presupuestoSeleccionado["id_presupuesto"] ?? 0);
+
+                    $puedeResponderPresupuesto =
+                        $esUltimoPresupuesto &&
+                        ($presupuestoSeleccionado["estado"] ?? "") === "Activo";
+                }
+
+                $estadoPresupuesto = $presupuestoSeleccionado["estado"] ?? "Sin estado";
+
+                $coloresEstado = [
+                    "Activo" => "#f4b400",
+                    "Aprobado" => "#22c55e",
+                    "Rechazado" => "#ef4444",
+                    "Inactivo" => "#94a3b8"
+                ];
+
+                $colorEstado = $coloresEstado[$estadoPresupuesto] ?? "#94a3b8";
+
+                $mensajePresupuesto = $_SESSION["mensaje_presupuesto"] ?? null;
+                $tipoMensajePresupuesto = $_SESSION["tipo_mensaje_presupuesto"] ?? "success";
+
+                unset(
+                    $_SESSION["mensaje_presupuesto"],
+                    $_SESSION["tipo_mensaje_presupuesto"]
+                );
+                ?>
+
+                <section class="presupuesto-cliente">
+
+                    <div class="presupuesto-encabezado">
+                        <div>
+                            <span class="presupuesto-etiqueta">DOCUMENTACIÓN ECONÓMICA</span>
+                            <h2>Presupuestos de obra</h2>
+                            <p>
+                                Consultá las versiones, los costos y el estado de cada presupuesto.
+                            </p>
+                        </div>
+                    </div>
+
+                    <?php if (!empty($mensajePresupuesto)): ?>
+                        <div class="mensaje-presupuesto <?php echo escapar($tipoMensajePresupuesto); ?>">
+                            <?php echo escapar($mensajePresupuesto); ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (empty($presupuestos)): ?>
+
+                        <div class="presupuesto-vacio">
+                            <h3>Todavía no hay presupuestos</h3>
+                            <p>
+                                Cuando se genere un presupuesto para esta obra,
+                                vas a poder consultarlo desde este apartado.
+                            </p>
+                        </div>
+
+                    <?php elseif (empty($presupuestoSeleccionado)): ?>
+
+                        <div class="presupuesto-vacio">
+                            <h3>No se pudo seleccionar el presupuesto</h3>
+                            <p>
+                                No se encontró una versión válida para mostrar.
+                                Volvé a ingresar al apartado para consultar los presupuestos disponibles.
+                            </p>
+                        </div>
+
+                    <?php else: ?>
+
+                        <div class="presupuesto-selector">
+                            <label for="selectorPresupuesto">Seleccionar versión</label>
+
                             <select
-                                id="seleccionarPresupuesto"
-                                onchange="window.location.href=this.value">
+                                id="selectorPresupuesto"
+                                onchange="cambiarVersionPresupuesto(this.value)">
+
                                 <?php foreach ($presupuestos as $p): ?>
                                     <option
-                                        value="<?php echo escapar(urlPortal($baseUrl, "presupuesto", $idObraActual) . "&id_presupuesto=" . (int)$p["id_presupuesto"]); ?>"
-                                        <?php echo ((int)$p["id_presupuesto"] === (int)($presupuestoSeleccionado["id_presupuesto"] ?? 0)) ? "selected" : ""; ?>>
-                                        <?php echo escapar($p["nombre_presupuesto"]); ?>
-                                        - Versión <?php echo escapar($p["version"]); ?>
+                                        value="<?php echo (int)($p["id_presupuesto"] ?? 0); ?>"
+                                        <?php
+                                        echo (
+                                            (int)($p["id_presupuesto"] ?? 0) ===
+                                            (int)($presupuestoSeleccionado["id_presupuesto"] ?? 0)
+                                        ) ? "selected" : "";
+                                        ?>>
+                                        <?php echo escapar($p["nombre_presupuesto"] ?? "Presupuesto"); ?>
+                                        - Versión <?php echo (int)($p["version"] ?? 0); ?>
+                                        (<?php echo escapar($p["estado"] ?? "Sin estado"); ?>)
                                     </option>
                                 <?php endforeach; ?>
+
                             </select>
                         </div>
-                    <?php endif; ?>
 
-                    <?php if (!empty($presupuestoSeleccionado)): ?>
+                        <div class="presupuesto-tarjeta">
 
-                        <div class="portal-presupuesto-total">
-                            <span>
-                                <?php echo escapar($presupuestoSeleccionado["nombre_presupuesto"]); ?>
-                            </span>
-                            <strong>
-                                <?php echo dineroPortal($presupuestoSeleccionado["monto_cliente"] ?? 0); ?>
-                            </strong>
-                            <small>
-                                Versión <?php echo escapar($presupuestoSeleccionado["version"]); ?>
-                                · <?php echo fechaPortal($presupuestoSeleccionado["fecha"] ?? null); ?>
-                            </small>
-                        </div>
+                            <div class="presupuesto-tarjeta-superior">
 
-                        <div class="portal-panel">
-                            <h3>Materiales y conceptos</h3>
+                                <div>
+                                    <span class="presupuesto-etiqueta">PRESUPUESTO</span>
 
-                            <?php if (!empty($detallePresupuesto)): ?>
-                                <div class="portal-tabla-contenedor">
-                                    <table class="portal-tabla">
-                                        <thead>
-                                            <tr>
-                                                <th>Concepto</th>
-                                                <th>Unidad</th>
-                                                <th>Cantidad</th>
-                                                <th>Subtotal</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach ($detallePresupuesto as $detalle): ?>
-                                                <tr>
-                                                    <td>
-                                                        <strong><?php echo escapar($detalle["nombre_rubro"] ?? $detalle["descripcion"] ?? "Concepto"); ?></strong>
-                                                        <?php if (!empty($detalle["descripcion"])): ?>
-                                                            <small><?php echo escapar($detalle["descripcion"]); ?></small>
-                                                        <?php endif; ?>
-                                                    </td>
-                                                    <td><?php echo escapar($detalle["unidad_medida"] ?? "-"); ?></td>
-                                                    <td><?php echo escapar($detalle["cantidad"] ?? "-"); ?></td>
-                                                    <td><?php echo dineroPortal($detalle["subtotal"] ?? 0); ?></td>
-                                                </tr>
-                                            <?php endforeach; ?>
-                                        </tbody>
-                                    </table>
+                                    <h3>
+                                        <?php echo escapar($presupuestoSeleccionado["nombre_presupuesto"] ?? "Presupuesto"); ?>
+                                    </h3>
+
+                                    <p>
+                                        Versión <?php echo (int)($presupuestoSeleccionado["version"] ?? 0); ?>
+                                        ·
+                                        <?php echo fechaPortal($presupuestoSeleccionado["fecha"] ?? null); ?>
+                                    </p>
                                 </div>
-                            <?php else: ?>
-                                <p class="portal-sin-datos">No hay conceptos de materiales registrados.</p>
-                            <?php endif; ?>
-                        </div>
 
-                        <?php if (!empty($manoObraPresupuesto)): ?>
-                            <div class="portal-panel">
-                                <h3>Mano de obra presupuestada</h3>
+                                <span
+                                    class="estado-presupuesto"
+                                    style="--estado-color: <?php echo escapar($colorEstado); ?>">
+                                    <?php echo escapar($estadoPresupuesto); ?>
+                                </span>
 
-                                <?php foreach ($manoObraPresupuesto as $trabajo): ?>
-                                    <div class="portal-dato">
-                                        <span>
-                                            <?php echo escapar($trabajo["descripcion"]); ?>
-                                            (<?php echo escapar($trabajo["cantidad_horas"]); ?> horas)
-                                        </span>
-                                        <strong><?php echo dineroPortal($trabajo["subtotal"] ?? 0); ?></strong>
-                                    </div>
-                                <?php endforeach; ?>
                             </div>
-                        <?php endif; ?>
+
+                            <div class="presupuesto-total">
+
+                                <span>Importe total del presupuesto</span>
+
+                                <strong>
+                                    <?php echo dineroPortal($presupuestoSeleccionado["monto_cliente"] ?? 0); ?>
+                                </strong>
+
+                            </div>
+
+                            <?php if (!empty($presupuestoSeleccionado["detalle_general"])): ?>
+                                <div class="presupuesto-descripcion">
+                                    <h4>Descripción general</h4>
+
+                                    <p>
+                                        <?php echo nl2br(escapar($presupuestoSeleccionado["detalle_general"])); ?>
+                                    </p>
+                                </div>
+                            <?php endif; ?>
+
+                            <div class="presupuesto-informacion">
+
+                                <div>
+                                    <span>Validez</span>
+                                    <strong>
+                                        <?php echo (int)($presupuestoSeleccionado["validez_dias"] ?? 0); ?>
+                                        días
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Forma de pago</span>
+                                    <strong>
+                                        <?php echo escapar($presupuestoSeleccionado["forma_pago"] ?? "No especificada"); ?>
+                                    </strong>
+                                </div>
+
+                            </div>
+
+                            <div class="presupuesto-detalles">
+
+                                <h4>Detalle de materiales y conceptos</h4>
+
+                                <?php if (!empty($detallePresupuesto)): ?>
+
+                                    <div class="tabla-presupuesto-contenedor">
+                                        <table class="tabla-presupuesto">
+
+                                            <thead>
+                                                <tr>
+                                                    <th>Concepto</th>
+                                                    <th>Unidad</th>
+                                                    <th>Cantidad</th>
+                                                    <th>Subtotal</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <?php foreach ($detallePresupuesto as $detalle): ?>
+                                                    <tr>
+                                                        <td>
+                                                            <?php echo escapar($detalle["concepto"] ?? $detalle["descripcion"] ?? ""); ?>
+                                                        </td>
+
+                                                        <td>
+                                                            <?php echo escapar($detalle["unidad_medida"] ?? "-"); ?>
+                                                        </td>
+
+                                                        <td>
+                                                            <?php
+                                                            echo number_format(
+                                                                (float)($detalle["cantidad"] ?? 0),
+                                                                2,
+                                                                ",",
+                                                                "."
+                                                            );
+                                                            ?>
+                                                        </td>
+
+                                                        <td>
+                                                            <?php echo dineroPortal($detalle["subtotal"] ?? 0); ?>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+
+                                <?php else: ?>
+
+                                    <p class="presupuesto-sin-detalles">
+                                        No hay materiales registrados en esta versión.
+                                    </p>
+
+                                <?php endif; ?>
+
+                            </div>
+
+                            <div class="presupuesto-detalles">
+
+                                <h4>Mano de obra</h4>
+
+                                <?php if (!empty($manoObraPresupuesto)): ?>
+
+                                    <div class="tabla-presupuesto-contenedor">
+                                        <table class="tabla-presupuesto">
+
+                                            <thead>
+                                                <tr>
+                                                    <th>Trabajo</th>
+                                                    <th>Horas</th>
+                                                    <th>Subtotal</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <?php foreach ($manoObraPresupuesto as $trabajo): ?>
+                                                    <tr>
+                                                        <td>
+                                                            <?php echo escapar($trabajo["descripcion"] ?? "Sin descripción"); ?>
+                                                        </td>
+
+                                                        <td>
+                                                            <?php
+                                                            echo number_format(
+                                                                (float)($trabajo["cantidad_horas"] ?? 0),
+                                                                2,
+                                                                ",",
+                                                                "."
+                                                            );
+                                                            ?>
+                                                        </td>
+
+                                                        <td>
+                                                            <?php echo dineroPortal($trabajo["subtotal"] ?? 0); ?>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+
+                                <?php else: ?>
+
+                                    <p class="presupuesto-sin-detalles">
+                                        No hay trabajos de mano de obra registrados.
+                                    </p>
+
+                                <?php endif; ?>
+
+                            </div>
+
+                            <?php if ($puedeResponderPresupuesto): ?>
+
+                                <div class="presupuesto-decision">
+
+                                    <div>
+                                        <h4>Decisión del presupuesto</h4>
+
+                                        <p>
+                                            Revisá los importes y las condiciones.
+                                            Podés aprobar o rechazar esta versión.
+                                        </p>
+                                    </div>
+
+                                    <div class="presupuesto-acciones">
+
+                                        <form
+                                            method="POST"
+                                            action="<?php echo escapar($baseUrl); ?>"
+                                            onsubmit="return confirm('¿Estás seguro de que querés aprobar este presupuesto? Esta decisión quedará registrada.');">
+
+                                            <input
+                                                type="hidden"
+                                                name="accion"
+                                                value="aprobar_presupuesto">
+
+                                            <input
+                                                type="hidden"
+                                                name="id_obra"
+                                                value="<?php echo (int)$idObraActual; ?>">
+
+                                            <input
+                                                type="hidden"
+                                                name="id_presupuesto"
+                                                value="<?php echo (int)($presupuestoSeleccionado["id_presupuesto"] ?? 0); ?>">
+
+                                            <button type="submit" class="btn-aprobar-presupuesto">
+                                                Aprobar presupuesto
+                                            </button>
+                                        </form>
+
+                                        <form
+                                            method="POST"
+                                            action="<?php echo escapar($baseUrl); ?>"
+                                            onsubmit="return confirm('¿Estás seguro de que querés rechazar este presupuesto?');">
+
+                                            <input
+                                                type="hidden"
+                                                name="accion"
+                                                value="rechazar_presupuesto">
+
+                                            <input
+                                                type="hidden"
+                                                name="id_obra"
+                                                value="<?php echo (int)$idObraActual; ?>">
+
+                                            <input
+                                                type="hidden"
+                                                name="id_presupuesto"
+                                                value="<?php echo (int)($presupuestoSeleccionado["id_presupuesto"] ?? 0); ?>">
+
+                                            <button type="submit" class="btn-rechazar-presupuesto">
+                                                Rechazar presupuesto
+                                            </button>
+                                        </form>
+
+                                    </div>
+
+                                </div>
+
+                            <?php elseif ($estadoPresupuesto === "Inactivo"): ?>
+
+                                <div class="presupuesto-aviso">
+                                    Esta versión quedó inactiva porque se generó una versión más reciente.
+                                    Ya no es posible aprobarla ni rechazarla.
+                                </div>
+
+                            <?php elseif ($estadoPresupuesto === "Aprobado"): ?>
+
+                                <div class="presupuesto-aviso aprobado">
+                                    Este presupuesto ya fue aprobado.
+
+                                    <?php if (!empty($presupuestoSeleccionado["fecha_aprobacion"])): ?>
+                                        <br>
+                                        Fecha de decisión:
+                                        <?php
+                                        $fechaAprobacion = strtotime($presupuestoSeleccionado["fecha_aprobacion"]);
+
+                                        echo $fechaAprobacion !== false
+                                            ? date("d/m/Y H:i", $fechaAprobacion)
+                                            : "No especificada";
+                                        ?>
+                                    <?php endif; ?>
+                                </div>
+
+                            <?php elseif ($estadoPresupuesto === "Rechazado"): ?>
+
+                                <div class="presupuesto-aviso rechazado">
+                                    Este presupuesto fue rechazado y ya no admite nuevas decisiones.
+                                </div>
+
+                            <?php else: ?>
+
+                                <div class="presupuesto-aviso">
+                                    Este presupuesto no admite nuevas decisiones.
+                                </div>
+
+                            <?php endif; ?>
+
+                        </div>
 
                     <?php endif; ?>
 
-                <?php else: ?>
-                    <div class="portal-panel">
-                        <p class="portal-sin-datos">Todavía no hay presupuestos disponibles para consultar.</p>
-                    </div>
-                <?php endif; ?>
+                </section>
+
+                <script>
+                    function cambiarVersionPresupuesto(idPresupuesto) {
+                        const url = new URL(window.location.href);
+
+                        url.searchParams.set("accion", "presupuesto");
+                        url.searchParams.set("id_presupuesto", idPresupuesto);
+
+                        window.location.href = url.toString();
+                    }
+                </script>
 
             <?php endif; ?>
 
@@ -553,11 +948,6 @@ function urlPortal($base, $accion, $idObra)
 </main>
 
 <style>
-    /* =====================================================
-   BUILDPRO | PORTAL DEL CLIENTE
-   Diseño moderno, responsive y profesional
-===================================================== */
-
     .portal-cliente {
         --pc-bg: #0b1220;
         --pc-surface: #111c2c;
@@ -1513,6 +1903,326 @@ function urlPortal($base, $accion, $idObra)
         .portal-cliente *::after {
             animation-duration: .01ms !important;
             transition-duration: .01ms !important;
+        }
+    }
+
+    /* ESTILOS DEL PRESUPUESTO */
+
+    .presupuesto-cliente {
+        width: 100%;
+    }
+
+    .presupuesto-encabezado {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .presupuesto-encabezado h2 {
+        color: #f8fafc;
+        font-size: 25px;
+        margin: 7px 0;
+    }
+
+    .presupuesto-encabezado p {
+        color: #94a3b8;
+        margin: 0;
+    }
+
+    .presupuesto-etiqueta {
+        color: #f4b400;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.4px;
+    }
+
+    .presupuesto-selector {
+        margin-bottom: 20px;
+    }
+
+    .presupuesto-selector label {
+        display: block;
+        color: #cbd5e1;
+        font-size: 13px;
+        margin-bottom: 9px;
+    }
+
+    .presupuesto-selector select {
+        width: 100%;
+        max-width: 420px;
+        padding: 13px 15px;
+        color: #f8fafc;
+        background: #111c2a;
+        border: 1px solid #29384b;
+        border-radius: 12px;
+        outline: none;
+    }
+
+    .presupuesto-tarjeta {
+        background: #111c2a;
+        border: 1px solid #26364a;
+        border-radius: 18px;
+        padding: 25px;
+    }
+
+    .presupuesto-tarjeta-superior {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .presupuesto-tarjeta-superior h3 {
+        color: #f8fafc;
+        font-size: 21px;
+        margin: 8px 0;
+    }
+
+    .presupuesto-tarjeta-superior p {
+        color: #94a3b8;
+        font-size: 13px;
+    }
+
+    .estado-presupuesto {
+        display: inline-flex;
+        padding: 8px 13px;
+        border-radius: 20px;
+        color: var(--estado-color);
+        background: color-mix(in srgb, var(--estado-color) 13%, transparent);
+        border: 1px solid var(--estado-color);
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .presupuesto-total {
+        margin: 25px 0;
+        padding: 25px;
+        background: #0b1320;
+        border: 1px solid #29384b;
+        border-radius: 15px;
+    }
+
+    .presupuesto-total span {
+        display: block;
+        color: #94a3b8;
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+
+    .presupuesto-total strong {
+        color: #f4b400;
+        font-size: clamp(25px, 4vw, 36px);
+        font-weight: 800;
+    }
+
+    .presupuesto-descripcion {
+        margin: 25px 0;
+    }
+
+    .presupuesto-descripcion h4,
+    .presupuesto-detalles h4,
+    .presupuesto-decision h4 {
+        color: #f8fafc;
+        margin-bottom: 12px;
+    }
+
+    .presupuesto-descripcion p {
+        color: #cbd5e1;
+        line-height: 1.7;
+    }
+
+    .presupuesto-informacion {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .presupuesto-informacion div {
+        background: #0b1320;
+        padding: 17px;
+        border-radius: 12px;
+    }
+
+    .presupuesto-informacion span,
+    .presupuesto-informacion strong {
+        display: block;
+    }
+
+    .presupuesto-informacion span {
+        color: #94a3b8;
+        font-size: 12px;
+        margin-bottom: 7px;
+    }
+
+    .presupuesto-informacion strong {
+        color: #f8fafc;
+        font-size: 14px;
+    }
+
+    .presupuesto-detalles {
+        margin-top: 25px;
+    }
+
+    .tabla-presupuesto-contenedor {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .tabla-presupuesto {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 550px;
+    }
+
+    .tabla-presupuesto th {
+        color: #94a3b8;
+        font-size: 12px;
+        text-align: left;
+        padding: 13px;
+        background: #0b1320;
+    }
+
+    .tabla-presupuesto td {
+        color: #e2e8f0;
+        font-size: 13px;
+        padding: 14px 13px;
+        border-bottom: 1px solid #29384b;
+    }
+
+    .presupuesto-sin-detalles {
+        color: #94a3b8;
+        font-size: 13px;
+    }
+
+    .presupuesto-decision {
+        margin-top: 30px;
+        padding: 22px;
+        border: 1px solid #34465c;
+        border-radius: 15px;
+        background: #0b1320;
+    }
+
+    .presupuesto-decision p {
+        color: #94a3b8;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .presupuesto-acciones {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .presupuesto-acciones form {
+        flex: 1;
+        min-width: 180px;
+    }
+
+    .presupuesto-acciones button {
+        width: 100%;
+        border: 0;
+        border-radius: 11px;
+        padding: 14px 18px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: .2s ease;
+    }
+
+    .btn-aprobar-presupuesto {
+        background: #16a34a;
+        color: white;
+    }
+
+    .btn-aprobar-presupuesto:hover {
+        background: #15803d;
+    }
+
+    .btn-rechazar-presupuesto {
+        background: #dc2626;
+        color: white;
+    }
+
+    .btn-rechazar-presupuesto:hover {
+        background: #b91c1c;
+    }
+
+    .presupuesto-aviso {
+        margin-top: 25px;
+        padding: 17px;
+        border-radius: 12px;
+        color: #cbd5e1;
+        background: #26364a;
+        border: 1px solid #475569;
+        line-height: 1.6;
+    }
+
+    .presupuesto-aviso.aprobado {
+        color: #86efac;
+        background: #14532d22;
+        border-color: #16a34a;
+    }
+
+    .presupuesto-aviso.rechazado {
+        color: #fca5a5;
+        background: #7f1d1d22;
+        border-color: #dc2626;
+    }
+
+    .presupuesto-vacio {
+        padding: 35px;
+        text-align: center;
+        background: #111c2a;
+        border: 1px solid #29384b;
+        border-radius: 16px;
+    }
+
+    .presupuesto-vacio h3 {
+        color: #f8fafc;
+    }
+
+    .presupuesto-vacio p {
+        color: #94a3b8;
+    }
+
+    .mensaje-presupuesto {
+        padding: 15px 18px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        font-size: 14px;
+    }
+
+    .mensaje-presupuesto.success {
+        color: #86efac;
+        background: #14532d33;
+        border: 1px solid #16a34a;
+    }
+
+    .mensaje-presupuesto.error {
+        color: #fca5a5;
+        background: #7f1d1d33;
+        border: 1px solid #dc2626;
+    }
+
+    @media (max-width: 600px) {
+        .presupuesto-tarjeta {
+            padding: 17px;
+        }
+
+        .presupuesto-informacion {
+            grid-template-columns: 1fr;
+        }
+
+        .presupuesto-acciones {
+            flex-direction: column;
+        }
+
+        .presupuesto-acciones form {
+            width: 100%;
         }
     }
 </style>

@@ -1,3 +1,4 @@
+
 <?php
 
 class Presupuesto
@@ -174,7 +175,7 @@ class Presupuesto
         return $presupuesto;
     }
 
-    // CREAR PRESUPUESTO
+    // CREAR PRESUPUESTO CON CONTROL DE VERSIONES
     public function crear(array $datos): int
     {
         $idObra = filter_var(
@@ -208,7 +209,11 @@ class Presupuesto
             $porcImprevistos,
             $porcGanancia
         ] as $porcentaje) {
-            if (!is_finite($porcentaje) || $porcentaje < 0 || $porcentaje > 100) {
+            if (
+                !is_finite($porcentaje) ||
+                $porcentaje < 0 ||
+                $porcentaje > 100
+            ) {
                 throw new InvalidArgumentException(
                     'Los porcentajes deben estar entre 0 y 100.'
                 );
@@ -218,13 +223,14 @@ class Presupuesto
         $this->conexion->beginTransaction();
 
         try {
-            // Verificar obra activa
+            // VERIFICAR Y BLOQUEAR LA OBRA
             $consultaObra = $this->conexion->prepare("
                 SELECT id_obra
                 FROM obra
                 WHERE id_obra = :id
                   AND activo = 1
                 LIMIT 1
+                FOR UPDATE
             ");
 
             $consultaObra->execute([':id' => $idObra]);
@@ -234,6 +240,19 @@ class Presupuesto
                     'La obra seleccionada no existe o está inactiva.'
                 );
             }
+
+            // CALCULAR SIGUIENTE VERSIÓN POR OBRA
+            $consultaVersion = $this->conexion->prepare("
+                SELECT COALESCE(MAX(version), 0) + 1 AS siguiente_version
+                FROM presupuesto
+                WHERE id_obra = :id_obra
+            ");
+
+            $consultaVersion->execute([
+                ':id_obra' => $idObra
+            ]);
+
+            $version = (int)$consultaVersion->fetchColumn();
 
             $totalMateriales = 0;
             $totalManoObra = 0;
@@ -275,7 +294,9 @@ class Presupuesto
                     LIMIT 1
                 ");
 
-                $consultaMaterial->execute([':id' => $idMaterial]);
+                $consultaMaterial->execute([
+                    ':id' => $idMaterial
+                ]);
 
                 $materialDB = $consultaMaterial->fetch(PDO::FETCH_ASSOC);
 
@@ -344,8 +365,10 @@ class Presupuesto
                 ];
             }
 
-            if (count($materialesValidados) === 0 &&
-                count($trabajosValidados) === 0) {
+            if (
+                count($materialesValidados) === 0 &&
+                count($trabajosValidados) === 0
+            ) {
                 throw new InvalidArgumentException(
                     'Agregá al menos un material o un trabajo.'
                 );
@@ -366,12 +389,28 @@ class Presupuesto
             $ganancia = $baseGanancia * ($porcGanancia / 100);
             $costoTotal = $baseGanancia + $ganancia;
 
-            // INSERTAR PRESUPUESTO
+            // DESACTIVAR TODAS LAS VERSIONES ANTERIORES
+            // Se ejecuta dentro de la transacción.
+            $sqlDesactivar = "
+                UPDATE presupuesto
+                SET estado = 'Inactivo'
+                WHERE id_obra = :id_obra
+            ";
+
+            $stmtDesactivar = $this->conexion->prepare($sqlDesactivar);
+
+            $stmtDesactivar->execute([
+                ':id_obra' => $idObra
+            ]);
+
+            // INSERTAR NUEVO PRESUPUESTO COMO ACTIVO
             $sqlPresupuesto = "
                 INSERT INTO presupuesto (
                     id_obra,
+                    version,
                     nombre_presupuesto,
                     costo_total,
+                    estado,
                     detalle_general,
                     validez_dias,
                     forma_pago,
@@ -383,8 +422,10 @@ class Presupuesto
                     costo_directo
                 ) VALUES (
                     :id_obra,
+                    :version,
                     :nombre,
                     :costo_total,
+                    'Activo',
                     :detalle,
                     :validez,
                     :forma_pago,
@@ -401,6 +442,7 @@ class Presupuesto
 
             $consulta->execute([
                 ':id_obra' => $idObra,
+                ':version' => $version,
                 ':nombre' => trim($datos['nombre_presupuesto'] ?? '')
                     ?: 'Presupuesto General',
                 ':costo_total' => $costoTotal,
@@ -417,7 +459,7 @@ class Presupuesto
 
             $idPresupuesto = (int)$this->conexion->lastInsertId();
 
-            // GUARDAR MATERIALES EN detalle_presupuesto
+            // GUARDAR MATERIALES
             $sqlMaterial = "
                 INSERT INTO detalle_presupuesto (
                     id_presupuesto,

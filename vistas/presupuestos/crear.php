@@ -309,54 +309,73 @@ if (file_exists($archivoSidebar)) {
                 </div>
             </section>
 
-            <!-- RESUMEN -->
-            <section class="panel-presupuesto">
-                <h2>5. Resumen del presupuesto</h2>
 
-                <div class="resumen-presupuesto">
-                    <p>
-                        Materiales:
-                        <strong id="resumenMateriales">$0,00</strong>
-                    </p>
+<!-- RESUMEN -->
+<section class="panel-presupuesto">
+    <h2>5. Resumen del presupuesto</h2>
 
-                    <p>
-                        Mano de obra:
-                        <strong id="resumenManoObra">$0,00</strong>
-                    </p>
+    <div class="resumen-presupuesto">
 
-                    <p>
-                        Costo directo:
-                        <strong id="costoBase">$0,00</strong>
-                    </p>
+        <!-- COSTOS PRINCIPALES -->
+        <div class="resumen-grid">
 
-                    <p>
-                        Gastos de obra:
-                        <strong id="totalGastosObra">$0,00</strong>
-                    </p>
+            <div class="resumen-card">
+                <span>Materiales</span>
+                <strong id="resumenMateriales">$0,00</strong>
+            </div>
 
-                    <p>
-                        Gastos de oficina:
-                        <strong id="totalGastosOficina">$0,00</strong>
-                    </p>
+            <div class="resumen-card">
+                <span>Mano de obra</span>
+                <strong id="resumenManoObra">$0,00</strong>
+            </div>
 
-                    <p>
-                        Imprevistos:
-                        <strong id="totalImprevistos">$0,00</strong>
-                    </p>
+            <div class="resumen-card resumen-card-base">
+                <span>Costo directo</span>
+                <strong id="costoBase">$0,00</strong>
+            </div>
 
-                    <p>
-                        Ganancia:
-                        <strong id="totalGanancia">$0,00</strong>
-                    </p>
+        </div>
 
-                    <hr>
+        <!-- DESGLOSE DE COSTOS -->
+        <div class="resumen-desglose">
 
-                    <h3>
-                        Total final:
-                        <strong id="totalFinal">$0,00</strong>
-                    </h3>
-                </div>
-            </section>
+            <h3>Desglose de costos adicionales</h3>
+
+            <div class="resumen-fila">
+                <span>Gastos de obra</span>
+                <strong id="totalGastosObra">$0,00</strong>
+            </div>
+
+            <div class="resumen-fila">
+                <span>Gastos de oficina</span>
+                <strong id="totalGastosOficina">$0,00</strong>
+            </div>
+
+            <div class="resumen-fila">
+                <span>Imprevistos</span>
+                <strong id="totalImprevistos">$0,00</strong>
+            </div>
+
+            <div class="resumen-fila">
+                <span>Ganancia</span>
+                <strong id="totalGanancia">$0,00</strong>
+            </div>
+
+        </div>
+
+        <!-- TOTAL FINAL -->
+        <div class="resumen-total">
+            <div>
+                <span>IMPORTE TOTAL DEL PRESUPUESTO</span>
+                <small>Materiales + mano de obra + costos adicionales</small>
+            </div>
+
+            <strong id="totalFinal">$0,00</strong>
+        </div>
+
+    </div>
+</section>
+
 
             <!-- CONDICIONES Y OBSERVACIONES -->
             <section class="panel-presupuesto">

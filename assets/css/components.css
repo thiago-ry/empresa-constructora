@@ -3083,3 +3083,159 @@ select:focus {
         color: #f4b400;
         transform: translateY(-2px);
     }
+
+
+/* ========================================
+   RESUMEN DEL PRESUPUESTO
+======================================== */
+
+.resumen-presupuesto {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 20px;
+}
+
+/* TARJETAS PRINCIPALES */
+
+.resumen-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.resumen-card {
+    background: #111e2b;
+    border: 1px solid #26384b;
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.resumen-card span {
+    color: #aab7c5;
+    font-size: 14px;
+}
+
+.resumen-card strong {
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.resumen-card-base {
+    border-color: #f4b400;
+    background: rgba(244, 180, 0, 0.07);
+}
+
+.resumen-card-base strong {
+    color: #f4b400;
+}
+
+/* DESGLOSE */
+
+.resumen-desglose {
+    background: #111e2b;
+    border: 1px solid #26384b;
+    border-radius: 14px;
+    padding: 22px;
+}
+
+.resumen-desglose h3 {
+    color: #ffffff;
+    font-size: 16px;
+    margin: 0 0 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #26384b;
+}
+
+.resumen-fila {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 13px 0;
+    border-bottom: 1px solid #26384b;
+}
+
+.resumen-fila:last-child {
+    border-bottom: none;
+}
+
+.resumen-fila span {
+    color: #aab7c5;
+    font-size: 14px;
+}
+
+.resumen-fila strong {
+    color: #ffffff;
+    font-size: 15px;
+    white-space: nowrap;
+}
+
+/* TOTAL FINAL */
+
+.resumen-total {
+    background: linear-gradient(135deg, #182a3d, #111e2b);
+    border: 1px solid #f4b400;
+    border-radius: 16px;
+    padding: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.resumen-total div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.resumen-total span {
+    color: #f4b400;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+}
+
+.resumen-total small {
+    color: #aab7c5;
+    font-size: 12px;
+}
+
+.resumen-total strong {
+    color: #f4b400;
+    font-size: 30px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+    .resumen-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .resumen-total {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .resumen-total strong {
+        font-size: 26px;
+    }
+}
+
+@media (max-width: 420px) {
+    .resumen-desglose {
+        padding: 15px;
+    }
+
+    .resumen-fila {
+        align-items: flex-start;
+    }
+}
